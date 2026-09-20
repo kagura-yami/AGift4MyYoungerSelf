@@ -1,0 +1,4 @@
+Engine anchor validation OK for UE5.7.4
+- engine: C:\Apps\UE\UE_5.7\Engine
+- stable gameplay, UI, asset, trace, packaging, and PCG anchors found
+- PCG scheduler branch matches the detected engine version

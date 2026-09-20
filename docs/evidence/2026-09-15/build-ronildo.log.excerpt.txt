@@ -1,0 +1,23 @@
+Using bundled DotNet SDK version: 8.0.412 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" ProbeEditor Win64 Development -Project=C:/Dev/Projects/UE/Tripothon/tools/evaluation/Probe/Probe.uproject -WaitMutex -NoHotReloadFromIDE -MaxParallelActions=2 -NoUBA
+Log file: C:\Users\kagurayami\AppData\Local\UnrealBuildTool\Log.txt
+Creating makefile for ProbeEditor (.uproject file is newer)
+UHT compiled-in object format Default
+Building ProbeEditor...
+Using Visual Studio 2022 14.44.35224 toolchain (C:\Apps\VisualStudio\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from UnrealMCP unity file: MCPParams.cpp, MCPRegistrations.cpp, MCPRegistry.cpp, MCPServerRunnable.cpp, UnrealMCPBridge.cpp, UnrealMCPModule.cpp, UnrealMCPAssetCommands.cpp, UnrealMCPBlueprintCommands.cpp, UnrealMCPBlueprintNodeCommands.cpp, UnrealMCPCommonUtils.cpp, UnrealMCPEditorCommands.cpp, UnrealMCPLevelCommands.cpp, UnrealMCPMaterialCommands.cpp, UnrealMCPNiagaraCommands.cpp, UnrealMCPOutlinerCommands.cpp, UnrealMCPProjectCommands.cpp, UnrealMCPUMGCommands.cpp, ClassLookup.cpp, ObjectLookup.cpp, PropertyWalker.cpp
+Executing up to 2 actions based on MaxProcessorCount override
+Using Parallel executor to run 6 action(s)
+------ Building 6 action(s) started ------
+[1/6] Compile [x64] PropertyWalker.cpp
+[2/6] Compile [x64] UnrealMCPBlueprintCommands.cpp
+[3/6] Compile [x64] UnrealMCPAssetCommands.cpp
+[4/6] Link [x64] UnrealEditor-UnrealMCP.lib
+  ���ڴ����� C:/Dev/Projects/UE/Tripothon/tools/evaluation/Probe/Plugins/UnrealMCP/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMCP/UnrealEditor-UnrealMCP.lib �Ͷ��� C:/Dev/Projects/UE/Tripothon/tools/evaluation/Probe/Plugins/UnrealMCP/Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealMCP/UnrealEditor-UnrealMCP.exp
+[5/6] Link [x64] UnrealEditor-UnrealMCP.dll
+[6/6] WriteMetadata ProbeEditor.target
+
+Total time in Parallel executor: 4.78 seconds
+
+Result: Succeeded
+Total execution time: 8.90 seconds

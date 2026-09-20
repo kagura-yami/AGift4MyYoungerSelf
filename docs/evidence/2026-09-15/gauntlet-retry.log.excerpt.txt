@@ -1,0 +1,29 @@
+[2026.09.15-11.11.45:164][  0]LogAutomationTest: Error: Condition failed
+[2026.09.15-11.11.45:172][  0]LogAutomationTest: Error: Condition failed
+[2026.09.15-11.11.53:609][603]LogAutomationController: Exported report to 'C:/Dev/Projects/UE/Tripothon/tools/evaluation/reports/gauntlet' in 0.00 Seconds
+LogAutomationController: Exported report to 'C:/Dev/Projects/UE/Tripothon/tools/evaluation/reports/gauntlet' in 0.00 Seconds
+
+ --------------------------------------------------------------------------------
+
+ # Gauntlet summary events:
+
+ --------------------------------------------------------------------------------
+
+ ##### No Gauntlet Events were fired during this test!
+UE.EditorAutomation(RunTest=Tripothon.Probe.Defaults) (Win64 Development Editor) result=Passed
+How to run locally: (RunUAT RunUnreal -Test="UE.EditorAutomation" -project="C:/Dev/Projects/UE/Tripothon/tools/evaluation/Probe/Probe.uproject" -configuration="Development" -build="editor" -RunTest="Tripothon.Probe.Defaults" -NullRHI -unattended -MaxDuration=120)
+Arguments used:
+	RunUAT
+	RunUnreal
+	-Test="UE.EditorAutomation"
+	-project="C:/Dev/Projects/UE/Tripothon/tools/evaluation/Probe/Probe.uproject"
+	-configuration="Development"
+	-build="editor"
+	-RunTest="Tripothon.Probe.Defaults"
+	-NullRHI
+	-unattended
+	-MaxDuration=120
+  
+BUILD SUCCESSFUL
+AutomationTool executed for 0h 0m 35s
+AutomationTool exiting with ExitCode=0 (Success)

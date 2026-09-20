@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "phase": 6,
+  "at": 417458.187,
+  "checks": [
+    "Actual pawn overlap powers plate",
+    "Plate opens OR gate",
+    "Leaving plate clears occupancy",
+    "Nearby player can use switch",
+    "Switch independently powers OR gate",
+    "Start captures safe checkpoint",
+    "Fall automatically restores safe position",
+    "Recovery changes history epoch once",
+    "Ordinary death does not reset challenge time",
+    "Recovery releases lock",
+    "Explicit restart succeeds",
+    "Explicit restart resets elapsed time",
+    "Finish freezes result",
+    "Reward screen cannot change finish time",
+    "Repeated finish cannot recreate candidate snapshot",
+    "Reward transaction commits",
+    "Repeated reward cannot commit twice",
+    "Exactly one upgrade granted",
+    "Completion ledger recorded"
+  ],
+  "epoch": 0,
+  "start": 4.3198466300964355e-05,
+  "elapsed": 3.219768404960632e-05,
+  "level": 0
+}

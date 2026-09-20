@@ -1,0 +1,42 @@
+diff --git a/server/tools/editor_tools.py b/server/tools/editor_tools.py
+index e7e9ac3..29056fe 100644
+--- a/server/tools/editor_tools.py
++++ b/server/tools/editor_tools.py
+@@ -599,7 +599,7 @@ def register_editor_tools(mcp: FastMCP):
+ 
+     # ─── Viewport + screenshots ──────────────────────────────────────────
+ 
+-    @mcp.tool()
++    @mcp.tool(structured_output=False)
+     def take_screenshot(
+         ctx: Context,
+         filename: str = "screenshot.png",
+@@ -976,7 +976,7 @@ def register_editor_tools(mcp: FastMCP):
+             {"success": bool, "direction": [..], "duration": float, "scale": float, "note": "..."}
+         """
+ 
+-    @mcp.tool()
++    @mcp.tool(structured_output=False)
+     def pie_screenshot(
+         ctx: Context, filename: str = "pie_screenshot.png"
+     ) -> Union["Image", Dict[str, Any]]:  # type: ignore[name-defined]
+diff --git a/server/unreal_mcp_server.py b/server/unreal_mcp_server.py
+index ea45209..edab5fa 100644
+--- a/server/unreal_mcp_server.py
++++ b/server/unreal_mcp_server.py
+@@ -245,7 +245,7 @@ async def server_lifespan(server: FastMCP) -> AsyncIterator[Dict[str, Any]]:
+ # Initialize server
+ mcp = FastMCP(
+     "UnrealMCP",
+-    description="Unreal Engine integration via Model Context Protocol",
++    instructions="Unreal Engine integration via Model Context Protocol",
+     lifespan=server_lifespan
+ )
+ 
+@@ -301,4 +301,4 @@ error → `{"success": false, "error": "..."}`.
+ # Run the server
+ if __name__ == "__main__":
+     logger.info("Starting MCP server with stdio transport")
+-    mcp.run(transport='stdio') 
+\ No newline at end of file
++    mcp.run(transport='stdio') 

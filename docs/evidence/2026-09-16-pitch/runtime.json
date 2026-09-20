@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "error": "",
+  "checks": [
+    "Upward action reaches +60 degree camera limit",
+    "Horizontal look preserves pitch",
+    "Horizontal look changes yaw",
+    "Downward action reaches -75 degree camera limit",
+    "Vertical look preserves yaw",
+    "Pitch sample 5 keeps horizontal forward speed 450",
+    "Pitch sample 5 leaves body upright",
+    "Pitch sample 7 keeps horizontal forward speed 450",
+    "Pitch sample 7 leaves body upright",
+    "Pitch sample 9 keeps horizontal forward speed 450",
+    "Pitch sample 9 leaves body upright",
+    "All pitch samples keep identical ground height"
+  ],
+  "samples": [
+    {
+      "pitch": -75.0,
+      "vx": 450.0,
+      "vy": 0.0,
+      "vz": 0.0,
+      "z": 85.15000171905055
+    },
+    {
+      "pitch": 0.0,
+      "vx": 450.0,
+      "vy": 0.0,
+      "vz": 0.0,
+      "z": 85.15000139047993
+    },
+    {
+      "pitch": 60.0,
+      "vx": 450.0,
+      "vy": 0.0,
+      "vz": 0.0,
+      "z": 85.15000139047993
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "game/Source/Tripothon.Target.cs": "f45446d405f90d076a7f2328c0dce004387fdc69cb43905835a185866f91bafc",
+  "game/Source/TripothonEditor.Target.cs": "e9ba5c7f8a16c98325aa4c598c456476cc552cc29ab8e980d3d14d02b06bcc98",
+  "game/Source/Tripothon/Tripothon.Build.cs": "8ad108e76b011b0124127f44b7c729fe03294af7893b621a06ada657957932ca",
+  "game/Source/Tripothon/Tripothon.cpp": "19b6d36c676648930ad6866609a3306c6998560a2f96c1f29dcf4ac64eb7a95d",
+  "game/Source/Tripothon/Lab/TripoGameMode.cpp": "050b8f228372f47598ecd599e4666163a660796e50da6d648f42ae3b8df00b27",
+  "game/Source/Tripothon/Lab/TripoGameMode.h": "d6724038773b0663b5f85346b11ffaec8360546feeeb374d681abccc90faa6f0",
+  "game/Source/Tripothon/Lab/TripoHUD.cpp": "01173c0964215c08897d5a4f5c8b3b72de9d6b1a30b2500e2458ebfab5e65ee9",
+  "game/Source/Tripothon/Lab/TripoHUD.h": "d682e9d30526b483e84623d58101b78a64e176984a878b1375f5a1cfde979078",
+  "game/Source/Tripothon/Player/TripoCharacter.cpp": "ee094a2b674ac776ac256e57f3f5a0d8ac29425953444afc0d187b76e96859b5",
+  "game/Source/Tripothon/Player/TripoCharacter.h": "23e413f1a93a01e40942bd73a2b0f59154e712401edb682970678dd141d820a5",
+  "game/Source/Tripothon/Player/TripoMovementRules.h": "b49c172595e9f2bec399a11e2ac24615e643c6c9119202841dc1ed004c422038",
+  "game/Source/Tripothon/Tests/TripoMovementTests.cpp": "f3101e3069d6500a759941c1e1c3dedffbba4e16742659acb928fded9585f079",
+  "game/Config/DefaultEngine.ini": "3831aa45afd4680228e2c9ab23a138f51a6177361ee69fb868a5c202e579afb6",
+  "game/Config/DefaultGame.ini": "c28ad7458e8d395c1eed2b0fa542ad9714d286fc01fe7388aa4873f175f02738",
+  "game/Config/DefaultInput.ini": "cbb0838bb501c085f0cbcaa44672bb5b9070696732a12ab835a9aca8004636cf",
+  "game/Tripothon.uproject": "8bce4e5e7bcada6133a6bb5926fac5a4d8c58f39bb40c1ef89d6878894e5f6bb",
+  "game/Content/Maps/L_LogicLab.umap": "de691778be35cc1920a76eea7d50134e197ebec6f37d5e3da2773490e0221e78"
+}

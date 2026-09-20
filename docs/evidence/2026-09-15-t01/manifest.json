@@ -1,0 +1,225 @@
+{
+  "milestone": "T01 baseline acceptance",
+  "engine": "5.7.4",
+  "reports": [
+    {
+      "path": "tools/evaluation/reports/t01-input-regions.json",
+      "bytes": 490,
+      "sha256": "51092f46bf4a69d9ebc25bd599efcbb2c187b6f00ffd36730a1cbbc9d6d5b749"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-airborne-final.json",
+      "bytes": 180,
+      "sha256": "1f9707be5d736115c77b2bf38ab2040281afba8547f7979e5ab92062b55f9544"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-fix-build.log",
+      "bytes": 2127,
+      "sha256": "d8c2a1ac33feff821450459cf00ea116a5604711725f0fed33dc0565de6db4f4"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-package.log",
+      "bytes": 62041,
+      "sha256": "eaad6201d45043b0409ad73a944e43bd231f11089b376555c81e5089e5ae6902"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-fixed-editor.log",
+      "bytes": 151654,
+      "sha256": "59fb1dcc04b6a7483f7c9fe4eaff505b6c55c07f7ce072816d35fd7dd17f76e2"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-input-editor.log",
+      "bytes": 124171,
+      "sha256": "c683f6999a9a67a878224b0cc60551847df3967b63745eb3161942536aba973d"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-key-editor.log",
+      "bytes": 127935,
+      "sha256": "106a1fd427dcc19513f9e484014ad962151a42339d94e832f405d97d5226d625"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-package-720.log",
+      "bytes": 71200,
+      "sha256": "48a1ac2eb62fd97f1879d5c1b8b8f23a6b6451203bb2d3007572b91bff264838"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-package-1080.log",
+      "bytes": 71018,
+      "sha256": "5f181ecaf78810cb44efb5696357f4b76e37a1041fc07f20674e10907d324211"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-os-space.jpg",
+      "bytes": 161251,
+      "sha256": "593eb313aade8bc9112be8f655a5e1bbfac267e00d4557f535ec17fcf4ea15bb"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-package-720-jump.jpg",
+      "bytes": 63304,
+      "sha256": "f92dfed9b1c7ac7cc68a1411ea85bca833b79368f583aebf9a0580d9fca74895"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-package-720-paused.jpg",
+      "bytes": 51140,
+      "sha256": "924d327b1e7c95c533ebb6bab61d15320844491b498354737da405c97d480468"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-package-720-resumed.jpg",
+      "bytes": 89735,
+      "sha256": "ebeadc8d60d24728bcddafd6bce30363ad9f5ff8402223f7a239e00fcf6593e6"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-package-1080.jpg",
+      "bytes": 222585,
+      "sha256": "c9a1f2924f6baaf367c0bcbc444ba6e97d9eb3bac14badfb268fa37d2cdda668"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-package-1080-paused.jpg",
+      "bytes": 110533,
+      "sha256": "3dfe27e0a43c771a7f943f6511b3409bbb6f4c682b365307e9e37c8a0c5e442a"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-automation/index.json",
+      "bytes": 1440,
+      "sha256": "a46e5048661bc61029947dc6e3662763c56d7cca3c29adf329094ab044122f11"
+    },
+    {
+      "path": "tools/evaluation/reports/t01-automation/summary.json",
+      "bytes": 196,
+      "sha256": "39f539d9d59aeac81f281ecd878284d92a502cc6beeb4327b59a13da20f0e31d"
+    }
+  ],
+  "source_and_binary": [
+    {
+      "path": "artifacts/Windows/Tripothon/Binaries/Win64/Tripothon.exe",
+      "bytes": 291242496,
+      "sha256": "34c025e09a4202b6bc992c780bf77725d2f7ce41ed098441a297fe7ce294d899"
+    },
+    {
+      "path": "game/Config/DefaultEngine.ini",
+      "bytes": 963,
+      "sha256": "3831aa45afd4680228e2c9ab23a138f51a6177361ee69fb868a5c202e579afb6"
+    },
+    {
+      "path": "game/Config/DefaultGame.ini",
+      "bytes": 311,
+      "sha256": "c28ad7458e8d395c1eed2b0fa542ad9714d286fc01fe7388aa4873f175f02738"
+    },
+    {
+      "path": "game/Config/DefaultInput.ini",
+      "bytes": 186,
+      "sha256": "319d47f6171461f0d1bb6ab26b28c4a5c5815270d8e9ddfb1cd40f7d75b105ac"
+    },
+    {
+      "path": "game/Content/Maps/L_LogicLab.umap",
+      "bytes": 29374,
+      "sha256": "dcededa244c4a1ec929f0e8a5accb4be74c150f06886388184440eaa691733a6"
+    },
+    {
+      "path": "game/Content/Python/tripo_input_verify.py",
+      "bytes": 5192,
+      "sha256": "893392312d4a01524d054ac953bd8fd54108d57f7e22ef3e06eb972dfbb04d5b"
+    },
+    {
+      "path": "game/Content/Python/tripo_lab.py",
+      "bytes": 2309,
+      "sha256": "c62e51471fce6130ac1dc9acf0db1a9de82982bb07f31de6c9d5867e5b9efa07"
+    },
+    {
+      "path": "game/Content/Python/tripo_verify.py",
+      "bytes": 3176,
+      "sha256": "ec52979aa82a7eb144c0b2620eba9fd32b11f7c265d641bdb907baf0c9dc5e6f"
+    },
+    {
+      "path": "game/Source/Tripothon/Lab/TripoGameMode.cpp",
+      "bytes": 334,
+      "sha256": "14e55170eaa597e6ba0bd854a98664a90d18b4b4dabb0094b8576b551c94b365"
+    },
+    {
+      "path": "game/Source/Tripothon/Lab/TripoGameMode.h",
+      "bytes": 238,
+      "sha256": "d6724038773b0663b5f85346b11ffaec8360546feeeb374d681abccc90faa6f0"
+    },
+    {
+      "path": "game/Source/Tripothon/Lab/TripoHUD.cpp",
+      "bytes": 1240,
+      "sha256": "01173c0964215c08897d5a4f5c8b3b72de9d6b1a30b2500e2458ebfab5e65ee9"
+    },
+    {
+      "path": "game/Source/Tripothon/Lab/TripoHUD.h",
+      "bytes": 225,
+      "sha256": "d682e9d30526b483e84623d58101b78a64e176984a878b1375f5a1cfde979078"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoCameraVolume.cpp",
+      "bytes": 548,
+      "sha256": "3576607b4daa016f057bba4a27edda4177859953d06151f495fa06ca961084d5"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoCameraVolume.h",
+      "bytes": 540,
+      "sha256": "466e05fb10f413ee328213fdfbc4fa6687f1dde181d3a29616daea9b8dc10e2c"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoCharacter.cpp",
+      "bytes": 8925,
+      "sha256": "dc0d3bca94a9591b19699c67b1edc3d57d1ebd6da11c31ab733d5aa51f609107"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoCharacter.h",
+      "bytes": 3212,
+      "sha256": "23e413f1a93a01e40942bd73a2b0f59154e712401edb682970678dd141d820a5"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoMovementRules.h",
+      "bytes": 674,
+      "sha256": "b49c172595e9f2bec399a11e2ac24615e643c6c9119202841dc1ed004c422038"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoPlayerController.cpp",
+      "bytes": 746,
+      "sha256": "286d9dc780d6b9d4c8fe32ae082a477ee97912f03a59218b7edd45277b0440d4"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoPlayerController.h",
+      "bytes": 415,
+      "sha256": "ac884bde9c40991b03d0af277144eb2d33537d20cef93788c6877e53db690b96"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoPlayerInput.cpp",
+      "bytes": 1005,
+      "sha256": "75708d9f286c8c1ceba9b1704f04f20a67b6aa2ad96892f474b51b01dea43df8"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoPlayerInput.h",
+      "bytes": 672,
+      "sha256": "b72a266e6a182c02072a97f3d8f0b8dab71f33a98985f167024d0bbcedb04990"
+    },
+    {
+      "path": "game/Source/Tripothon/Tests/TripoMovementTests.cpp",
+      "bytes": 1668,
+      "sha256": "f3101e3069d6500a759941c1e1c3dedffbba4e16742659acb928fded9585f079"
+    },
+    {
+      "path": "game/Source/Tripothon/Tripothon.Build.cs",
+      "bytes": 363,
+      "sha256": "8ad108e76b011b0124127f44b7c729fe03294af7893b621a06ada657957932ca"
+    },
+    {
+      "path": "game/Source/Tripothon/Tripothon.cpp",
+      "bytes": 114,
+      "sha256": "19b6d36c676648930ad6866609a3306c6998560a2f96c1f29dcf4ac64eb7a95d"
+    },
+    {
+      "path": "game/Source/Tripothon.Target.cs",
+      "bytes": 341,
+      "sha256": "f45446d405f90d076a7f2328c0dce004387fdc69cb43905835a185866f91bafc"
+    },
+    {
+      "path": "game/Source/TripothonEditor.Target.cs",
+      "bytes": 355,
+      "sha256": "e9ba5c7f8a16c98325aa4c598c456476cc552cc29ab8e980d3d14d02b06bcc98"
+    }
+  ],
+  "manual_checks": "Computer Use: OS Space/W/Escape, 720p windowed and 1080p fullscreen, HUD, pause/resume, graceful exit.",
+  "limitations": "Graybox only. Full abilities/challenges/save/story are not implemented."
+}

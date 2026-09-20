@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "phase": 4,
+  "at": 417512.062,
+  "checks": [
+    "Up dash activates below ceiling",
+    "Ceiling sweep prevents upward penetration",
+    "Marked vertical wall supports wall jump",
+    "Wall jump propels away and upward",
+    "Same wall cannot reset repeated contact"
+  ]
+}

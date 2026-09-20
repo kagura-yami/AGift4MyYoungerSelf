@@ -1,0 +1,25 @@
+Creating makefile for ProbeEditor (.uproject file is newer)
+UHT compiled-in object format Default
+Parsing headers for ProbeEditor
+  Running Internal UnrealHeaderTool C:\Dev\Projects\UE\Tripothon\tools\evaluation\Probe\Probe.uproject C:\Dev\Projects\UE\Tripothon\tools\evaluation\Probe\Intermediate\Build\Win64\ProbeEditor\Development\ProbeEditor.uhtmanifest -WarningsAsErrors -installed
+UHT processed ProbeEditor in 1.4919339 seconds (4 files written)
+Building ProbeEditor...
+Using Visual Studio 2022 14.44.35224 toolchain (C:\Apps\VisualStudio\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from ModelContextProtocol unity file: BlueprintGraphOperations.cpp, ModelContextProtocolModule.cpp, UnrealMCPServer.cpp
+Executing up to 2 actions based on MaxProcessorCount override
+Using Parallel executor to run 8 action(s)
+------ Building 8 action(s) started ------
+[1/8] Resource Default.rc2
+[2/8] Compile [x64] ModelContextProtocolModule.cpp
+[3/8] Compile [x64] Module.ModelContextProtocol.cpp
+[4/8] Compile [x64] BlueprintGraphOperations.cpp
+[5/8] Compile [x64] UnrealMCPServer.cpp
+[6/8] Link [x64] UnrealEditor-ModelContextProtocol.lib
+  ���ڴ����� C:/Dev/Projects/UE/Tripothon/tools/evaluation/Probe/Plugins/ModelContextProtocol/Intermediate/Build/Win64/x64/UnrealEditor/Development/ModelContextProtocol/UnrealEditor-ModelContextProtocol.lib �Ͷ��� C:/Dev/Projects/UE/Tripothon/tools/evaluation/Probe/Plugins/ModelContextProtocol/Intermediate/Build/Win64/x64/UnrealEditor/Development/ModelContextProtocol/UnrealEditor-ModelContextProtocol.exp
+[7/8] Link [x64] UnrealEditor-ModelContextProtocol.dll
+[8/8] WriteMetadata ProbeEditor.target
+
+Total time in Parallel executor: 5.32 seconds
+
+Result: Succeeded
+Total execution time: 11.05 seconds

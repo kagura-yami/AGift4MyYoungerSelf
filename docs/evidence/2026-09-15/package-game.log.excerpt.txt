@@ -1,0 +1,25 @@
+LogIoStore: Display: Output:     3529 Name map entries
+LogIoStore: Display: Output:      379 Imported package entries
+LogIoStore: Display: Output:      262 Packages without imports
+LogIoStore: Display: Output:        0 Public runtime script objects
+LogIoStore: Display: Output:   355.87 KiB HeaderData
+LogIoStore: Display: Output:     2.51 MiB InitialLoadData
+LogIoStore: Display:
+LogIoStore: Display: Success
+LogPakFile: Display: UnrealPak executed in 0.550062 seconds
+Took 0.98s to run UnrealPak.exe, ExitCode=0
+DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_UFSFiles.txt, NumItems: 2562
+DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFiles.txt, NumItems: 33
+DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFilesDebug.txt, NumItems: 6
+Copying NonUFSFiles to staging directory: C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows
+Copying DebugFiles to staging directory: C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows
+Stage command time: 3.09 s
+********** STAGE COMMAND COMPLETED **********
+********** ARCHIVE COMMAND STARTED **********
+Archiving to C:\Dev\Projects\UE\Tripothon\artifacts\Windows
+Archive command time: 0.45 s
+********** ARCHIVE COMMAND COMPLETED **********
+BuildCookRun time: 99.32 s
+BUILD SUCCESSFUL
+AutomationTool executed for 0h 1m 40s
+AutomationTool exiting with ExitCode=0 (Success)

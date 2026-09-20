@@ -1,0 +1,16 @@
+diff --git a/plugins/McpAutomationBridge/Source/McpAutomationBridgeFab/McpAutomationBridgeFab.Build.cs b/plugins/McpAutomationBridge/Source/McpAutomationBridgeFab/McpAutomationBridgeFab.Build.cs
+index 93144ce..785ab40 100644
+--- a/plugins/McpAutomationBridge/Source/McpAutomationBridgeFab/McpAutomationBridgeFab.Build.cs
++++ b/plugins/McpAutomationBridge/Source/McpAutomationBridgeFab/McpAutomationBridgeFab.Build.cs
+@@ -64,7 +64,10 @@ public class McpAutomationBridgeFab : ModuleRules
+         {
+             string PluginsDir = Path.Combine(EngineDir, "Plugins");
+             if (!Directory.Exists(PluginsDir)) return false;
+-            return SearchDirectoryBounded(PluginsDir, SearchName, 3);
++            // A same-named Binaries folder is not a buildable module.
++            foreach (string RulesFile in Directory.EnumerateFiles(PluginsDir, SearchName + ".Build.cs", SearchOption.AllDirectories))
++                return true;
++            return false;
+         }
+         catch { return false; }
+     }

@@ -1,0 +1,209 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "KAYZE",
+			"instance": "855D4F3F454C8198BE7393A202CF03D8",
+			"instanceName": "KAYZE-41860",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9445] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 4080",
+			"cPUModel": "13th Gen Intel(R) Core(TM) i7-13700",
+			"rAMInGB": 64,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.16-02.02.53",
+	"succeeded": 12,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.10014209896326065,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "DefinitionsAndGrants",
+			"fullTestPath": "Tripothon.Abilities.DefinitionsAndGrants",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.008286498486995697,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "Lifecycle",
+			"fullTestPath": "Tripothon.Abilities.Lifecycle",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0089705027639865875,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "CameraLimits",
+			"fullTestPath": "Tripothon.Movement.CameraLimits",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0077214986085891724,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "JumpWindows",
+			"fullTestPath": "Tripothon.Movement.JumpWindows",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0084589011967182159,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RewardRules",
+			"fullTestPath": "Tripothon.Progress.RewardRules",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0078184008598327637,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "SaveValidation",
+			"fullTestPath": "Tripothon.Progress.SaveValidation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0081431977450847626,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ActionClock",
+			"fullTestPath": "Tripothon.Runtime.ActionClock",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0082498006522655487,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DuplicateIdentity",
+			"fullTestPath": "Tripothon.Runtime.DuplicateIdentity",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0083834007382392883,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RestoreOrder",
+			"fullTestPath": "Tripothon.Runtime.RestoreOrder",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0081930011510848999,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "CatalogValidation",
+			"fullTestPath": "Tripothon.Story.CatalogValidation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0083684995770454407,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "HistoryInterpolation",
+			"fullTestPath": "Tripothon.Time.HistoryInterpolation",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0082927010953426361,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "MechanismGraph",
+			"fullTestPath": "Tripothon.World.MechanismGraph",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"855D4F3F454C8198BE7393A202CF03D8"
+			],
+			"duration": 0.0092556998133659363,
+			"dateTime": "2026.09.16-02.02.53",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

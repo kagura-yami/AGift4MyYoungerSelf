@@ -1,0 +1,12 @@
+{
+  "shipping_startup": true,
+  "window": "Tripothon",
+  "resolution": "1280x720",
+  "observed": [
+    "Chinese main menu",
+    "New-game character and Chinese HUD"
+  ],
+  "input_note": "User input was detected; automated window input stopped and user continued playing.",
+  "full_shipping_traversal_verified": false,
+  "final_time_fixture_note": "final-time-runtime metadata retained from initial SIE script; this rerun was launched after editor_request_begin_play on the possessed PIE character."
+}

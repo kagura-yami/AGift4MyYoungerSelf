@@ -1,0 +1,127 @@
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:855][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.23.53:856][  0]LogTraceServices: Error: [MemAlloc] Invalid Tag on Thread 2 (Tracker=0)!
+[2026.09.15-11.24.00:411][ 26]LogTraceServices: Error: [MemAlloc] TagTracker errors: 25724
+[2026.09.15-11.24.03:117][ 28]TraceInsights: Exported timing statistics to file in 0.017s ("C:/Dev/Projects/UE/Tripothon/tools/evaluation/reports/game-timers.csv").
+[2026.09.15-11.24.00:411][ 26]LogTraceServices: [Meta] Analysis completed (533 events, 0 alloc events, 0 allocs, 0 bytes).
+[2026.09.15-11.24.00:411][ 26]LogTraceServices: Error: [MemAlloc] TagTracker errors: 25724
+[2026.09.15-11.24.00:411][ 26]LogTraceServices: [LoadTime] Analysis completed (0 threads, 0 active async packages, 0 active requests + 0 fake requests, 0 active linkers, 0 active batches, 0 exports, 40 classes).
+[2026.09.15-11.24.00:612][ 27]LogTraceServices: [StackSampling] max stack size: 0 frames
+[2026.09.15-11.24.00:613][ 27]LogTraceServices: [StackSampling] Analysis completed (0 timers, 0 timelines, 0 threads, 0 stack samples, 0 stack frames).
+[2026.09.15-11.24.00:613][ 27]LogTraceServices: [CpuProfiler] Analysis completed (34 threads, 2263 timers, 2505 spec ids, 36711939 scopes, 237109566 bytes, 6.5 bytes/scope).
+[2026.09.15-11.24.00:613][ 27]LogTraceServices: [Verse] Analysis completed (0 timers, 0 samples; max stack size = 0).
+[2026.09.15-11.24.00:856][ 28]TraceInsights: Analysis has completed in 7.02s (18.8X speed; session duration: 2m 12.1s).
+[2026.09.15-11.24.00:856][ 28]Executing commands on analysis completed...
+[2026.09.15-11.24.00:856][ 28]TimingInsights.ExportTimerStatistics C:/Dev/Projects/UE/Tripothon/tools/evaluation/reports/game-timers.csv
+[2026.09.15-11.24.00:856][ 28]  Filename: "C:/Dev/Projects/UE/Tripothon/tools/evaluation/reports/game-timers.csv"
+[2026.09.15-11.24.03:117][ 28]TraceInsights: Exported timing statistics to file in 0.017s ("C:/Dev/Projects/UE/Tripothon/tools/evaluation/reports/game-timers.csv").
+[2026.09.15-11.24.03:117][ 28]Commands executed in 2.261s.
+[2026.09.15-11.24.03:117][ 28]LogCore: Engine exit requested (reason: Application is closing because it was started with the AutoQuit parameter and session analysis is complete.)
+[2026.09.15-11.24.03:148][ 29]LogSlate: Slate User Destroyed.  User Index 0, Is Virtual User: 0
+[2026.09.15-11.24.03:148][ 29]LogExit: Preparing to exit.
+[2026.09.15-11.24.03:752][ 29]LogExit: Object subsystem successfully closed.
+[2026.09.15-11.24.04:736][ 29]LogMemoryProfiler: Shutdown
+[2026.09.15-11.24.04:736][ 29]LogNetworkingProfiler: Shutdown
+[2026.09.15-11.24.04:736][ 29]LoadingProfiler: Shutdown
+[2026.09.15-11.24.04:736][ 29]LogTimingProfiler: Shutdown
+[2026.09.15-11.24.04:740][ 29]LogAnalysisCache: Display: Closing analysis cache, 0.00 MiB read, 0.00 MiB written.
+[2026.09.15-11.24.04:844][ 29]LogPakFile: Destroying PakPlatformFile
+[2026.09.15-11.24.04:847][ 29]LogExit: Exiting.
+[2026.09.15-11.24.04:860][ 29]Log file closed, 09/15/26 19:24:04

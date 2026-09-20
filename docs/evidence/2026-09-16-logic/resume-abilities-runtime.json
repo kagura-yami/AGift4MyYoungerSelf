@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "phase": 6,
+  "at": 416494.468,
+  "checks": [
+    "Ground dash activates",
+    "Dash travels configured distance with swept movement",
+    "Next grounded dash rearmed",
+    "Dash cannot cross collision wall",
+    "Up dash activates",
+    "Up dash moves actual capsule upward",
+    "Slow without target fails",
+    "Missing slow target does not start cooldown",
+    "Stone outside allowed area fails",
+    "Invalid placement does not start cooldown"
+  ],
+  "samples": [
+    {
+      "dash_distance": 485.33299218362464
+    },
+    {
+      "wall_stop_x": 1040.6212474979498
+    }
+  ],
+  "start": -500.0
+}

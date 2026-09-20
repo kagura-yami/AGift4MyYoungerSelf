@@ -1,0 +1,41 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\r\n\t\"ok\": true,\r\n\t\"data\":\r\n\t{\r\n\t\t\"ok\": true,\r\n\t\t\"game_thread\": true,\r\n\t\t\"transaction_requested\": false,\r\n\t\t\"transaction_recorded\": false,\r\n\t\t\"transaction_atomic\": false,\r\n\t\t\"transaction_rolled_back\": false,\r\n\t\t\"partial_changes_possible\": false,\r\n\t\t\"commands_completed\": 1,\r\n\t\t\"commands_succeeded\": 1,\r\n\t\t\"timed_out\": false,\r\n\t\t\"duration_ms\": 327.9557004570961,\r\n\t\t\"results\": [\r\n\t\t\t{\r\n\t\t\t\t\"index\": 0,\r\n\t\t\t\t\"kind\": \"python\",\r\n\t\t\t\t\"ok\": true,\r\n\t\t\t\t\"side_effects_possible\": true,\r\n\t\t\t\t\"transaction_recorded\": false,\r\n\t\t\t\t\"result\": \"None\",\r\n\t\t\t\t\"logs\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"level\": \"Info\",\r\n\t\t\t\t\t\t\"message\": \"{'ok': True, 'ids': ['3D54A9F44EACC0DF251E03B1136A96DF', '6DA037A846B7C77C8747E59894163D98'], 'reloaded': ['3D54A9F44EACC0DF251E03B1136A96DF', '6DA037A846B7C77C8747E59894163D98'], 'duplicate': '51D23979417E55AA97383D95F7EB88F7', 'reload_preserved': True}\\r\\n\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}"
+    }
+  ],
+  "structuredContent": {
+    "ok": true,
+    "data": {
+      "ok": true,
+      "game_thread": true,
+      "transaction_requested": false,
+      "transaction_recorded": false,
+      "transaction_atomic": false,
+      "transaction_rolled_back": false,
+      "partial_changes_possible": false,
+      "commands_completed": 1,
+      "commands_succeeded": 1,
+      "timed_out": false,
+      "duration_ms": 327.9557004570961,
+      "results": [
+        {
+          "index": 0,
+          "kind": "python",
+          "ok": true,
+          "side_effects_possible": true,
+          "transaction_recorded": false,
+          "result": "None",
+          "logs": [
+            {
+              "level": "Info",
+              "message": "{'ok': True, 'ids': ['3D54A9F44EACC0DF251E03B1136A96DF', '6DA037A846B7C77C8747E59894163D98'], 'reloaded': ['3D54A9F44EACC0DF251E03B1136A96DF', '6DA037A846B7C77C8747E59894163D98'], 'duplicate': '51D23979417E55AA97383D95F7EB88F7', 'reload_preserved': True}\r\n"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "isError": false
+}

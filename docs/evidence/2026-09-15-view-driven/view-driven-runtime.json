@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "error": "",
+  "checks": [
+    "View is not clamped to old 35-degree range",
+    "Rendered camera follows view controller",
+    "Idle body follows the view",
+    "External body rotation cannot rotate view",
+    "View wraps across 180 degrees",
+    "Held W moves along initial view",
+    "Turning view redirects held W without release",
+    "Movement does not feed rotation back into view",
+    "D strafes right relative to view",
+    "Strafing keeps body and camera facing forward",
+    "S moves backward relative to view",
+    "Backward movement does not flip camera or body",
+    "Jump is airborne before view turn",
+    "Observe view turn during jump",
+    "Airborne view and new input remain view-led"
+  ],
+  "samples": [
+    {
+      "body": 89.99999999999999,
+      "view": 90.0,
+      "x": -344.3154522978372,
+      "y": -340.6344109651735
+    }
+  ]
+}

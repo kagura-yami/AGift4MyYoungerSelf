@@ -1,0 +1,17 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"success\": false,\n  \"stdout\": \"\",\n  \"stderr\": \"Traceback (most recent call last):\\n\\n  File \\\"<string>\\\", line 1, in <module>\\n\\nRuntimeError: EXPECTED_TOOL_FAILURE\\n\\n\",\n  \"error\": \"Python execution failed -- see stderr for the traceback.\"\n}"
+    }
+  ],
+  "structuredContent": {
+    "result": {
+      "success": false,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n\n  File \"<string>\", line 1, in <module>\n\nRuntimeError: EXPECTED_TOOL_FAILURE\n\n",
+      "error": "Python execution failed -- see stderr for the traceback."
+    }
+  },
+  "isError": false
+}

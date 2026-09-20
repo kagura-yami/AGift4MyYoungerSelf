@@ -1,0 +1,42 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "success: false | error: Unreal Engine is not connected. | operation: execute | errorCode: NOT_CONNECTED | correlationId: gw-1 | catalogRevision: f494181396cc2816 | capability: system_control.get_trace_status | tool: system_control | action: get_trace_status | nextCall: { operation=search } | receipt: { status=error, capabilityId=system_control.get_trace_status, correlationId=gw-1, requestId=num:1, catalogRevision=f494181396cc2816, capabilityRevision=258f54e95a1996695a7fcc964d638fcb6a95b916dbfdddfbaff0d253dc9e0001, schemaRevision=5569cae20762e00fdb5d2fa795292725c266f37d594c0cbffc1a7698e1c2e26b, timingMs=2528 ... }"
+    }
+  ],
+  "structuredContent": {
+    "success": false,
+    "operation": "execute",
+    "errorCode": "NOT_CONNECTED",
+    "error": "Unreal Engine is not connected.",
+    "message": "Unreal Engine is not connected.",
+    "correlationId": "gw-1",
+    "catalogRevision": "f494181396cc2816",
+    "capability": "system_control.get_trace_status",
+    "tool": "system_control",
+    "action": "get_trace_status",
+    "nextCall": {
+      "operation": "search"
+    },
+    "receipt": {
+      "status": "error",
+      "capabilityId": "system_control.get_trace_status",
+      "correlationId": "gw-1",
+      "requestId": "num:1",
+      "catalogRevision": "f494181396cc2816",
+      "capabilityRevision": "258f54e95a1996695a7fcc964d638fcb6a95b916dbfdddfbaff0d253dc9e0001",
+      "schemaRevision": "5569cae20762e00fdb5d2fa795292725c266f37d594c0cbffc1a7698e1c2e26b",
+      "timingMs": 2528,
+      "error": {
+        "kind": "dispatch",
+        "code": "NOT_CONNECTED",
+        "message": "Unreal Engine is not connected.",
+        "retryable": true
+      },
+      "nextCalls": []
+    }
+  },
+  "isError": true,
+  "success": false
+}

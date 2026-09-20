@@ -1,0 +1,39 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\r\n\t\"ok\": false,\r\n\t\"data\":\r\n\t{\r\n\t\t\"ok\": false,\r\n\t\t\"game_thread\": true,\r\n\t\t\"transaction_requested\": true,\r\n\t\t\"transaction_recorded\": true,\r\n\t\t\"transaction_atomic\": false,\r\n\t\t\"transaction_rolled_back\": false,\r\n\t\t\"partial_changes_possible\": true,\r\n\t\t\"commands_completed\": 1,\r\n\t\t\"commands_succeeded\": 0,\r\n\t\t\"failed_command_index\": 0,\r\n\t\t\"timed_out\": false,\r\n\t\t\"duration_ms\": 2.6592984795570374,\r\n\t\t\"results\": [\r\n\t\t\t{\r\n\t\t\t\t\"index\": 0,\r\n\t\t\t\t\"kind\": \"python\",\r\n\t\t\t\t\"ok\": false,\r\n\t\t\t\t\"side_effects_possible\": true,\r\n\t\t\t\t\"transaction_recorded\": true,\r\n\t\t\t\t\"result\": \"Traceback (most recent call last):\\n\\n  File \\\"<string>\\\", line 1, in <module>\\n\\nRuntimeError: EXPECTED_TOOL_FAILURE\\n\",\r\n\t\t\t\t\"logs\": [],\r\n\t\t\t\t\"error\": \"Traceback (most recent call last):\\n\\n  File \\\"<string>\\\", line 1, in <module>\\n\\nRuntimeError: EXPECTED_TOOL_FAILURE\\n\"\r\n\t\t\t}\r\n\t\t]\r\n\t},\r\n\t\"error\": \"One or more commands failed; partial changes may remain and were not rolled back.\"\r\n}"
+    }
+  ],
+  "structuredContent": {
+    "ok": false,
+    "data": {
+      "ok": false,
+      "game_thread": true,
+      "transaction_requested": true,
+      "transaction_recorded": true,
+      "transaction_atomic": false,
+      "transaction_rolled_back": false,
+      "partial_changes_possible": true,
+      "commands_completed": 1,
+      "commands_succeeded": 0,
+      "failed_command_index": 0,
+      "timed_out": false,
+      "duration_ms": 2.6592984795570374,
+      "results": [
+        {
+          "index": 0,
+          "kind": "python",
+          "ok": false,
+          "side_effects_possible": true,
+          "transaction_recorded": true,
+          "result": "Traceback (most recent call last):\n\n  File \"<string>\", line 1, in <module>\n\nRuntimeError: EXPECTED_TOOL_FAILURE\n",
+          "logs": [],
+          "error": "Traceback (most recent call last):\n\n  File \"<string>\", line 1, in <module>\n\nRuntimeError: EXPECTED_TOOL_FAILURE\n"
+        }
+      ]
+    },
+    "error": "One or more commands failed; partial changes may remain and were not rolled back."
+  },
+  "isError": true
+}

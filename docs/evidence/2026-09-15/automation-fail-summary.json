@@ -1,0 +1,7 @@
+{
+  "test": "Tripothon.Probe.IntentionalFailure",
+  "exitCode": 0,
+  "succeeded": 0,
+  "failed": 1,
+  "report": "C:\\Dev\\Projects\\UE\\Tripothon\\tools\\evaluation\\reports\\automation-fail\\index.json"
+}

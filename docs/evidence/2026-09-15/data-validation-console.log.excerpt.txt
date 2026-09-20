@@ -1,0 +1,25 @@
+[2026.09.15-11.24.08:733][  0]LogAudio: Display: Registering Engine Module Parameter Interfaces...
+[2026.09.15-11.24.09:289][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2026.09.15-11.24.09:289][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2026.09.15-11.24.09:502][  0]LogCsvProfiler: Display: Metadata set : largeworldcoordinates="1"
+[2026.09.15-11.24.09:564][  0]LogPython: Display: No pip-enabled plugins with python dependencies found, skipping
+[2026.09.15-11.24.10:047][  0]LogModelContextProtocol: Warning: Set UE_MCP_TOKEN before launching the editor to require bearer authentication.
+[2026.09.15-11.24.10:065][  0]LogPython: Display: 正在运行启动脚本C:/Apps/UE/UE_5.7/Engine/Plugins/Animation/IKRig/Content/Python/init_unreal.py…… started...
+[2026.09.15-11.24.10:102][  0]LogPython: Display: 正在运行启动脚本C:/Apps/UE/UE_5.7/Engine/Plugins/Animation/IKRig/Content/Python/init_unreal.py…… took 36.273 ms
+[2026.09.15-11.24.10:103][  0]LogPython: Display: 正在运行启动脚本C:/Apps/UE/UE_5.7/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py…… started...
+[2026.09.15-11.24.10:138][  0]LogPython: Display: 正在运行启动脚本C:/Apps/UE/UE_5.7/Engine/Plugins/Animation/ControlRig/Content/Python/init_unreal.py…… took 35.140 ms (total: 71.413 ms)
+[2026.09.15-11.24.10:211][  0]LogAssetRegistry: Display: Starting OnFilesLoaded.Broadcast
+[2026.09.15-11.24.10:219][  0]LogPlacementMode: Display: The Asset Registry is done with its initial scan, the list of placeable classes has been updated.
+[2026.09.15-11.24.10:234][  0]LogAssetRegistry: Display: Completed OnFilesLoaded.Broadcast: -0.558s
+[2026.09.15-11.24.10:251][  0]LogContentValidation: Display: Starting to validate 2 assets (0 associated objects such as actors)
+[2026.09.15-11.24.10:254][  0]LogInit: Display: 
+[2026.09.15-11.24.10:254][  0]LogInit: Display: Warning/Error Summary (Unique only)
+[2026.09.15-11.24.10:254][  0]LogInit: Display: -----------------------------------
+[2026.09.15-11.24.10:254][  0]LogInit: Display: LogModelContextProtocol: Warning: Set UE_MCP_TOKEN before launching the editor to require bearer authentication.
+[2026.09.15-11.24.10:254][  0]LogInit: Display: 
+[2026.09.15-11.24.10:254][  0]LogInit: Display: Success - 0 error(s), 1 warning(s)
+[2026.09.15-11.24.10:254][  0]LogInit: Display: 
+
+Execution of commandlet took:  0.19 seconds
+[2026.09.15-11.24.11:231][  0]LogAssetRegistry: Display: Asset registry cache written as 66.7 MiB to ../../../../../../Dev/Projects/UE/Tripothon/game/Intermediate/CachedAssetRegistry_*.bin
+[2026.09.15-11.24.11:416][  0]LogShaderCompilers: Display: Shaders left to compile 0
