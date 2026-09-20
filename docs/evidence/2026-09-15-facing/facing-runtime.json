@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "error": "",
+  "checks": [
+    "Right limit is relative to character",
+    "Relative limit wraps through 180 degrees",
+    "Left limit is relative to character",
+    "Old world region cannot override character heading",
+    "Held movement basis does not chase following camera",
+    "Character faces actual movement direction",
+    "Following camera keeps character-relative offset",
+    "Release adopts current camera for next movement",
+    "Airborne test actually jumps",
+    "Observe camera during jump",
+    "Camera follows heading while airborne",
+    "Airborne input basis remains fixed"
+  ],
+  "samples": [
+    {
+      "facing": 35.0,
+      "camera": 70.0,
+      "basis": 35.0
+    }
+  ]
+}

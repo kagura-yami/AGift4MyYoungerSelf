@@ -1,0 +1,16 @@
+[check-citations] Engine root: C:/Apps/UE/UE_5.7
+[check-citations] Markdown files scanned: 218
+[check-citations] Unique citations checked: 442
+[check-citations] MISSING: 6 citation(s) in 5 file(s):
+
+  skills\core\ue-game-thread-performance\SKILL.md
+    - Engine/Source/Runtime/Engine/Private/LevelTick.cpp
+    - Engine/Source/Runtime/Engine/Private/TimerManager.cpp
+  skills\core\ue-module-and-build-system\references\build-cs-reference.md
+    - Engine/Source/Programs/UnrealBuildTool/Configuration/Rules/ModuleRules.cs
+  skills\core\ue-module-and-build-system\references\module-cpp-and-phases.md
+    - Engine/Source/Programs/UnrealBuildTool/Configuration/Descriptors/ModuleDescriptor.cs
+  skills\core\ue-module-and-build-system\references\target-cs-reference.md
+    - Engine/Source/Programs/UnrealBuildTool/Configuration/Rules/TargetRules.cs
+  skills\core\ue-packaging-and-deployment\SKILL.md
+    - Engine/Source/Programs/UnrealBuildTool/Configuration/Rules/TargetRules.cs

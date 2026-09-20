@@ -1,0 +1,12 @@
+{
+  "test": "camera_airborne",
+  "ok": true,
+  "error": "",
+  "samples": [
+    {
+      "falling": true,
+      "basis": 0.0,
+      "camera": 9.351479530334473
+    }
+  ]
+}

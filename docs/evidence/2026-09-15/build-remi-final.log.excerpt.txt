@@ -1,0 +1,18 @@
+Using bundled DotNet SDK version: 8.0.412 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" ProbeEditor Win64 Development -Project=C:\Dev\Projects\UE\Tripothon\tools\evaluation\Probe\Probe.uproject -WaitMutex -NoHotReloadFromIDE -MaxParallelActions=2 -NoUBA
+Log file: C:\Users\kagurayami\AppData\Local\UnrealBuildTool\Log.txt
+Creating makefile for ProbeEditor (.uproject file is newer)
+UHT compiled-in object format Default
+Building ProbeEditor...
+Using Visual Studio 2022 14.44.35224 toolchain (C:\Apps\VisualStudio\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from MCPUnreal unity file: ActorRoutes.cpp, AnimBlueprintRoutes.cpp, AssetRoutes.cpp, BlueprintRoutes.cpp, CharacterRoutes.cpp, ComponentRoutes.cpp, DataAssetRoutes.cpp, EditorRoutes.cpp, FabRoutes.cpp, GASRoutes.cpp, InputRoutes.cpp, ISMRoutes.cpp, LevelRoutes.cpp, MaterialRoutes.cpp, MCPUnrealModule.cpp, MeshRoutes.cpp, NetworkDebugRoutes.cpp, NiagaraRoutes.cpp, PCGRoutes.cpp, SubsystemRoutes.cpp, TextureRoutes.cpp, UIQueryRoutes.cpp
+[Adaptive Build] Excluded from MCPUnrealTests unity file: MCPUnrealTestsModule.cpp, TestInputValidation.cpp, TestJsonParsing.cpp, TestNullTermination.cpp, TestOperationDispatch.cpp, TestParseJsonBody.cpp, TestResponseFormatting.cpp, TestUtilityFunctions.cpp
+Executing up to 2 actions based on MaxProcessorCount override
+Using Parallel executor to run 1 action(s)
+------ Building 1 action(s) started ------
+[1/1] WriteMetadata ProbeEditor.target
+
+Total time in Parallel executor: 0.48 seconds
+
+Result: Succeeded
+Total execution time: 4.59 seconds

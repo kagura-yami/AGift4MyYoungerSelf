@@ -1,0 +1,13 @@
+tools/evaluation/
+tools/.venv/
+**/Binaries/
+**/Intermediate/
+**/Saved/
+**/DerivedDataCache/
+.vs/
+*.sln
+*.suo
+*.VC.db
+**/__pycache__/
+**/.venv/
+artifacts/

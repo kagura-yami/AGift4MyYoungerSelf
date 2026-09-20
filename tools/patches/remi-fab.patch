@@ -1,0 +1,11 @@
+--- a/plugin/Source/MCPUnreal/MCPUnreal.Build.cs
++++ b/plugin/Source/MCPUnreal/MCPUnreal.Build.cs
+@@ -46,7 +46,7 @@
+ 		});
+ 
+ 		// Optional Fab plugin dependency — only if installed.
+-		if (Target.bBuildWithEditorOnlyData)
++		if (System.IO.Directory.Exists(System.IO.Path.Combine(EngineDirectory, "Plugins", "Fab")))
+ 		{
+ 			// Fab is an editor-only plugin bundled with UE 5.3+.
+ 			PrivateDependencyModuleNames.Add("Fab");

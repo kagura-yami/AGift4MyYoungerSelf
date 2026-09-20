@@ -1,0 +1,104 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "KAYZE",
+			"instance": "627B3F174C2123908B05B18A83C5CB4B",
+			"instanceName": "KAYZE-60628",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9168] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 5060",
+			"cPUModel": "13th Gen Intel(R) Core(TM) i7-13700",
+			"rAMInGB": 64,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.15-13.43.31",
+	"succeeded": 5,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.041375100612640381,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CameraLimits",
+			"fullTestPath": "Tripothon.Movement.CameraLimits",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"627B3F174C2123908B05B18A83C5CB4B"
+			],
+			"duration": 0.008181501179933548,
+			"dateTime": "2026.09.15-13.43.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "JumpWindows",
+			"fullTestPath": "Tripothon.Movement.JumpWindows",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"627B3F174C2123908B05B18A83C5CB4B"
+			],
+			"duration": 0.0081690996885299683,
+			"dateTime": "2026.09.15-13.43.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "ActionClock",
+			"fullTestPath": "Tripothon.Runtime.ActionClock",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"627B3F174C2123908B05B18A83C5CB4B"
+			],
+			"duration": 0.0080799013376235962,
+			"dateTime": "2026.09.15-13.43.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "DuplicateIdentity",
+			"fullTestPath": "Tripothon.Runtime.DuplicateIdentity",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"627B3F174C2123908B05B18A83C5CB4B"
+			],
+			"duration": 0.0087758004665374756,
+			"dateTime": "2026.09.15-13.43.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "RestoreOrder",
+			"fullTestPath": "Tripothon.Runtime.RestoreOrder",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"627B3F174C2123908B05B18A83C5CB4B"
+			],
+			"duration": 0.0081687979400157928,
+			"dateTime": "2026.09.15-13.43.31",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

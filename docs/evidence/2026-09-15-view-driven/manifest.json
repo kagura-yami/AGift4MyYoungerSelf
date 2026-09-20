@@ -1,0 +1,183 @@
+{
+  "contract": "View drives body and movement; body never drives view",
+  "sources": [
+    {
+      "path": "artifacts/Windows/Tripothon/Binaries/Win64/Tripothon.exe",
+      "sha256": "d8b2277b0a949951b65a8a959e4c984d40db66fe509eff516d04018e0d639b73"
+    },
+    {
+      "path": "game/Content/Python/tripo_facing_verify.py",
+      "sha256": "0537643358cfac5ec853046424fab1ee07419fa2b888baee0a14843f62598098"
+    },
+    {
+      "path": "game/Content/Python/tripo_identity_verify.py",
+      "sha256": "6f0abeaa1de1f5379e85c3d99d6908b8c6ec786e4eedd35f388ea3b32b846326"
+    },
+    {
+      "path": "game/Content/Python/tripo_input_verify.py",
+      "sha256": "7ca16c6662fa3b75fe89a329e87f62810a2bc752a212053c3d86b5fc52a83c2c"
+    },
+    {
+      "path": "game/Content/Python/tripo_lab.py",
+      "sha256": "c62e51471fce6130ac1dc9acf0db1a9de82982bb07f31de6c9d5867e5b9efa07"
+    },
+    {
+      "path": "game/Content/Python/tripo_runtime_verify.py",
+      "sha256": "749dbcf02c6f54e04f425d4ba6adc87f9a193e6249583ee7c285b3553130cea3"
+    },
+    {
+      "path": "game/Content/Python/tripo_verify.py",
+      "sha256": "99642939181e111519af36360752f9a7dff0e1ce01ee7cd8aba2f41042aecbe9"
+    },
+    {
+      "path": "game/Content/Python/tripo_view_verify.py",
+      "sha256": "6315f95b665c783a490661085365a564f10e96b4ed76ba4f86801eb0d8b25c08"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoIdentityComponent.cpp",
+      "sha256": "b9e004ef739509a868c2928e033038744bcefe7fe1005c339ad6e670f24935b5"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoIdentityComponent.h",
+      "sha256": "0ae98c1a840c5b3414cc21f722ac2a4c8553b34945d0a0a5c02d07244bc2b7d8"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoIdentityRegistry.cpp",
+      "sha256": "2752054f5c10cbca24c63f43f8e679ac747d7581430915daea04acba32ee51ee"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoIdentityRegistry.h",
+      "sha256": "e959cac8fd6f12b44b422706b957728ae4c0c545749f35ac07e7a97302c39c46"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoRuntimeState.cpp",
+      "sha256": "34528cb930b2b72a43c1cb54cd963996ecd76a53f76bc664ca006d80ea97bae0"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoRuntimeState.h",
+      "sha256": "b58ff669a413f99af0d97e945aedee732eaf5280fab3bc6efa75832ccf3c29a1"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoRuntimeSubsystem.cpp",
+      "sha256": "7d9df9b746e03e396ae820513b4c104d8e19734a2797a6844240787a8dfc84a8"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoRuntimeSubsystem.h",
+      "sha256": "264e97d75673065a9e3abd04c0a1e9bd0bb2615eaa6e17e5afd398586e727bf7"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoTags.cpp",
+      "sha256": "f790f42e2982eba832b34e4b4a1b85ceb50098b86316598a99e41cc0b9167821"
+    },
+    {
+      "path": "game/Source/Tripothon/Core/TripoTags.h",
+      "sha256": "6a1a62353a76cb7d1d2925edbda152b0b090a1ea7756c90a6928eb831cd3d207"
+    },
+    {
+      "path": "game/Source/Tripothon/Lab/TripoGameMode.cpp",
+      "sha256": "14e55170eaa597e6ba0bd854a98664a90d18b4b4dabb0094b8576b551c94b365"
+    },
+    {
+      "path": "game/Source/Tripothon/Lab/TripoGameMode.h",
+      "sha256": "d6724038773b0663b5f85346b11ffaec8360546feeeb374d681abccc90faa6f0"
+    },
+    {
+      "path": "game/Source/Tripothon/Lab/TripoHUD.cpp",
+      "sha256": "01173c0964215c08897d5a4f5c8b3b72de9d6b1a30b2500e2458ebfab5e65ee9"
+    },
+    {
+      "path": "game/Source/Tripothon/Lab/TripoHUD.h",
+      "sha256": "d682e9d30526b483e84623d58101b78a64e176984a878b1375f5a1cfde979078"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoCameraVolume.cpp",
+      "sha256": "7888236a23ea0bcfd1aff2c334daf4a47324f230d91b180d762438bf6b936611"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoCameraVolume.h",
+      "sha256": "b6993b4bb43beec925880695e1267fb74112f1961e295d3b27c5a4d0830ac8e8"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoCharacter.cpp",
+      "sha256": "55df4140ed79215d20e1f652a48db1183289559e37a06ffc63827fa780f95d2b"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoCharacter.h",
+      "sha256": "bb3edc6ed040cead2617ab4c8fb15d567b65206e464fbf5210882a6bf193c8ec"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoMovementRules.h",
+      "sha256": "b49c172595e9f2bec399a11e2ac24615e643c6c9119202841dc1ed004c422038"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoPlayerController.cpp",
+      "sha256": "286d9dc780d6b9d4c8fe32ae082a477ee97912f03a59218b7edd45277b0440d4"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoPlayerController.h",
+      "sha256": "ac884bde9c40991b03d0af277144eb2d33537d20cef93788c6877e53db690b96"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoPlayerInput.cpp",
+      "sha256": "75708d9f286c8c1ceba9b1704f04f20a67b6aa2ad96892f474b51b01dea43df8"
+    },
+    {
+      "path": "game/Source/Tripothon/Player/TripoPlayerInput.h",
+      "sha256": "b72a266e6a182c02072a97f3d8f0b8dab71f33a98985f167024d0bbcedb04990"
+    },
+    {
+      "path": "game/Source/Tripothon/Tests/TripoMovementTests.cpp",
+      "sha256": "f3101e3069d6500a759941c1e1c3dedffbba4e16742659acb928fded9585f079"
+    },
+    {
+      "path": "game/Source/Tripothon/Tests/TripoRuntimeTests.cpp",
+      "sha256": "ded2f8e6419eacceed0d00b35be20d6c92a725e95f57f405a0a5fc7890df486e"
+    },
+    {
+      "path": "game/Source/Tripothon/Tripothon.Build.cs",
+      "sha256": "97bc36ab3b525e2ef85f08089d12c594973136c15de49b6531b2511d1a803ea2"
+    },
+    {
+      "path": "game/Source/Tripothon/Tripothon.cpp",
+      "sha256": "19b6d36c676648930ad6866609a3306c6998560a2f96c1f29dcf4ac64eb7a95d"
+    },
+    {
+      "path": "game/Source/Tripothon.Target.cs",
+      "sha256": "f45446d405f90d076a7f2328c0dce004387fdc69cb43905835a185866f91bafc"
+    },
+    {
+      "path": "game/Source/TripothonEditor.Target.cs",
+      "sha256": "e9ba5c7f8a16c98325aa4c598c456476cc552cc29ab8e980d3d14d02b06bcc98"
+    }
+  ],
+  "reports": [
+    {
+      "path": "docs/evidence/2026-09-15-view-driven/view-driven-runtime.json",
+      "sha256": "dea28a35124e91690e3f39d1f641618d941147295a3ec685e2c9cc367558dd0a"
+    },
+    {
+      "path": "docs/evidence/2026-09-15-view-driven/view-driven-input.json",
+      "sha256": "7a3787578f64c22c3092f04088d98a5ce9d1b2751a25795a08b4b6de7e0da9ac"
+    },
+    {
+      "path": "docs/evidence/2026-09-15-view-driven/view-driven-build.log",
+      "sha256": "1ea359012ffbe7e0d97228c5484aa47355bf78898704ca5cd2ca4262d273aba8"
+    },
+    {
+      "path": "docs/evidence/2026-09-15-view-driven/view-driven-package.log",
+      "sha256": "f6eac240ba0161d4cc9649bcc276b0f851ea66165068b484683f76e82398574e"
+    },
+    {
+      "path": "docs/evidence/2026-09-15-view-driven/view-driven-user-acceptance.json",
+      "sha256": "fda76a7dae6a28332431b768619b119c352d23e4df058651e0b0271dc87eee07"
+    },
+    {
+      "path": "docs/evidence/2026-09-15-view-driven/view-driven-automation-index.json",
+      "sha256": "cd8a949b3775790f028aa74c7b429133237ae20dba417914fb8184a555b34398"
+    },
+    {
+      "path": "docs/evidence/2026-09-15-view-driven/view-driven-automation-summary.json",
+      "sha256": "06ba6a787eec64f72e549fe89a70738dffdf2ceec8c90afc3b6a60c3b3b03953"
+    }
+  ]
+}

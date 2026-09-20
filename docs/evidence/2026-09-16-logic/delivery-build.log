@@ -1,0 +1,22 @@
+Using bundled DotNet SDK version: 8.0.412 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" TripothonEditor Win64 Development -Project=C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject -WaitMutex -NoHotReloadFromIDE -MaxParallelActions=2 -NoUBA
+Log file: C:\Users\kagurayami\AppData\Local\UnrealBuildTool\Log.txt
+Using 'git status' to determine working set for adaptive non-unity build (C:\Dev\Projects\UE\Tripothon).
+Building TripothonEditor...
+Using Visual Studio 2022 14.44.35224 toolchain (C:\Apps\VisualStudio\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[Adaptive Build] Excluded from Tripothon unity file: Tripothon.cpp, TripoAbilityComponent.cpp, TripoAbilityDefinition.cpp, TripoAbilityInstance.cpp, TripoEchoAbility.cpp, TripoMovementAbilities.cpp, TripoRewindAbility.cpp, TripoStone.cpp, TripoWorldAbilities.cpp, TripoDataValidation.cpp, TripoIdentityComponent.cpp, TripoIdentityRegistry.cpp, TripoRuntimeState.cpp, TripoRuntimeSubsystem.cpp, TripoTags.cpp, TripoGameMode.cpp, TripoHUD.cpp, TripoSlateHUD.cpp, TripoCameraVolume.cpp, TripoCharacter.cpp, TripoMovementComponent.cpp, TripoPlayerController.cpp, TripoPlayerInput.cpp, TripoChallengeDefinition.cpp, TripoProgressPersistence.cpp, TripoProgressSubsystem.cpp, TripoRewardRules.cpp, TripoSaveGame.cpp, TripoMemoryLandmark.cpp, TripoStoryCatalog.cpp, TripoStorySubsystem.cpp, TripoStoryTrigger.cpp, TripoAbilityProbe.cpp, TripoAbilityTests.cpp, TripoMovementTests.cpp, TripoRuntimeTests.cpp, TripoTimeSaveTests.cpp, TripoWorldTests.cpp, TripoEchoActor.cpp, TripoHistoryComponent.cpp, TripoInteractorComponent.cpp, TripoMechanism.cpp, TripoWorldSubsystem.cpp, TripoZone.cpp
+[Adaptive Build] Excluded from ModelContextProtocol unity file: BlueprintGraphOperations.cpp, ModelContextProtocolModule.cpp, UnrealMCPServer.cpp
+Executing up to 2 actions based on MaxProcessorCount override
+Using Parallel executor to run 5 action(s)
+------ Building 5 action(s) started ------
+[1/5] Compile [x64] TripoProgressSubsystem.cpp
+[2/5] Compile [x64] TripoSlateHUD.cpp
+[3/5] Link [x64] UnrealEditor-Tripothon.lib
+  ���ڴ����� C:/Dev/Projects/UE/Tripothon/game/Intermediate/Build/Win64/x64/UnrealEditor/Development/Tripothon/UnrealEditor-Tripothon.lib �Ͷ��� C:/Dev/Projects/UE/Tripothon/game/Intermediate/Build/Win64/x64/UnrealEditor/Development/Tripothon/UnrealEditor-Tripothon.exp
+[4/5] Link [x64] UnrealEditor-Tripothon.dll
+[5/5] WriteMetadata TripothonEditor.target
+
+Total time in Parallel executor: 6.57 seconds
+
+Result: Succeeded
+Total execution time: 8.97 seconds

@@ -1,0 +1,25 @@
+McpAutomationBridge: Added optional module 'GeometryScriptingCore' with delay-load
+McpAutomationBridge: Added optional module 'GeometryScriptingEditor' with delay-load
+McpAutomationBridge: Optional feature 'CinematicCamera' enabled with modules: CinematicCamera
+McpAutomationBridge: Optional feature 'MediaAssets' enabled with modules: MediaAssets
+McpAutomationBridge: Optional feature 'Movie Render Pipeline' enabled with modules: MovieRenderPipelineCore, MovieRenderPipelineRenderPasses, MovieRenderPipelineSettings, MovieRenderPipelineEditor
+McpAutomationBridge: Optional feature 'Movie Pipeline Mask Render Pass' enabled with modules: MoviePipelineMaskRenderPass
+McpAutomationBridge: Optional feature 'Take Recorder' enabled with modules: TakesCore, TakeRecorder, TakeRecorderSources
+McpAutomationBridge: Optional feature 'TypedElementFramework' enabled with modules: TypedElementFramework
+McpAutomationBridge: Added optional module 'LevelSequenceEditor' with delay-load
+McpAutomationBridge: Added optional module 'NiagaraEditor' with delay-load
+McpAutomationBridge: Added optional module 'EnhancedInput' with delay-load
+McpAutomationBridge: Added optional module 'InputEditor' with delay-load
+McpAutomationBridge: Added optional module 'BehaviorTreeEditor' with delay-load
+McpAutomationBridge: Added optional module 'DataValidation' with delay-load
+McpAutomationBridge: Added optional module 'Synthesis' with delay-load
+McpAutomationBridge: Added optional module 'IKRig' with delay-load
+McpAutomationBridge: Added optional module 'IKRigEditor' with delay-load
+McpAutomationBridge: Added optional module 'ChaosVehicles' with delay-load
+McpAutomationBridge: Added optional module 'AnimationData' with delay-load
+McpAutomationBridgeFab: 'Fab' disabled; no module 'Fab'
+McpAutomationBridgeFab: 'MegascansPlugin' enabled (delay-loaded)
+Could not find definition for module 'MegascansPlugin', (referenced via Target -> McpAutomationBridgeFab.Build.cs)
+
+Result: Failed (RulesError)
+Total execution time: 16.93 seconds

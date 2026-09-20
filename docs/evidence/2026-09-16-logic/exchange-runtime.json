@@ -1,0 +1,1 @@
+{"ok": true, "checks": ["Atomic one-for-one exchange", "Duplicate transaction rejected", "Protected floor enforced", "Rejected exchange leaves levels unchanged"]}

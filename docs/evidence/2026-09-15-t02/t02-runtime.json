@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "error": "",
+  "checks": [
+    "Two unique region identities",
+    "PIE preserves TripoCameraVolume_0",
+    "ID resolves TripoCameraVolume_0",
+    "PIE preserves TripoCameraVolume_1",
+    "ID resolves TripoCameraVolume_1",
+    "Loading still pauses after closing menu",
+    "Nested pause clock is frozen",
+    "Resume has no paused catch-up",
+    "World slowdown does not slow ActionClock",
+    "Skip recovery steps rejected",
+    "Recovery step <TripoRestorePhase.LOCKED: 1>",
+    "Recovery step <TripoRestorePhase.ABILITIES_CLEARED: 2>",
+    "Recovery step <TripoRestorePhase.WORLD_RESTORED: 3>",
+    "Recovery step <TripoRestorePhase.PLAYER_RESTORED: 4>",
+    "Recovery step <TripoRestorePhase.HISTORY_CLEARED: 5>",
+    "Recovery step <TripoRestorePhase.OVERLAPS_REFRESHED: 6>",
+    "Recovery step <TripoRestorePhase.RUNNING: 0>",
+    "Epoch advances once at history barrier",
+    "Destroyed actor is unregistered"
+  ],
+  "samples": [
+    {
+      "real": 0.6880000000237487,
+      "action": 0.6818413995206356,
+      "dilation": 0.1
+    }
+  ]
+}

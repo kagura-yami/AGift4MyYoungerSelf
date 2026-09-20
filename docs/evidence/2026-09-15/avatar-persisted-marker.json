@@ -1,0 +1,36 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\r\n\t\"ok\": true,\r\n\t\"data\":\r\n\t{\r\n\t\t\"ok\": true,\r\n\t\t\"game_thread\": true,\r\n\t\t\"transaction_requested\": false,\r\n\t\t\"transaction_recorded\": false,\r\n\t\t\"transaction_atomic\": false,\r\n\t\t\"transaction_rolled_back\": false,\r\n\t\t\"partial_changes_possible\": false,\r\n\t\t\"commands_completed\": 1,\r\n\t\t\"commands_succeeded\": 1,\r\n\t\t\"timed_out\": false,\r\n\t\t\"duration_ms\": 0.24970248341560364,\r\n\t\t\"results\": [\r\n\t\t\t{\r\n\t\t\t\t\"index\": 0,\r\n\t\t\t\t\"kind\": \"python\",\r\n\t\t\t\t\"ok\": true,\r\n\t\t\t\t\"side_effects_possible\": true,\r\n\t\t\t\t\"transaction_recorded\": false,\r\n\t\t\t\t\"result\": \"[('Probe_PersistedMarker', '[\\\"Probe.Stable.Marker\\\"]')]\",\r\n\t\t\t\t\"logs\": []\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}"
+    }
+  ],
+  "structuredContent": {
+    "ok": true,
+    "data": {
+      "ok": true,
+      "game_thread": true,
+      "transaction_requested": false,
+      "transaction_recorded": false,
+      "transaction_atomic": false,
+      "transaction_rolled_back": false,
+      "partial_changes_possible": false,
+      "commands_completed": 1,
+      "commands_succeeded": 1,
+      "timed_out": false,
+      "duration_ms": 0.24970248341560364,
+      "results": [
+        {
+          "index": 0,
+          "kind": "python",
+          "ok": true,
+          "side_effects_possible": true,
+          "transaction_recorded": false,
+          "result": "[('Probe_PersistedMarker', '[\"Probe.Stable.Marker\"]')]",
+          "logs": []
+        }
+      ]
+    }
+  },
+  "isError": false
+}

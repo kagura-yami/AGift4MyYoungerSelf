@@ -1,0 +1,26 @@
+C:\Dev\Projects\UE\Tripothon\tools\evaluation\Probe\Plugins\McpAutomationBridge\Source\McpAutomationBridgeFab\Private\McpFabAddToProject.cpp(349,1): error C2026: �ַ���̫���ѽض�β���ַ�
+[1/60] Resource Default.rc2
+[2/60] Resource Default.rc2
+[3/60] Compile [x64] McpAutomationBridgeFabModule.cpp
+[4/60] Compile [x64] McpFabAddOperation.cpp
+[5/60] Compile [x64] McpFabAddScript.cpp
+[6/60] Compile [x64] McpFabAddToProject.cpp
+C:\Dev\Projects\UE\Tripothon\tools\evaluation\Probe\Plugins\McpAutomationBridge\Source\McpAutomationBridgeFab\Private\McpFabAddToProject.cpp(349,1): error C2026: �ַ���̫���ѽض�β���ַ�
+)JS"), *RequestId, *ListingId, *EngineVersion);
+^
+[7/60] Compile [x64] McpFabBridgeDispatch.cpp
+[8/60] Compile [x64] McpFabBrowserBridge.cpp
+[9/60] Compile [x64] McpFabBrowserSessionBridge.cpp
+[10/60] Compile [x64] McpFabCatalogShape.cpp
+[11/60] Compile [x64] McpFabDetailsOperation.cpp
+[12/60] Compile [x64] McpFabImportWatcher.cpp
+[13/60] Compile [x64] McpFabSearchOperation.cpp
+[14/60] Compile [x64] Module.McpAutomationBridgeFab.gen.cpp
+[15/60] Compile [x64] PerModuleInline.gen.cpp
+[16/60] Compile [x64] PCH.McpAutomationBridge.cpp
+[17/60] Compile [x64] Module.McpAutomationBridge.1.cpp
+[18/60] Compile [x64] Module.McpAutomationBridge.10.cpp
+[19/60] Compile [x64] Module.McpAutomationBridge.12.cpp
+[20/60] Compile [x64] Module.McpAutomationBridge.11.cpp
+[21/60] Compile [x64] Module.McpAutomationBridge.13.cpp
+[22/60] Compile [x64] Module.McpAutomationBridge.14.cpp

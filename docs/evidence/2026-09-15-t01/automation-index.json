@@ -1,0 +1,59 @@
+﻿{
+	"devices": [
+		{
+			"deviceName": "KAYZE",
+			"instance": "4BF9A2EF42C8F6BAFD97F69E3BE7C4BE",
+			"instanceName": "KAYZE-91692",
+			"platform": "WindowsEditor",
+			"oSVersion": "Windows 11 (25H2) [10.0.26200.9168] ",
+			"model": "Default",
+			"gPU": "NVIDIA GeForce RTX 5060",
+			"cPUModel": "13th Gen Intel(R) Core(TM) i7-13700",
+			"rAMInGB": 64,
+			"renderMode": "SM6",
+			"rHI": "",
+			"appInstanceLog": ""
+		}
+	],
+	"reportCreatedOn": "2026.09.15-13.16.48",
+	"succeeded": 2,
+	"succeededWithWarnings": 0,
+	"failed": 0,
+	"notRun": 0,
+	"inProcess": 0,
+	"totalDuration": 0.016629904508590698,
+	"comparisonExported": false,
+	"comparisonExportDirectory": "",
+	"tests": [
+		{
+			"testDisplayName": "CameraLimits",
+			"fullTestPath": "Tripothon.Movement.CameraLimits",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"4BF9A2EF42C8F6BAFD97F69E3BE7C4BE"
+			],
+			"duration": 0.0088490024209022522,
+			"dateTime": "2026.09.15-13.16.48",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		},
+		{
+			"testDisplayName": "JumpWindows",
+			"fullTestPath": "Tripothon.Movement.JumpWindows",
+			"tags": [],
+			"state": "Success",
+			"deviceInstance": [
+				"4BF9A2EF42C8F6BAFD97F69E3BE7C4BE"
+			],
+			"duration": 0.007780902087688446,
+			"dateTime": "2026.09.15-13.16.48",
+			"entries": [],
+			"warnings": 0,
+			"errors": 0,
+			"artifacts": []
+		}
+	]
+}

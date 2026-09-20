@@ -1,0 +1,3 @@
+Validation OK
+- skills checked: 11
+- no frontmatter/BOM/legacy-token issues found

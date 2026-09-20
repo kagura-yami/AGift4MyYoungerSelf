@@ -1,0 +1,18 @@
+{
+  "test": "input_and_regions",
+  "ok": true,
+  "error": "",
+  "checks": [
+    "same-frame tap jumps once",
+    "tap lifts capsule",
+    "held jump does not auto-repeat after landing",
+    "held W uses keyboard mapping",
+    "tap pauses",
+    "pause freezes world time",
+    "tap resumes while paused",
+    "enter camera volume selects anchor",
+    "overlap uses higher priority",
+    "destroyed volume restores underlying region",
+    "exit restores default anchor"
+  ]
+}
