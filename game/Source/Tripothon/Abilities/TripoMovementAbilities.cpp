@@ -2,6 +2,7 @@
 #include "Abilities/TripoAbilityComponent.h"
 #include "Player/TripoCharacter.h"
 #include "Player/TripoMovementComponent.h"
+#include "World/TripoTeleportPoint.h"
 ATripoCharacter* UTripoDashAbility::Player() const { const auto* C = Cast<UTripoAbilityComponent>(GetOuter()); return C ? Cast<ATripoCharacter>(C->GetOwner()) : nullptr; }
 ETripoAbilityFailure UTripoDashAbility::Validate(AActor*, const FTripoAbilityParameters&) const
 { auto* P = Player(); return P ? CastChecked<UTripoMovementComponent>(P->GetCharacterMovement())->CanBurst(IsUp()) : ETripoAbilityFailure::InvalidContext; }
@@ -16,6 +17,7 @@ void UTripoDashAbility::UpdateEffect(double)
 {
     auto* P = Player(); if (!P) { RequestCompletion(); return; }
     auto* M = CastChecked<UTripoMovementComponent>(P->GetCharacterMovement());
+    if (!IsUp()) P->HandleForwardDisplacement();
     if (!M->IsBursting())
     {
         if (M->BurstHit.bBlockingHit) P->Abilities->ReportHit(GetHandle(), M->BurstHit);

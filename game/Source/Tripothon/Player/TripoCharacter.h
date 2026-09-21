@@ -41,6 +41,7 @@ public:
     UFUNCTION(BlueprintCallable, Category="Tripo|Lab") void ResetPracticePosition();
     // Development only: action injection exercises Enhanced Input, never teleportation.
     UFUNCTION(BlueprintCallable, Category="Tripo|Validation") void DriveForTest(float Seconds, float Forward, float Right, bool bJump);
+    void HandleForwardDisplacement();
 
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float WalkSpeed = 450.f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float JumpSpeed = 620.f;

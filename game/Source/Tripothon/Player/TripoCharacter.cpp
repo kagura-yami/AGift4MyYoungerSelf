@@ -1,4 +1,6 @@
 #include "Player/TripoCharacter.h"
+#include "World/TripoTeleportPoint.h"
+#include "EngineUtils.h"
 #include "Abilities/TripoAbilityComponent.h"
 #include "Abilities/TripoWorldAbilities.h"
 #include "Time/TripoHistoryComponent.h"
@@ -352,4 +354,10 @@ void ATripoCharacter::DriveForTest(float Seconds, float Forward, float Right, bo
     TestInput = FVector2D(FMath::Clamp(Forward, -1.f, 1.f), FMath::Clamp(Right, -1.f, 1.f));
     bTestJump = bJump;
 #endif
+}
+
+void ATripoCharacter::HandleForwardDisplacement()
+{
+    for (TActorIterator<ATripoTeleportPoint> It(GetWorld()); It; ++It)
+        if (It->TryTeleport(this)) break;
 }
