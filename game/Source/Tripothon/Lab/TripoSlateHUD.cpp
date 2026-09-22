@@ -25,7 +25,8 @@ void ATripoHUD::BeginPlay()
 {
     Super::BeginPlay(); const TWeakObjectPtr<ATripoHUD> WeakThis(this);
     auto* Progress = UTripoProgressSubsystem::Get(this);
-    bEntryMenu = !Progress->IsLabWorld(this) && Progress->ConsumeEntryMenu();
+    const bool bSkipEntryMenu = GIsEditor && bSkipEntryMenuInEditor;
+    bEntryMenu = !bSkipEntryMenu && !Progress->IsLabWorld(this) && Progress->ConsumeEntryMenu();
     RootWidget = SNew(SOverlay)
     + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(18)
     [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(.015,.025,.045,.85))

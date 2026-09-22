@@ -13,6 +13,9 @@ public:
     virtual void DrawHUD() override;
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type Reason) override;
+    /** Editor/PIE convenience: skip the story entry menu while testing a map. */
+    UPROPERTY(EditDefaultsOnly, Category="Tripo|Testing")
+    bool bSkipEntryMenuInEditor = true;
     bool IsGameplayBlocked() const;
     bool OpenExchange();
     UFUNCTION(BlueprintCallable) void HandleAction(FString Action);
