@@ -43,7 +43,7 @@ public:
     UFUNCTION(BlueprintCallable, Category="Tripo|Validation") void DriveForTest(float Seconds, float Forward, float Right, bool bJump);
     void HandleForwardDisplacement();
 
-    UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float WalkSpeed = 450.f;
+    UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float WalkSpeed = 540.f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float JumpSpeed = 620.f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float CoyoteSeconds = .08f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float JumpBufferSeconds = .12f;
