@@ -55,7 +55,7 @@ ATripoCharacter::ATripoCharacter(const FObjectInitializer& ObjectInitializer)
     CameraArm->SetupAttachment(RootComponent);
     CameraArm->SetUsingAbsoluteRotation(true);
     CameraArm->bUsePawnControlRotation = true;
-    CameraArm->TargetArmLength = 650.f;
+    CameraArm->TargetArmLength = 280.f;
     CameraArm->SetRelativeRotation(FRotator(-35.f, 0.f, 0.f));
     CameraArm->bEnableCameraLag = true;
     CameraArm->CameraLagSpeed = 12.f;
