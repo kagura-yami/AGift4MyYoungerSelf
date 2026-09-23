@@ -91,7 +91,7 @@ void UTripoProgressSubsystem::NewGame(bool bLab)
     }
     GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>()->BeginRun(FGuid::NewGuid());
     GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>()->SetPauseReason(ETripoPauseReason::Menu, false);
-    UGameplayStatics::OpenLevel(GetGameInstance(), bLab ? TEXT("/Game/Maps/L_LogicLab") : TEXT("/Game/Maps/L_Tutorial"));
+    UGameplayStatics::OpenLevel(GetGameInstance(), bLab ? TEXT("/Game/Maps/L_LogicLab") : TEXT("/Game/Maps/lv4"));
 }
 bool UTripoProgressSubsystem::Travel(ATripoCharacter* Player, FName Map)
 {
