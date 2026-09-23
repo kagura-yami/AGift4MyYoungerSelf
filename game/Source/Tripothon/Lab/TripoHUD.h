@@ -27,6 +27,7 @@ private:
     bool bExchange = false;
     bool bEntryMenu = false;
     bool bCollection = false;
+    bool bAbilityConfig = false;
     int32 ExchangeFrom = 0;
     int32 ExchangeTo = 1;
     FGuid ExchangeTransaction;
@@ -34,4 +35,5 @@ private:
     void RebuildPanel();
     void RefreshUI();
     ATripoCharacter* Player() const;
+    bool CanConfigureAbilities() const;
 };

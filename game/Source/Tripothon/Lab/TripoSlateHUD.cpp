@@ -9,6 +9,7 @@
 #include "Engine/GameViewportClient.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Widgets/SOverlay.h"
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Layout/SBox.h"
@@ -21,6 +22,10 @@
 
 static const TCHAR* AbilityNames[] = {TEXT("平面位移"),TEXT("上位移"),TEXT("蹬墙跳"),TEXT("垫脚石"),TEXT("局部减慢"),TEXT("时回"),TEXT("分身"),TEXT("奖励加时")};
 ATripoCharacter* ATripoHUD::Player() const { return Cast<ATripoCharacter>(GetOwningPawn()); }
+bool ATripoHUD::CanConfigureAbilities() const
+{
+    return GetWorld() && UGameplayStatics::GetCurrentLevelName(this, true).Equals(TEXT("lv4"), ESearchCase::IgnoreCase);
+}
 void ATripoHUD::BeginPlay()
 {
     Super::BeginPlay(); const TWeakObjectPtr<ATripoHUD> WeakThis(this);
@@ -50,6 +55,7 @@ FText ATripoHUD::StatusText() const
     const auto* C = Player(); if (!C) return FText::GetEmpty(); auto* P = UTripoProgressSubsystem::Get(this);
     if (IsGameplayBlocked()) return FText::FromString(P->GetMessage());
     FString Text = TEXT("明天寄来的礼物\nWASD 移动  鼠标转向  Space 跳跃  E 交互  Esc 菜单\n");
+    if (CanConfigureAbilities()) Text += TEXT("F2 能力配置：自由选择能力与等级\n");
     static const TCHAR* Controls[] = {TEXT("Shift"),TEXT("Ctrl"),TEXT("空中 Space"),TEXT("按住 Q 预览 / 松开放置"),TEXT("F"),TEXT("R 自身 / T 机关"),TEXT("C 生成 / 取消"),TEXT("被动")};
     for (uint8 I=0; I<8; ++I)
     {
@@ -68,6 +74,7 @@ FText ATripoHUD::StatusText() const
 void ATripoHUD::RefreshUI()
 {
     if (!PanelHost.IsValid()) return;
+    if (!PlayerOwner || !PlayerOwner->IsPaused()) bAbilityConfig = false;
     auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
     const FString Key = FString::Printf(TEXT("%d:%d:%d:%d:%d:%s"),PlayerOwner && PlayerOwner->IsPaused(),int32(P->GetPhase()),bExchange,ExchangeFrom,ExchangeTo,Story->HasDialogue() ? *Story->GetCurrent().Id.ToString() : TEXT(""));
     if (Key != PanelKey) { PanelKey = Key; RebuildPanel(); }
@@ -108,10 +115,41 @@ void ATripoHUD::RebuildPanel()
         if (P->GetReplyChoice() >= 0) { static const TCHAR* Replies[] = {TEXT("收到啦"),TEXT("下次一起玩"),TEXT("我还想再试一次")}; Text(FString(TEXT("寄出的回信：")) + Replies[P->GetReplyChoice()]); }
         Button(TEXT("返回"),TEXT("collection.close"));
     }
+    else if (bAbilityConfig && CanConfigureAbilities() && Player())
+    {
+        Text(TEXT("能力配置 · F2 关闭并继续游戏"));
+        Content->AddSlot().AutoHeight().Padding(8)[SNew(STextBlock)
+            .Text(FText::FromString(TEXT("点击等级立即生效 · 0 级移除能力 · 1–3 级获得或升级\n配置属于当前游戏进度；保存安全进度后可读取，新游戏会重置。")))
+            .AutoWrapText(true).WrapTextAt(700)];
+        static const TCHAR* Controls[] = {TEXT("Shift · 水平冲刺"), TEXT("Ctrl · 向上移动"), TEXT("空中 Space · 蹬墙跳"), TEXT("Q · 放置垫脚石"), TEXT("F · 减慢目标"), TEXT("R 自身 / T 机关"), TEXT("C · 生成分身"), TEXT("被动 · 挑战额外时间")};
+        for (int32 I = 0; I < 8; ++I)
+        {
+            const int32 Current = Player()->Abilities->GetLevel(ETripoAbility(I));
+            TSharedRef<SHorizontalBox> Row = SNew(SHorizontalBox);
+            Row->AddSlot().FillWidth(1).VAlign(VAlign_Center)[SNew(SVerticalBox)
+                + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 20)).Text(FText::FromString(AbilityNames[I]))]
+                + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).ColorAndOpacity(FLinearColor(.65,.72,.8)).Text(FText::FromString(Controls[I]))]];
+            for (int32 Level = 0; Level <= 3; ++Level)
+            {
+                const FString Action = FString::Printf(TEXT("abilities.set.%d.%d"), I, Level);
+                Row->AddSlot().AutoWidth().Padding(4,0)[SNew(SButton).ContentPadding(FMargin(12,8))
+                    .ButtonColorAndOpacity(Current == Level ? FLinearColor(.12,.55,.7) : FLinearColor(.12,.15,.2))
+                    .OnClicked_Lambda([WeakThis,Action] { if (WeakThis.IsValid()) WeakThis->HandleAction(Action); return FReply::Handled(); })
+                    [SNew(STextBlock).Text(FText::FromString(Level == 0 ? TEXT("移除") : FString::Printf(TEXT("%d 级"), Level)))]];
+            }
+            Content->AddSlot().AutoHeight().Padding(8,5)[Row];
+        }
+        Button(TEXT("全部获得 · 1 级"), TEXT("abilities.all.1"));
+        Button(TEXT("全部升满 · 3 级"), TEXT("abilities.all.3"));
+        Button(TEXT("移除全部能力"), TEXT("abilities.all.0"));
+        Button(TEXT("返回菜单"), TEXT("abilities.close"));
+        Button(TEXT("完成配置，继续游戏"), TEXT("resume"));
+    }
     else if (PlayerOwner && PlayerOwner->IsPaused())
     {
         Text(TEXT("暂停\n读取游戏从最后安全存档开始，未结算的挑战会重开。"));
         Button(TEXT("继续当前游戏"),TEXT("resume")); Button(TEXT("保存安全进度"),TEXT("save"));
+        if (CanConfigureAbilities()) Button(TEXT("能力配置 · 自由获得与调整"), TEXT("abilities.open"));
         Button(TEXT("读取安全存档"),TEXT("load")); Button(TEXT("新游戏"),TEXT("new")); Button(TEXT("退出游戏"),TEXT("quit"));
         Button(TEXT("查看纪念物与回信"),TEXT("collection"));
         Button(P->IsLabWorld(this) ? TEXT("返回故事存档") : TEXT("保存并进入独立练习场"),TEXT("practice"));
@@ -150,7 +188,43 @@ void ATripoHUD::HandleAction(FString Action)
     if (Action == TEXT("resume")) UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Menu,false);
     else if (Action == TEXT("save")) P->SaveSafe(C);
     else if (Action == TEXT("load")) P->ContinueGame(P->IsLabWorld(this));
-    else if (Action == TEXT("new")) P->NewGame(P->IsLabWorld(this));
+    else if (Action == TEXT("new")) P->NewGame(false);
+    else if (Action == TEXT("abilities.toggle") && CanConfigureAbilities())
+    {
+        if (bAbilityConfig)
+        {
+            bAbilityConfig = false;
+            UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Menu, false);
+        }
+        else if (!bEntryMenu && !bCollection && !bExchange && !Story->HasDialogue() && P->GetPhase() != ETripoChallengePhase::PendingReward)
+        {
+            UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Menu, true);
+            bAbilityConfig = true;
+        }
+    }
+    else if (Action == TEXT("abilities.open") && CanConfigureAbilities() && PlayerOwner && PlayerOwner->IsPaused()) bAbilityConfig = true;
+    else if (Action == TEXT("abilities.close")) bAbilityConfig = false;
+    else if (Action.StartsWith(TEXT("abilities.")) && bAbilityConfig && CanConfigureAbilities() && PlayerOwner && PlayerOwner->IsPaused())
+    {
+        TArray<FString> Parts;
+        Action.ParseIntoArray(Parts, TEXT("."), false);
+        TArray<int32> Levels = C->Abilities->ExportLevels();
+        int32 Index = INDEX_NONE, Level = INDEX_NONE;
+        bool bValid = false;
+        if (Parts.Num() == 4 && Parts[1] == TEXT("set") && LexTryParseString(Index, *Parts[2]) && LexTryParseString(Level, *Parts[3]) && Levels.IsValidIndex(Index) && Level >= 0 && Level <= 3)
+        { Levels[Index] = Level; bValid = true; }
+        else if (Parts.Num() == 3 && Parts[1] == TEXT("all") && LexTryParseString(Level, *Parts[2]) && Level >= 0 && Level <= 3)
+        { Levels.Init(Level, 8); bValid = true; }
+        if (bValid)
+        {
+            C->Abilities->CancelAll();
+            if (C->Abilities->ImportLevels(Levels))
+            {
+                TArray<double> Cooldowns; Cooldowns.Init(0., 8);
+                C->Abilities->ImportCooldowns(Cooldowns);
+            }
+        }
+    }
     else if (Action == TEXT("collection")) bCollection = true;
     else if (Action == TEXT("collection.close")) bCollection = false;
     else if (Action == TEXT("practice.unlock") && P->IsLabWorld(this))
