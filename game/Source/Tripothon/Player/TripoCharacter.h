@@ -52,6 +52,13 @@ public:
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Camera", meta=(ClampMin="-89", ClampMax="0")) float MinViewPitch = -75.f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Camera", meta=(ClampMin="0", ClampMax="89")) float MaxViewPitch = 60.f;
 
+    // Visual-only scale for the player skeletal mesh. The capsule keeps its tuned 34/88
+    // collision, so matching the visible body to it is done here instead of on the capsule.
+    // 0.5 halves the authored asset size at the request of the project owner, so the miniature
+    // character reads clearly smaller than the 176-tall capsule. Blueprint subclasses may retune it.
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Tripo|Visual", meta=(ClampMin="0.01"))
+    float CharacterMeshScale = .5f;
+
 private:
     UPROPERTY() TObjectPtr<USpringArmComponent> CameraArm;
     UPROPERTY() TObjectPtr<UInputMappingContext> Mapping;

@@ -19,8 +19,10 @@
 #include "Engine/GameInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/LocalPlayer.h"
+#include "Engine/SkeletalMesh.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -61,26 +63,28 @@ ATripoCharacter::ATripoCharacter(const FObjectInitializer& ObjectInitializer)
     CameraArm->CameraLagSpeed = 12.f;
     auto* Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(CameraArm);
-    auto* Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GrayboxBody"));
-    Body->SetupAttachment(RootComponent);
-    Body->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    Body->SetRelativeScale3D(FVector(.62f, .62f, 1.5f));
-    // Explicitly a replaceable graybox mesh; gameplay collision belongs to the capsule.
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> Sphere(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-    if (Sphere.Succeeded()) Body->SetStaticMesh(Sphere.Object);
+    // Player visual: the authored mini-character on ACharacter's built-in mesh component.
+    // Gameplay collision still belongs to the capsule; this mesh is view-only.
+    // The source FBX is Z-up with the face on -Y, so the left-handed import lands the face on
+    // this mesh's local +Y; yaw -90 turns it onto the actor's +X forward, matching the contract
+    // in docs/角色朝向镜头规则.md. Feet sit on mesh Z=0, so the mesh drops to the capsule bottom.
+    if (auto* CharacterVisual = GetMesh())
+    {
+        static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMesh(
+            TEXT("/Game/Models/juese/SK_MiniCharacter_Son_01.SK_MiniCharacter_Son_01"));
+        if (CharacterMesh.Succeeded()) CharacterVisual->SetSkeletalMeshAsset(CharacterMesh.Object);
+        CharacterVisual->SetRelativeLocation(FVector(0.f, 0.f, -GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()));
+        CharacterVisual->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+        CharacterVisual->SetRelativeScale3D(FVector(CharacterMeshScale));
+        CharacterVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        CharacterVisual->SetGenerateOverlapEvents(false);
+        CharacterVisual->SetCanEverAffectNavigation(false);
+    }
     StonePreview = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StonePreview"));
     StonePreview->SetupAttachment(RootComponent); StonePreview->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     StonePreview->SetAbsolute(true,true,true); StonePreview->SetVisibility(false); StonePreview->SetWorldScale3D(FVector(1.5,1.5,.25));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> PreviewCube(TEXT("/Engine/BasicShapes/Cube.Cube"));
     if (PreviewCube.Succeeded()) StonePreview->SetStaticMesh(PreviewCube.Object);
-    auto* Nose = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ForwardMarker"));
-    Nose->SetupAttachment(RootComponent);
-    Nose->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    Nose->SetRelativeLocation(FVector(43.f, 0.f, 48.f));
-    Nose->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-    Nose->SetRelativeScale3D(FVector(.3f, .3f, .65f));
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> Cone(TEXT("/Engine/BasicShapes/Cone.Cone"));
-    if (Cone.Succeeded()) Nose->SetStaticMesh(Cone.Object);
 
     Mapping = CreateDefaultSubobject<UInputMappingContext>(TEXT("PlayerMapping"));
     ForwardAction = CreateDefaultSubobject<UInputAction>(TEXT("Forward"));
