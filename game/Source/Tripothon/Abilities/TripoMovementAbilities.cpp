@@ -9,6 +9,7 @@ ETripoAbilityFailure UTripoDashAbility::Validate(AActor*, const FTripoAbilityPar
 ETripoAbilityFailure UTripoDashAbility::BeginEffect(AActor*, const FTripoAbilityParameters& Parameters)
 {
     auto* P = Player(); if (!P) return ETripoAbilityFailure::InvalidContext;
+    if (!IsUp() && P->HandleForwardDisplacement()) return ETripoAbilityFailure::None;
     FVector Direction = P->GetLastMovementInputVector().GetSafeNormal2D();
     if (Direction.IsNearlyZero()) Direction = P->GetActorForwardVector();
     return CastChecked<UTripoMovementComponent>(P->GetCharacterMovement())->BeginBurst(IsUp(), Direction, IsUp() ? Parameters.Strength : Parameters.Distance, Parameters.Duration) ? ETripoAbilityFailure::None : ETripoAbilityFailure::Blocked;
@@ -17,7 +18,7 @@ void UTripoDashAbility::UpdateEffect(double)
 {
     auto* P = Player(); if (!P) { RequestCompletion(); return; }
     auto* M = CastChecked<UTripoMovementComponent>(P->GetCharacterMovement());
-    if (!IsUp()) P->HandleForwardDisplacement();
+    if (!IsUp() && M->IsBursting()) P->HandleForwardDisplacement();
     if (!M->IsBursting())
     {
         if (M->BurstHit.bBlockingHit) P->Abilities->ReportHit(GetHandle(), M->BurstHit);

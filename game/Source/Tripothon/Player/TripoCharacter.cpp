@@ -1,5 +1,7 @@
 #include "Player/TripoCharacter.h"
 #include "World/TripoTeleportPoint.h"
+#include "DrawDebugHelpers.h"
+#include "Materials/Material.h"
 #include "EngineUtils.h"
 #include "Abilities/TripoAbilityComponent.h"
 #include "Abilities/TripoWorldAbilities.h"
@@ -85,6 +87,9 @@ ATripoCharacter::ATripoCharacter(const FObjectInitializer& ObjectInitializer)
     StonePreview->SetAbsolute(true,true,true); StonePreview->SetVisibility(false); StonePreview->SetWorldScale3D(FVector(1.5,1.5,.25));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> PreviewCube(TEXT("/Engine/BasicShapes/Cube.Cube"));
     if (PreviewCube.Succeeded()) StonePreview->SetStaticMesh(PreviewCube.Object);
+    static ConstructorHelpers::FObjectFinder<UMaterial> PreviewMaterial(TEXT("/Engine/EngineDebugMaterials/WireframeMaterial.WireframeMaterial"));
+    if (PreviewMaterial.Succeeded()) StonePreview->SetMaterial(0, PreviewMaterial.Object);
+    StonePreview->SetCastShadow(false);
 
     Mapping = CreateDefaultSubobject<UInputMappingContext>(TEXT("PlayerMapping"));
     ForwardAction = CreateDefaultSubobject<UInputAction>(TEXT("Forward"));
@@ -270,7 +275,8 @@ void ATripoCharacter::Tick(float DeltaSeconds)
         if (Abilities->GetParameters(ETripoAbility::StepStone, P))
         {
             const bool bValid = UTripoStoneAbility::CheckPlacement(this, P, L) == ETripoAbilityFailure::None;
-            StonePreview->SetWorldLocation(L); StonePreview->SetVisibility(bValid);
+            StonePreview->SetWorldLocation(L); StonePreview->SetVisibility(true);
+            DrawDebugBox(GetWorld(), L, FVector(75,75,12.5), bValid ? FColor::Green : FColor::Red, false, -1, 0, 2);
         }
     }
     const double Now = GetWorld()->GetTimeSeconds();
@@ -360,8 +366,9 @@ void ATripoCharacter::DriveForTest(float Seconds, float Forward, float Right, bo
 #endif
 }
 
-void ATripoCharacter::HandleForwardDisplacement()
+bool ATripoCharacter::HandleForwardDisplacement()
 {
     for (TActorIterator<ATripoTeleportPoint> It(GetWorld()); It; ++It)
-        if (It->TryTeleport(this)) break;
+        if (It->TryTeleport(this)) return true;
+    return false;
 }

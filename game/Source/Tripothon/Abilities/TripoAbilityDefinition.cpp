@@ -35,9 +35,9 @@ UTripoAbilityDefinition* UTripoAbilityDefinition::MakeDefaults(UObject* Outer, E
         // Editable graybox proposals, not final balance. Strength units depend on ability.
         switch (Id)
         {
-        case ETripoAbility::Dash: P.Distance = 350 + 100 * Level; P.Duration = .2f; P.Cooldown = 1.6f - .2f * Level; break;
-        case ETripoAbility::UpDash: P.Strength = 600 + 100 * Level; P.Duration = .2f; P.Cooldown = 2.f; break;
-        case ETripoAbility::WallJump: P.Strength = 600 + 50 * Level; P.Distance = 60; P.Cooldown = .2f; break;
+        case ETripoAbility::Dash: P.Distance = Level == 1 ? 220.f : (Level == 2 ? 380.f : 650.f); P.Duration = .2f; P.Cooldown = 1.6f - .2f * Level; break;
+        case ETripoAbility::UpDash: P.Strength = Level == 1 ? 400.f : (Level == 2 ? 600.f : 900.f); P.Duration = .2f; P.Cooldown = 2.f; break;
+        case ETripoAbility::WallJump: P.Strength = Level == 1 ? 420.f : (Level == 2 ? 580.f : 750.f); P.Distance = 60; P.Cooldown = .2f; break;
         case ETripoAbility::StepStone: P.Distance = 200; P.Duration = 6 + 2 * Level; P.Cooldown = 2; P.Capacity = Level; break;
         case ETripoAbility::Slow: P.Distance = 600; P.Duration = 2 + Level; P.Strength = .6f - .1f * Level; P.Cooldown = 8; break;
         case ETripoAbility::Rewind: P.Duration = 1 + 2 * Level; P.Cooldown = 10; break;

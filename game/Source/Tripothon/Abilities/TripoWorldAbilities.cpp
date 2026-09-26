@@ -6,6 +6,7 @@
 #include "World/TripoMechanism.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Components/CapsuleComponent.h"
 
 static ATripoCharacter* AbilityPlayer(const UObject* Ability)
 { const auto* C = Cast<UTripoAbilityComponent>(Ability->GetOuter()); return C ? Cast<ATripoCharacter>(C->GetOwner()) : nullptr; }
@@ -13,14 +14,17 @@ ETripoAbilityFailure UTripoStoneAbility::CheckPlacement(ATripoCharacter* Player,
 {
     if (!IsValid(Player)) return ETripoAbilityFailure::InvalidContext;
     auto* World = Player->GetWorld();
-    Location = Player->GetActorLocation() + FRotator(0, Player->GetCameraYaw(), 0).Vector() * Parameters.Distance - FVector(0,0,110);
+    Location = Player->GetActorLocation() - FVector(0,0,Player->GetCapsuleComponent()->GetScaledCapsuleHalfHeight())
+        + FRotator(0, Player->GetCameraYaw(), 0).RotateVector(Player->StonePlacementOffset);
+    bool bHasAllowedZone = false;
+    for (TActorIterator<ATripoZone> It(World); It; ++It) if (It->Kind == ETripoZoneKind::BuildAllowed) bHasAllowedZone = true;
     int32 Count = 0;
     for (TActorIterator<ATripoStone> It(World); It; ++It) if (It->GetOwner() == Player) ++Count;
     if (Count >= Parameters.Capacity) return ETripoAbilityFailure::Capacity;
     for (int32 X : {-1,1}) for (int32 Y : {-1,1}) for (int32 Z : {-1,1})
     {
         const FVector Corner = Location + FVector(X*75, Y*75, Z*12.5);
-        if (!ATripoZone::Inside(World, ETripoZoneKind::BuildAllowed, Corner) || ATripoZone::Inside(World, ETripoZoneKind::BuildForbidden, Corner)) return ETripoAbilityFailure::Blocked;
+        if ((bHasAllowedZone && !ATripoZone::Inside(World, ETripoZoneKind::BuildAllowed, Corner)) || ATripoZone::Inside(World, ETripoZoneKind::BuildForbidden, Corner)) return ETripoAbilityFailure::Blocked;
     }
     FCollisionQueryParams Query(SCENE_QUERY_STAT(TripoStone));
     if (World->OverlapBlockingTestByChannel(Location, FQuat::Identity, ECC_Pawn, FCollisionShape::MakeBox(FVector(76,76,13.5)), Query)) return ETripoAbilityFailure::Blocked;

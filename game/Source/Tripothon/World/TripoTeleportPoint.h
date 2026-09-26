@@ -15,6 +15,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tripo|Teleport", meta=(ClampMin="1.0")) float TriggerRadius = 100.f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tripo|Teleport", meta=(ClampMin="0.0")) float Cooldown = 0.35f;
     UFUNCTION(BlueprintPure, Category="Tripo|Teleport") bool IsConfigured() const;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tripo|Teleport") bool bIgnoreCollisionInLv4 = false;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tripo|Teleport") FVector DestinationOffset = FVector(0,0,90);
     bool TryTeleport(ATripoCharacter* Player);
 private:
     double NextAllowedTime = 0.0;
