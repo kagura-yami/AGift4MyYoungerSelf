@@ -4,6 +4,8 @@
 #include "Player/TripoCharacter.h"
 #include "Core/TripoRuntimeSubsystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/TripoMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 ATripoTeleportPoint::ATripoTeleportPoint()
 {
     PrimaryActorTick.bCanEverTick = false;
@@ -21,9 +23,11 @@ bool ATripoTeleportPoint::TryTeleport(ATripoCharacter* Player)
         if (Runtime->IsActionPaused() || Runtime->GetRestorePhase() != ETripoRestorePhase::Running) return false;
     ATripoTeleportPoint* Destination = nullptr;
     for (TActorIterator<ATripoTeleportPoint> It(GetWorld()); It; ++It)
-        if (*It != this && It->IsConfigured() && It->LinkId == LinkId) { Destination = *It; break; }
+        if (*It != this && It->IsConfigured() && It->LinkId == LinkId) { if (Destination) return false; Destination = *It; }
     if (!IsValid(Destination)) return false;
-    if (!Player->TeleportTo(Destination->GetActorLocation() + FVector(0, 0, 90), Destination->GetActorRotation(), false, false)) return false;
+    if (!Player->TeleportTo(Destination->GetActorLocation() + Destination->DestinationOffset, Player->GetActorRotation(), false,
+        bIgnoreCollisionInLv4 && UGameplayStatics::GetCurrentLevelName(this, true).Equals(TEXT("lv4"), ESearchCase::IgnoreCase))) return false;
+    CastChecked<UTripoMovementComponent>(Player->GetCharacterMovement())->EndBurst();
     Player->GetCharacterMovement()->StopMovementImmediately(); NextAllowedTime = Now + Cooldown; Destination->NextAllowedTime = Now + Cooldown;
     return true;
 }
