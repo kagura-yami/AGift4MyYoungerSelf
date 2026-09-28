@@ -281,6 +281,8 @@ void ATripoCharacter::Tick(float DeltaSeconds)
     }
     const double Now = GetWorld()->GetTimeSeconds();
     const bool bGrounded = GetCharacterMovement()->IsMovingOnGround();
+    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed *
+        (GetCharacterMovement()->IsFalling() && bJumpSpent ? JumpHorizontalSpeedScale : 1.f);
     // ControlRotation owns the view. Only the body follows it; movement and body
     // rotation never write back into the camera, so strafing cannot orbit the view.
     const float ViewYaw = GetCameraYaw();
@@ -293,6 +295,9 @@ void ATripoCharacter::Tick(float DeltaSeconds)
     if (GetCharacterMovement()->MovementMode != MOVE_Custom && TripoMovement::CanUseBufferedJump(Now, JumpRequestedAt, LastGroundedAt, bGrounded, bJumpSpent, JumpBufferSeconds, CoyoteSeconds))
     {
         // One impulse, also valid briefly after leaving a ledge. Landing rearms it.
+        GetCharacterMovement()->MaxWalkSpeed = WalkSpeed * JumpHorizontalSpeedScale;
+        GetCharacterMovement()->Velocity.X *= JumpHorizontalSpeedScale;
+        GetCharacterMovement()->Velocity.Y *= JumpHorizontalSpeedScale;
         GetCharacterMovement()->Velocity.Z = JumpSpeed;
         GetCharacterMovement()->SetMovementMode(MOVE_Falling);
         JumpRequestedAt = -1000.;
@@ -319,6 +324,7 @@ void ATripoCharacter::Tick(float DeltaSeconds)
 void ATripoCharacter::Landed(const FHitResult& Hit)
 {
     Super::Landed(Hit);
+    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
     bJumpSpent = false;
     CastChecked<UTripoMovementComponent>(GetCharacterMovement())->ResetAirUses();
     LastGroundedAt = GetWorld()->GetTimeSeconds();

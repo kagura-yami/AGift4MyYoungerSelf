@@ -46,6 +46,8 @@ public:
 
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float WalkSpeed = 540.f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float JumpSpeed = 620.f;
+    // Horizontal speed multiplier for an ordinary jump; vertical launch speed is unchanged.
+    UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0.0", ClampMax="2.0")) float JumpHorizontalSpeedScale = .66f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float CoyoteSeconds = .08f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float JumpBufferSeconds = .12f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Camera", meta=(ClampMin="0", ClampMax="90")) float YawLimit = 35.f;
