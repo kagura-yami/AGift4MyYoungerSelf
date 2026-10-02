@@ -1,4 +1,5 @@
 #include "Player/TripoCharacter.h"
+#include "Player/TripoLocomotionAnimInstance.h"
 #include "World/TripoTeleportPoint.h"
 #include "DrawDebugHelpers.h"
 #include "Materials/Material.h"
@@ -75,6 +76,9 @@ ATripoCharacter::ATripoCharacter(const FObjectInitializer& ObjectInitializer)
         static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMesh(
             TEXT("/Game/Models/juese/SK_MiniCharacter_Son_01.SK_MiniCharacter_Son_01"));
         if (CharacterMesh.Succeeded()) CharacterVisual->SetSkeletalMeshAsset(CharacterMesh.Object);
+        static ConstructorHelpers::FObjectFinder<UMaterialInterface> CharacterMaterial(TEXT("/Game/Models/lv4/caizhi1_shili.caizhi1_shili"));
+        if (CharacterMaterial.Succeeded()) CharacterVisual->SetMaterial(0, CharacterMaterial.Object);
+        CharacterVisual->SetAnimInstanceClass(UTripoLocomotionAnimInstance::StaticClass());
         CharacterVisual->SetRelativeLocation(FVector(0.f, 0.f, -GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()));
         CharacterVisual->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
         CharacterVisual->SetRelativeScale3D(FVector(CharacterMeshScale));
