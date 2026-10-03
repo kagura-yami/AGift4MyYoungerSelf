@@ -8,3 +8,10 @@ ATripoGameMode::ATripoGameMode()
     HUDClass = ATripoHUD::StaticClass();
     PlayerControllerClass = ATripoPlayerController::StaticClass();
 }
+
+ATripoFrontEndMode::ATripoFrontEndMode()
+{
+    DefaultPawnClass = nullptr;
+    HUDClass = ATripoHUD::StaticClass();
+    PlayerControllerClass = ATripoPlayerController::StaticClass();
+}

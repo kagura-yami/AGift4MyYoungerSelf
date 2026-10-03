@@ -14,12 +14,27 @@ ETripoAbilityFailure UTripoStoneAbility::CheckPlacement(ATripoCharacter* Player,
 {
     if (!IsValid(Player)) return ETripoAbilityFailure::InvalidContext;
     auto* World = Player->GetWorld();
-    Location = Player->GetActorLocation() - FVector(0,0,Player->GetCapsuleComponent()->GetScaledCapsuleHalfHeight())
-        + FRotator(0, Player->GetCameraYaw(), 0).RotateVector(Player->StonePlacementOffset);
+    const FVector PlacementOrigin=Player->GetActorLocation()-FVector(0,0,Player->GetCapsuleComponent()->GetScaledCapsuleHalfHeight())
+        + FVector(0,0,Player->StonePlacementOffset.Z);
+    const float Min=FMath::Max(100.f,Player->StoneMinDistance), Max=FMath::Max(Min,Player->StoneMaxDistance);
+    const FVector Offset(FMath::Clamp(Player->StonePlacementOffset.X,Min,Max),Player->StonePlacementOffset.Y,0);
+    Location=PlacementOrigin+FRotator(0,Player->GetCameraYaw(),0).RotateVector(Offset);
+    // Start the volume at torso height: a foot-height 1.5m-wide box can already intersect
+    // the adjacent stair riser even though the character and target are both clear.
+    // Sweep down to the desired foot-relative target without ignoring the stairs or walls.
+    const FVector Origin=Player->GetActorLocation()+FVector(0,0,FMath::Max(0.,Player->StonePlacementOffset.Z));
+    FCollisionQueryParams PathQuery(SCENE_QUERY_STAT(TripoStonePath),false,Player);
+    FHitResult Hit;
+    if (World->SweepSingleByChannel(Hit,Origin,Location,FQuat::Identity,ECC_Pawn,
+        FCollisionShape::MakeBox(FVector(76,76,13.5)),PathQuery))
+    {
+        if (Hit.bStartPenetrating) return ETripoAbilityFailure::Blocked;
+        Location=Hit.Location+Hit.Normal*1.5;
+    }
     bool bHasAllowedZone = false;
     for (TActorIterator<ATripoZone> It(World); It; ++It) if (It->Kind == ETripoZoneKind::BuildAllowed) bHasAllowedZone = true;
     int32 Count = 0;
-    for (TActorIterator<ATripoStone> It(World); It; ++It) if (It->GetOwner() == Player) ++Count;
+    for (TActorIterator<ATripoStone> It(World); It; ++It) if (It->GetOwner() == Player && It->IsUsable()) ++Count;
     if (Count >= Parameters.Capacity) return ETripoAbilityFailure::Capacity;
     for (int32 X : {-1,1}) for (int32 Y : {-1,1}) for (int32 Z : {-1,1})
     {

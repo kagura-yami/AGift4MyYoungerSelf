@@ -1,0 +1,32 @@
+[
+  {
+    "file": "dialogue-raw.png",
+    "width": 1536,
+    "height": 1024,
+    "pixelFormat": "Format32bppArgb"
+  },
+  {
+    "file": "hud-raw.png",
+    "width": 1536,
+    "height": 1024,
+    "pixelFormat": "Format32bppArgb"
+  },
+  {
+    "file": "item-raw.png",
+    "width": 1254,
+    "height": 1254,
+    "pixelFormat": "Format24bppRgb"
+  },
+  {
+    "file": "pause-raw.png",
+    "width": 1024,
+    "height": 1536,
+    "pixelFormat": "Format24bppRgb"
+  },
+  {
+    "file": "upgrade-raw.png",
+    "width": 1536,
+    "height": 1024,
+    "pixelFormat": "Format24bppRgb"
+  }
+]

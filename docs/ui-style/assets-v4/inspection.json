@@ -1,0 +1,92 @@
+[
+  {
+    "file": "book-alpha.png",
+    "mode": "RGBA",
+    "size": [
+      1536,
+      1024
+    ],
+    "alpha_zero_fraction": 0.1782862345377604,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "file": "dialogue-alpha.png",
+    "mode": "RGBA",
+    "size": [
+      2172,
+      724
+    ],
+    "alpha_zero_fraction": 0.46112247285898883,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "file": "item-alpha.png",
+    "mode": "RGBA",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha_zero_fraction": 0.25508925755217077,
+    "corner_alpha": [
+      1,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "file": "paper-alpha.png",
+    "mode": "RGBA",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha_zero_fraction": 0.22465673107251508,
+    "corner_alpha": [
+      0,
+      0,
+      1,
+      0
+    ]
+  },
+  {
+    "file": "pause-alpha.png",
+    "mode": "RGBA",
+    "size": [
+      1024,
+      1536
+    ],
+    "alpha_zero_fraction": 0.2647787729899089,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "file": "upgrade-alpha.png",
+    "mode": "RGBA",
+    "size": [
+      1448,
+      1086
+    ],
+    "alpha_zero_fraction": 0.2363779850024928,
+    "corner_alpha": [
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+]

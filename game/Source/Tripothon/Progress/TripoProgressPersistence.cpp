@@ -6,6 +6,8 @@
 #include "World/TripoZone.h"
 #include "Core/TripoRuntimeSubsystem.h"
 #include "Core/TripoIdentityComponent.h"
+#include "World/TripoElevator.h"
+#include "World/TripoChaser.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/GameInstance.h"
 #include "EngineUtils.h"
@@ -16,12 +18,13 @@ bool UTripoProgressSubsystem::IsLabWorld(const UObject* Context) const
 { return Context && Context->GetWorld() && Context->GetWorld()->GetMapName().Contains(TEXT("L_LogicLab")); }
 bool UTripoProgressSubsystem::SaveSafe(ATripoCharacter* Player)
 {
+    if (IsValid(Player) && !ATripoElevator::AllStable(Player->GetWorld())) { Message=TEXT("请等待电梯停靠后保存"); return false; }
     if (IsValid(Player) && !Player->GetCharacterMovement()->IsMovingOnGround()) { Message = TEXT("请落到安全地面后保存"); return false; }
     if (!IsValid(Player) || Phase == ETripoChallengePhase::Running || Phase == ETripoChallengePhase::PendingReward || !UTripoWorldSubsystem::Get(Player)->IsSafeSpawn(Player, Player->GetActorLocation())) { Message = TEXT("Save unavailable: finish challenge or reach safe ground"); return false; }
     if (Phase != ETripoChallengePhase::Committed && !ATripoZone::Inside(Player->GetWorld(), ETripoZoneKind::Safe, Player->GetActorLocation()) && !ATripoZone::Inside(Player->GetWorld(), ETripoZoneKind::NPC, Player->GetActorLocation())) { Message = TEXT("Save at a marked safe area"); return false; }
     auto* Save = NewObject<UTripoSaveGame>(); Save->RunId = UTripoRuntimeSubsystem::GetRuntime(Player)->GetRunId();
     Save->Sequence = SaveSequence + 1; Save->RunSeed = RunSeed; Save->Levels = Player->Abilities->ExportLevels();
-    Save->Completed = Completed; Save->Viewed = Viewed; Save->Applied = Applied; Save->Exchanges = Exchanges;
+    Save->Completed = Completed; Save->Viewed = Viewed; Save->Applied = Applied; Save->Exchanges = Exchanges; Save->Gifts = Gifts;
     Save->ReplyChoice = ReplyChoice;
     Save->bLab = IsLabWorld(Player); Save->Spawn = Player->GetActorTransform();
     Save->MapPackage = Player->GetWorld()->GetOutermost()->GetName();
@@ -29,6 +32,7 @@ bool UTripoProgressSubsystem::SaveSafe(ATripoCharacter* Player)
     const FString Leaf = FPackageName::GetShortName(Save->MapPackage);
     if (Leaf.StartsWith(TEXT("UEDPIE_"))) { int32 End = Leaf.Find(TEXT("_"), ESearchCase::CaseSensitive, ESearchDir::FromStart, 7); if (End != INDEX_NONE) Save->MapPackage = FPackageName::GetLongPackagePath(Save->MapPackage) / Leaf.Mid(End+1); }
     for (TActorIterator<ATripoMechanism> It(Player->GetWorld()); It; ++It) Save->Mechanisms.Add(It->Identity->GetStableId(), It->Capture());
+    for (TActorIterator<ATripoElevator> It(Player->GetWorld()); It; ++It) Save->ElevatorFloors.Add(It->Identity->GetStableId(),It->CurrentFloor);
     if (!Save->IsValidData()) { Message = TEXT("Save rejected: invalid data"); return false; }
     const FString Slot = FString::Printf(TEXT("Tripothon%s_%c"), Save->bLab ? TEXT("Lab") : TEXT("Story"), Save->Sequence % 2 ? TCHAR('A') : TCHAR('B'));
     if (!UGameplayStatics::SaveGameToSlot(Save, Slot, 0)) { Message = TEXT("Save failed; previous slot retained"); return false; }
@@ -48,7 +52,7 @@ bool UTripoProgressSubsystem::ContinueGame(bool bLab)
     }
     if (!Best) { Message = TEXT("No compatible safe save; start a new game"); return false; }
     PendingTravelLevels.Empty(); PendingLoad = Best; Completed = Best->Completed; Viewed = Best->Viewed; Applied = Best->Applied; Exchanges = Best->Exchanges;
-    ReplyChoice = Best->ReplyChoice;
+    ReplyChoice = Best->ReplyChoice; Gifts = Best->Gifts;
     RunSeed = Best->RunSeed; SaveSequence = Best->Sequence; Phase = ETripoChallengePhase::Idle; Candidates.Empty(); Current = nullptr;
     GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>()->BeginRun(Best->RunId);
     GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>()->SetPauseReason(ETripoPauseReason::Menu, false);
@@ -66,6 +70,8 @@ bool UTripoProgressSubsystem::ApplyPendingLoad(ATripoCharacter* Player)
     Player->Abilities->ImportLevels(PendingLoad->Levels);
     for (TActorIterator<ATripoMechanism> It(Player->GetWorld()); It; ++It)
         if (const auto* State = PendingLoad->Mechanisms.Find(It->Identity->GetStableId())) It->Restore(*State);
+    for (TActorIterator<ATripoElevator> It(Player->GetWorld()); It; ++It) { const int32* Floor=PendingLoad->ElevatorFloors.Find(It->Identity->GetStableId()); It->RestoreFloor(Floor ? *Floor : It->InitialFloor); }
+    for (TActorIterator<ATripoChaser> It(Player->GetWorld()); It; ++It) It->ResetAfterRestore();
     auto* World = UTripoWorldSubsystem::Get(Player);
     if (World->IsSafeSpawn(Player, PendingLoad->Spawn.GetLocation()))
     {
@@ -79,7 +85,7 @@ bool UTripoProgressSubsystem::ApplyPendingLoad(ATripoCharacter* Player)
 void UTripoProgressSubsystem::NewGame(bool bLab)
 {
     PendingLoad = nullptr; Completed.Empty(); Viewed.Empty(); Applied.Empty(); Exchanges.Empty(); Candidates.Empty(); Current = nullptr;
-    ReplyChoice = INDEX_NONE; PendingTravelLevels.Empty();
+    ReplyChoice = INDEX_NONE; PendingTravelLevels.Empty(); Gifts.Empty();
     Phase = ETripoChallengePhase::Idle; CurrentId = NAME_None; RunSeed = int32(GetTypeHash(FGuid::NewGuid()));
     // Keep a monotonically newer generation than both old slots, so a new run's first save wins.
     for (const TCHAR* Suffix : {TEXT("A"),TEXT("B")})

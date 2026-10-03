@@ -1,4 +1,5 @@
 #include "Lab/TripoHUD.h"
+#include "Lab/TripoMenuStyle.h"
 #include "Player/TripoCharacter.h"
 #include "Abilities/TripoAbilityComponent.h"
 #include "Progress/TripoProgressSubsystem.h"
@@ -15,9 +16,11 @@
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SScrollBox.h"
+#include "Widgets/Layout/SScaleBox.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/SNullWidget.h"
+#include "Widgets/Images/SImage.h"
 #include "Styling/CoreStyle.h"
 
 static const TCHAR* AbilityNames[] = {TEXT("平面位移"),TEXT("上位移"),TEXT("蹬墙跳"),TEXT("垫脚石"),TEXT("局部减慢"),TEXT("时回"),TEXT("分身"),TEXT("奖励加时")};
@@ -31,40 +34,51 @@ void ATripoHUD::BeginPlay()
     Super::BeginPlay(); const TWeakObjectPtr<ATripoHUD> WeakThis(this);
     auto* Progress = UTripoProgressSubsystem::Get(this);
     const bool bSkipEntryMenu = GIsEditor && bSkipEntryMenuInEditor;
-    bEntryMenu = !bSkipEntryMenu && !Progress->IsLabWorld(this) && Progress->ConsumeEntryMenu();
+    bFrontEnd = UGameplayStatics::GetCurrentLevelName(this,true)==TEXT("L_MainMenu");
+    bEntryMenu = bFrontEnd || (!bSkipEntryMenu && !Progress->IsLabWorld(this) && Progress->ConsumeEntryMenu());
+    if (bFrontEnd) Progress->ConsumeEntryMenu();
+    InitializeUIArt();
     RootWidget = SNew(SOverlay)
+    + SOverlay::Slot()
+    [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+        .BorderBackgroundColor(FLinearColor(.018f,.035f,.029f,1.f))
+        .Visibility_Lambda([WeakThis] { return WeakThis.IsValid() && (WeakThis->bEntryMenu || (WeakThis->PlayerOwner && WeakThis->PlayerOwner->IsPaused())) ? EVisibility::HitTestInvisible : EVisibility::Collapsed; })]
+    + SOverlay::Slot()
+    [SNew(SScaleBox).Stretch(EStretch::ScaleToFill)
+        .Visibility_Lambda([WeakThis]{return WeakThis.IsValid() && WeakThis->bEntryMenu ? EVisibility::HitTestInvisible : EVisibility::Collapsed;})
+        [SNew(SImage).Image(&MainMenuArtBrush)]]
     + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(18)
-    [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(.015,.025,.045,.85))
-        [SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 18)).Text_Lambda([WeakThis] { return WeakThis.IsValid() ? WeakThis->StatusText() : FText::GetEmpty(); }).AutoWrapText(true).WrapTextAt(760)]]
+    [SNew(SBorder).Visibility_Lambda([WeakThis]{return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() ? EVisibility::HitTestInvisible : EVisibility::Collapsed;}).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(.015,.025,.045,.85))
+        [SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 16)).Text_Lambda([WeakThis] { return WeakThis.IsValid() ? WeakThis->StatusText() : FText::GetEmpty(); }).AutoWrapText(true).WrapTextAt(480)]]
+    + SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Top).Padding(24)
+    [SNew(STextBlock).ColorAndOpacity(FLinearColor(.95,.9,.75)).ShadowOffset(FVector2D(1,1)).Font(FCoreStyle::GetDefaultFontStyle("Regular",20)).Text_Lambda([WeakThis] { return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() ? WeakThis->ChallengeText() : FText::GetEmpty(); })]
+    + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(24,16,16,24)
+    [SNew(SScaleBox).Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)
+        .Visibility_Lambda([WeakThis] { return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() ? EVisibility::HitTestInvisible : EVisibility::Collapsed; })[BuildSkillBar()]]
     + SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center).Padding(24)
-    [SAssignNew(PanelHost, SBox).WidthOverride(760).MaxDesiredHeight(600)];
+    [SNew(SScaleBox).Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)[SAssignNew(PanelHost, SBox)]]
+    + SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center).Padding(12)
+    [SNew(SScaleBox).Visibility(EVisibility::HitTestInvisible)
+        .Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)[BuildEchoWheel()]];
     if (GetWorld()->GetGameViewport()) GetWorld()->GetGameViewport()->AddViewportWidgetContent(RootWidget.ToSharedRef(),10);
 }
 void ATripoHUD::EndPlay(const EEndPlayReason::Type Reason)
 {
     if (RootWidget.IsValid() && GetWorld()->GetGameViewport()) GetWorld()->GetGameViewport()->RemoveViewportWidgetContent(RootWidget.ToSharedRef());
-    RootWidget.Reset(); PanelHost.Reset(); Super::EndPlay(Reason);
+    if (bGiftReceipt) if (auto* R=UTripoRuntimeSubsystem::GetRuntime(this)) R->SetPauseReason(ETripoPauseReason::Reward,false);
+    RootWidget.Reset(); PanelHost.Reset(); UITextures.Empty(); Super::EndPlay(Reason);
 }
 bool ATripoHUD::IsGameplayBlocked() const
 {
     auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
-    return bEntryMenu || bCollection || bExchange || (PlayerOwner && PlayerOwner->IsPaused()) || (Story && Story->HasDialogue()) || (P && P->GetPhase() == ETripoChallengePhase::PendingReward);
+    return bGiftReceipt || bEntryMenu || bCollection || bExchange || (PlayerOwner && PlayerOwner->IsPaused()) || (Story && Story->HasDialogue()) || (P && P->GetPhase() == ETripoChallengePhase::PendingReward);
 }
 FText ATripoHUD::StatusText() const
 {
     const auto* C = Player(); if (!C) return FText::GetEmpty(); auto* P = UTripoProgressSubsystem::Get(this);
     if (IsGameplayBlocked()) return FText::FromString(P->GetMessage());
-    FString Text = TEXT("明天寄来的礼物\nWASD 移动  鼠标转向  Space 跳跃  E 交互  Esc 菜单\n");
+    FString Text = TEXT("明天寄来的礼物\nE 交互 · P 暂停 / 教程\n");
     if (CanConfigureAbilities()) Text += TEXT("F2 能力配置：自由选择能力与等级\n");
-    static const TCHAR* Controls[] = {TEXT("Shift"),TEXT("Ctrl"),TEXT("空中 Space"),TEXT("按住 Q 预览 / 松开放置"),TEXT("F"),TEXT("R 自身 / T 机关"),TEXT("C 生成 / 取消"),TEXT("被动")};
-    for (uint8 I=0; I<8; ++I)
-    {
-        if (C->Abilities->GetLevel(ETripoAbility(I)) == 0) continue;
-        const double Cooldown = C->Abilities->GetCooldownRemaining(ETripoAbility(I));
-        Text += FString::Printf(TEXT("%s · %s Lv.%d%s\n"), Controls[I], AbilityNames[I], C->Abilities->GetLevel(ETripoAbility(I)), Cooldown > 0 ? *FString::Printf(TEXT(" [%.1fs]"),Cooldown) : TEXT(""));
-    }
-    if (P->GetPhase() == ETripoChallengePhase::Running)
-        Text += FString::Printf(TEXT("\n挑战 %.2f / %.2f 秒 · %s\nBackspace 重开挑战"),P->GetElapsed(),P->GetBudget(),P->GetElapsed() <= P->GetBudget() ? TEXT("限时内可自选") : TEXT("已超时，终点随机；仍可继续"));
     if (!P->GetMessage().IsEmpty()) Text += TEXT("\n") + P->GetMessage();
     if (!C->Abilities->GetFailureMessage().IsEmpty()) Text += TEXT("\n") + C->Abilities->GetFailureMessage();
     if (!C->GetStonePreviewHint().IsEmpty()) Text += TEXT("\n") + C->GetStonePreviewHint();
@@ -73,10 +87,11 @@ FText ATripoHUD::StatusText() const
 }
 void ATripoHUD::RefreshUI()
 {
+    UpdateStoneIndicator();
     if (!PanelHost.IsValid()) return;
-    if (!PlayerOwner || !PlayerOwner->IsPaused()) bAbilityConfig = false;
+    if (!bEntryMenu && (!PlayerOwner || !PlayerOwner->IsPaused())) { bAbilityConfig = false; MenuPage = EMenuPage::Pause; }
     auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
-    const FString Key = FString::Printf(TEXT("%d:%d:%d:%d:%d:%s"),PlayerOwner && PlayerOwner->IsPaused(),int32(P->GetPhase()),bExchange,ExchangeFrom,ExchangeTo,Story->HasDialogue() ? *Story->GetCurrent().Id.ToString() : TEXT(""));
+    const FString Key = FString::FromInt(int32(MenuPage)) + TEXT(":") + FString::FromInt(HandbookAbility) + TEXT(":") + FString::Printf(TEXT("%d:%d:%d:%d:%d:%s"),PlayerOwner && PlayerOwner->IsPaused(),int32(P->GetPhase()),bExchange,ExchangeFrom,ExchangeTo,Story->HasDialogue() ? *Story->GetCurrent().Id.ToString() : TEXT(""));
     if (Key != PanelKey) { PanelKey = Key; RebuildPanel(); }
     const bool bModal = IsGameplayBlocked();
     if (PlayerOwner && bModal != bWasModal)
@@ -94,21 +109,26 @@ bool ATripoHUD::OpenExchange()
 }
 void ATripoHUD::RebuildPanel()
 {
+    if (bEntryMenu) { PanelHost->SetContent(MenuPage==EMenuPage::Pause ? BuildFrontEnd() : BuildMenuPage()); return; }
+    if (bGiftReceipt) { PanelHost->SetContent(BuildGiftReceipt()); return; }
     if (!IsGameplayBlocked()) { PanelHost->SetContent(SNullWidget::NullWidget); return; }
+    if (PlayerOwner && PlayerOwner->IsPaused() && !bEntryMenu && !bCollection && !bAbilityConfig) { PanelHost->SetContent(BuildMenuPage()); return; }
     const TWeakObjectPtr<ATripoHUD> WeakThis(this);
     TSharedRef<SVerticalBox> Content = SNew(SVerticalBox);
-    auto Text = [&](FString Value) { Content->AddSlot().AutoHeight().Padding(8)[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 22)).Text(FText::FromString(Value)).AutoWrapText(true).WrapTextAt(700)]; };
+    auto Text = [&](FString Value) { Content->AddSlot().AutoHeight().Padding(0,6)[TripoMenu::Label(Value,18)]; };
+    auto Heading = [&](const FString& Title,const FString& Subtitle=FString())
+    { Content->AddSlot().AutoHeight()[TripoMenu::Heading(Title,Subtitle)]; };
     auto Button = [&](FString Title,FString Action)
-    { Content->AddSlot().AutoHeight().Padding(6)[SNew(SButton).ContentPadding(10).OnClicked_Lambda([WeakThis,Action] { if (WeakThis.IsValid()) WeakThis->HandleAction(Action); return FReply::Handled(); })[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 20)).Text(FText::FromString(Title))]]; };
+    { Content->AddSlot().AutoHeight().Padding(0,5)[SNew(SButton).ButtonStyle(&MenuButtonStyle()).ButtonColorAndOpacity(FLinearColor(.08,.14,.11)).ContentPadding(FMargin(18,11)).OnClicked_Lambda([WeakThis,Action] { if (WeakThis.IsValid()) WeakThis->HandleAction(Action); return FReply::Handled(); })[TripoMenu::Label(Title,18,TripoMenu::Paper,true,false)]]; };
     auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
     if (bEntryMenu)
     {
-        Text(TEXT("明天寄来的礼物"));
+        Heading(TEXT("明天寄来的礼物"),TEXT("一份礼物，一段还没走完的旅途。"));
         Button(TEXT("新游戏"),TEXT("new")); Button(TEXT("继续安全存档"),TEXT("load")); Button(TEXT("退出游戏"),TEXT("quit"));
     }
     else if (bCollection)
     {
-        Text(TEXT("收到的礼物"));
+        Heading(TEXT("收到的礼物"),TEXT("把一起走过的时光，好好收藏。"));
         Text(P->HasApplied(TEXT("Story.Home.GiftFound")) ? TEXT("童年玩具车 · 那块贴歪的地方也留着。") : TEXT("尚未找到第一件礼物"));
         Text(P->HasApplied(TEXT("Story.School.GiftFound")) ? TEXT("纸飞机 · 两个人的涂鸦。") : TEXT("尚未找到第二件礼物"));
         Text(P->HasApplied(TEXT("Story.Minecraft.PhotoFound")) ? TEXT("共同合影 · 曾经一起走过的地方。") : TEXT("尚未找到第三件礼物"));
@@ -117,25 +137,25 @@ void ATripoHUD::RebuildPanel()
     }
     else if (bAbilityConfig && CanConfigureAbilities() && Player())
     {
-        Text(TEXT("能力配置 · F2 关闭并继续游戏"));
-        Content->AddSlot().AutoHeight().Padding(8)[SNew(STextBlock)
-            .Text(FText::FromString(TEXT("点击等级立即生效 · 0 级移除能力 · 1–3 级获得或升级\n配置属于当前游戏进度；保存安全进度后可读取，新游戏会重置。")))
+        Heading(TEXT("能力配置"),TEXT("选择等级立即生效 · F2 返回游戏"));
+        Content->AddSlot().AutoHeight().Padding(8)[SNew(STextBlock).ColorAndOpacity(FLinearColor(.025,.055,.04))
+            .Font(TripoMenu::Font(14)).Text(FText::FromString(TEXT("0 级移除，1–3 级获得或升级。保存安全进度可保留配置，新游戏会重置。")))
             .AutoWrapText(true).WrapTextAt(700)];
-        static const TCHAR* Controls[] = {TEXT("Shift · 水平冲刺"), TEXT("Ctrl · 向上移动"), TEXT("空中 Space · 蹬墙跳"), TEXT("Q · 放置垫脚石"), TEXT("F · 减慢目标"), TEXT("R 自身 / T 机关"), TEXT("C · 生成分身"), TEXT("被动 · 挑战额外时间")};
+        static const TCHAR* Controls[] = {TEXT("Shift · 水平冲刺"), TEXT("Ctrl · 向上移动"), TEXT("空中 Space · 蹬墙跳"), TEXT("Q · 放置垫脚石"), TEXT("F · 减慢目标"), TEXT("R 自身 / T 机关"), TEXT("C 创建 / 长按切换 · X 回收 / 长按选择"), TEXT("被动 · 挑战额外时间")};
         for (int32 I = 0; I < 8; ++I)
         {
             const int32 Current = Player()->Abilities->GetLevel(ETripoAbility(I));
             TSharedRef<SHorizontalBox> Row = SNew(SHorizontalBox);
             Row->AddSlot().FillWidth(1).VAlign(VAlign_Center)[SNew(SVerticalBox)
-                + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 20)).Text(FText::FromString(AbilityNames[I]))]
-                + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).ColorAndOpacity(FLinearColor(.65,.72,.8)).Text(FText::FromString(Controls[I]))]];
+                + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).ColorAndOpacity(FLinearColor(.025,.055,.04)).Font(TripoMenu::Font(18)).Text(FText::FromString(AbilityNames[I]))]
+                + SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).ColorAndOpacity(TripoMenu::Muted).Font(TripoMenu::Font(12)).AutoWrapText(true).Text(FText::FromString(Controls[I]))]];
             for (int32 Level = 0; Level <= 3; ++Level)
             {
                 const FString Action = FString::Printf(TEXT("abilities.set.%d.%d"), I, Level);
-                Row->AddSlot().AutoWidth().Padding(4,0)[SNew(SButton).ContentPadding(FMargin(12,8))
-                    .ButtonColorAndOpacity(Current == Level ? FLinearColor(.12,.55,.7) : FLinearColor(.12,.15,.2))
+                Row->AddSlot().AutoWidth().Padding(4,0)[SNew(SButton).ButtonStyle(&MenuButtonStyle()).ContentPadding(FMargin(12,8))
+                    .ButtonColorAndOpacity(Current == Level ? FLinearColor(.25,.43,.3) : FLinearColor(.1,.16,.12))
                     .OnClicked_Lambda([WeakThis,Action] { if (WeakThis.IsValid()) WeakThis->HandleAction(Action); return FReply::Handled(); })
-                    [SNew(STextBlock).Text(FText::FromString(Level == 0 ? TEXT("移除") : FString::Printf(TEXT("%d 级"), Level)))]];
+                    [SNew(STextBlock).ColorAndOpacity(TripoMenu::Paper).Font(TripoMenu::Font(14)).Text(FText::FromString(Level == 0 ? TEXT("移除") : FString::Printf(TEXT("%d 级"), Level)))]];
             }
             Content->AddSlot().AutoHeight().Padding(8,5)[Row];
         }
@@ -157,14 +177,25 @@ void ATripoHUD::RebuildPanel()
     }
     else if (Story->HasDialogue())
     {
-        Text(Story->GetCurrent().Title.ToString()); Text(Story->GetCurrent().Text.ToString());
+        Content->AddSlot().AutoHeight().Padding(0,0,0,10)[TripoMenu::Label(Story->GetCurrent().Title.ToString(),24,TripoMenu::Brass,true)];
+        Content->AddSlot().AutoHeight().Padding(0,0,0,12)[TripoMenu::Label(Story->GetCurrent().Text.ToString(),19)];
+        auto Actions=SNew(SHorizontalBox);
+        auto Choice=[&](const TCHAR* Label,const TCHAR* Action)
+        {
+            const FString Command(Action);
+            Actions->AddSlot().AutoWidth().Padding(0,0,12,0)
+                [SNew(SButton).ButtonStyle(&MenuButtonStyle()).ButtonColorAndOpacity(FLinearColor(.08,.14,.11)).ContentPadding(FMargin(12,9))
+                    .OnClicked_Lambda([WeakThis,Command]{ if (WeakThis.IsValid()) WeakThis->HandleAction(Command); return FReply::Handled(); })
+                    [SNew(STextBlock).ColorAndOpacity(FLinearColor(.95,.92,.82)).Font(TripoMenu::Font(16)).Text(FText::FromString(Label))]];
+        };
         if (Story->GetCurrent().Id == TEXT("Story.Finale.SendReply") && P->GetReplyChoice() == INDEX_NONE)
-        { Button(TEXT("收到啦 · 寄给明天"),TEXT("reply.0")); Button(TEXT("下次一起玩 · 寄给明天"),TEXT("reply.1")); Button(TEXT("我还想再试一次 · 寄给明天"),TEXT("reply.2")); }
-        else { Button(TEXT("继续"),TEXT("story")); Button(TEXT("跳过表现（仍保留必要结果）"),TEXT("skip")); }
+        { Choice(TEXT("收到啦"),TEXT("reply.0")); Choice(TEXT("下次一起玩"),TEXT("reply.1")); Choice(TEXT("我还想再试一次"),TEXT("reply.2")); }
+        else { Choice(TEXT("继续"),TEXT("story")); Choice(TEXT("跳过对话"),TEXT("skip")); }
+        Content->AddSlot().AutoHeight().Padding(4)[Actions];
     }
     else if (bExchange)
     {
-        Text(TEXT("纸盒邮差 · 一等级换一等级\n先选减少的能力，再选增加的能力。受保护的基础等级不能交换。取消不会改变等级。"));
+        Heading(TEXT("交换能力"),TEXT("先选减少的能力，再选增加的能力。受保护的基础等级不能交换。"));
         for (int32 I=0; I<8; ++I)
         {
             Button(FString::Printf(TEXT("%s 减少：%s（当前 %d）"),ExchangeFrom == I ? TEXT("●") : TEXT("○"),AbilityNames[I],Player()->Abilities->GetLevel(ETripoAbility(I))),FString::Printf(TEXT("from.%d"),I));
@@ -174,17 +205,61 @@ void ATripoHUD::RebuildPanel()
     }
     else
     {
-        Text(P->IsChoiceEligible() ? TEXT("挑战完成 · 选择一项升级") : TEXT("挑战完成 · 超时随机奖励已固定"));
+        Heading(TEXT("挑战完成"),P->IsChoiceEligible()?TEXT("选择一项能力，让下一段旅途多一种可能。"):TEXT("本次随机奖励已确定，领取后继续旅途。"));
         const auto Options = P->GetCandidates();
         if (Options.IsEmpty()) { Text(TEXT("没有可升级条目。本次记录完成，不会卡在奖励界面。")); Button(TEXT("确认完成"),TEXT("reward.0")); }
         else if (P->IsChoiceEligible()) for (int32 I=0; I<Options.Num(); ++I) Button(FString(AbilityNames[uint8(Options[I].Ability)]) + TEXT(" +1"),FString::Printf(TEXT("reward.%d"),I));
         else Button(TEXT("领取本次随机升级"),TEXT("reward.0"));
     }
-    PanelHost->SetContent(SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).Padding(18).BorderBackgroundColor(FLinearColor(.025,.035,.06,.98))[SNew(SScrollBox) + SScrollBox::Slot()[Content]]);
+    const FSlateBrush* Art=&PaperBrush;
+    FVector2D Size(960,720); FMargin Inset(120,108,120,100);
+    if (bCollection) { Art=&ItemBrush; Inset=FMargin(132,148,120,115); }
+    else if (Story->HasDialogue()) { Art=&DialogueBrush; Size=FVector2D(1080,450); Inset=FMargin(145,119,150,95); }
+    else if (bAbilityConfig || bExchange || P->GetPhase()==ETripoChallengePhase::PendingReward) Art=&UpgradeBrush;
+    PanelHost->SetContent(FramePanel(SNew(SScrollBox).AnimateWheelScrolling(true).WheelScrollMultiplier(0.7f).ConsumeMouseWheel(EConsumeMouseWheel::Always)+SScrollBox::Slot()[Content],Art,Size,Inset));
 }
 void ATripoHUD::HandleAction(FString Action)
 {
-    auto* C = Player(); if (!C) return; auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
+    if (bEntryMenu)
+    {
+        auto* Progress=UTripoProgressSubsystem::Get(this);
+        if (Action==TEXT("new")) { bConfirmNewGame=true; PanelKey.Empty(); return; }
+        if (Action==TEXT("front.cancel")) { bConfirmNewGame=false; PanelKey.Empty(); return; }
+        if (Action==TEXT("front.start")) { Progress->ConsumeEntryMenu(); Progress->NewGame(false); return; }
+        if (Action==TEXT("load")) { if(!Progress->ContinueGame(false)) FrontEndMessage=TEXT("未找到可用的安全存档，请开始新旅程。"); PanelKey.Empty(); return; }
+        if (Action==TEXT("quit")) { UKismetSystemLibrary::QuitGame(this,PlayerOwner,EQuitPreference::Quit,false); return; }
+    }
+    if (Action==TEXT("front.return"))
+    {
+        UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Menu,false);
+        UGameplayStatics::OpenLevel(this,TEXT("/Game/Maps/L_MainMenu")); return;
+    }
+    if (bGiftReceipt)
+    {
+        if (Action == TEXT("gift.confirm") && FPlatformTime::Seconds()-GiftRevealStart >= .85)
+        {
+            if (auto* R=UTripoRuntimeSubsystem::GetRuntime(this)) R->SetPauseReason(ETripoPauseReason::Reward,false);
+            bGiftReceipt=false; PanelKey.Empty();
+        }
+        return;
+    }
+    auto* C = Player(); auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
+    if (Action.StartsWith(TEXT("ui.")))
+    {
+        if (!bEntryMenu && (!PlayerOwner || !PlayerOwner->IsPaused())) return;
+        if (Action == TEXT("ui.settings")) MenuPage=EMenuPage::Settings;
+        else if (Action == TEXT("ui.more")) MenuPage=EMenuPage::More;
+        else if (Action == TEXT("ui.tutorial")) MenuPage=EMenuPage::Tutorial;
+        else if (Action == TEXT("ui.handbook")) MenuPage=EMenuPage::Handbook;
+        else if (Action == TEXT("ui.back")) NavigateBack();
+        else if (Action.StartsWith(TEXT("ui.skill.")))
+        {
+            int32 Index=INDEX_NONE;
+            if (LexTryParseString(Index,*Action.Mid(9)) && Index>=0 && Index<8) HandbookAbility=Index;
+        }
+        PanelKey.Empty(); return;
+    }
+    if (!C) return;
     if (Action == TEXT("resume")) UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Menu,false);
     else if (Action == TEXT("save")) P->SaveSafe(C);
     else if (Action == TEXT("load")) P->ContinueGame(P->IsLabWorld(this));

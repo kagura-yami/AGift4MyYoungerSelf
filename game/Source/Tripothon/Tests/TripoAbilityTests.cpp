@@ -24,6 +24,12 @@ bool FTripoAbilityDataTest::RunTest(const FString&)
         TestFalse(TEXT("Challenge floor only checks"), C->MeetsLevelFloor(Ability, 3));
         TestFalse(TEXT("Reject level four"), C->GrantLevelFloor(Ability, 4));
     }
+    auto* StoneDefaults=UTripoAbilityDefinition::MakeDefaults(C,ETripoAbility::StepStone);
+    for (int32 Level=1; Level<=3; ++Level)
+    {
+        TestEqual(TEXT("Stone has a short real placement debounce"),StoneDefaults->Parameters(Level)->Cooldown,.1f);
+        TestEqual(TEXT("Stone retains per-level capacity"),StoneDefaults->Parameters(Level)->Capacity,Level);
+    }
     C->InitializeDefinitions();
     TestEqual(TEXT("Reinitialize retains acquired level"), C->GetLevel(ETripoAbility::Dash), 2);
     TestEqual(TEXT("Bonus level two is ten seconds"), C->GetBonusTimeSeconds(), 10.f);
@@ -65,6 +71,10 @@ bool FTripoAbilityLifecycleTest::RunTest(const FString&)
     Short->Levels[0].Duration = 1.e-9f;
     Short->Levels[0].Cooldown = 0;
     C->Definitions.Add(Short);
+    auto* Stone = UTripoAbilityDefinition::MakeDefaults(C, ETripoAbility::StepStone);
+    Stone->Implementation = UTripoAbilityProbe::StaticClass();
+    Stone->Levels[0].Duration = 0;
+    C->Definitions.Add(Stone);
     auto* Disabled = UTripoAbilityDefinition::MakeDefaults(C, ETripoAbility::Echo);
     Disabled->Implementation = nullptr;
     C->Definitions.Add(Disabled);
@@ -90,10 +100,14 @@ bool FTripoAbilityLifecycleTest::RunTest(const FString&)
     }
     C->GrantLevelFloor(ETripoAbility::Echo, 1);
     TestEqual(TEXT("Unimplemented ability never fakes success"), C->TryActivate(ETripoAbility::Echo, nullptr, Handle), ETripoAbilityFailure::NotImplemented);
+    C->GrantLevelFloor(ETripoAbility::StepStone,1);
+    TestEqual(TEXT("Stone placement starts"),C->TryActivate(ETripoAbility::StepStone,nullptr,Handle),ETripoAbilityFailure::None);
+    TestTrue(TEXT("Stone has real remaining cooldown"),C->GetCooldownRemaining(ETripoAbility::StepStone)>0);
+    TestEqual(TEXT("Immediate repeated placement is blocked"),C->TryActivate(ETripoAbility::StepStone,nullptr,Handle),ETripoAbilityFailure::Cooldown);
     C->GrantLevelFloor(ETripoAbility::UpDash, 1);
     TestEqual(TEXT("Short effect starts"), C->TryActivate(ETripoAbility::UpDash, nullptr, Handle), ETripoAbilityFailure::None);
     UTripoAbilityProbe* ShortProbe = nullptr;
-    for (TObjectIterator<UTripoAbilityProbe> It; It; ++It) if (It->GetOuter() == C && *It != Probe) ShortProbe = *It;
+    for (TObjectIterator<UTripoAbilityProbe> It; It; ++It) if (It->GetOuter() == C && It->GetHandle() == Handle) ShortProbe = *It;
     if (TestNotNull(TEXT("Second owned executor"), ShortProbe))
     {
         TestTrue(TEXT("Active hit accepted"), C->ReportHit(Handle, FHitResult()));

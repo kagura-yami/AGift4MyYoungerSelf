@@ -51,6 +51,7 @@ private:
     bool bInitialized = false;
     bool bMutating = false;
     bool bEndingPlay = false;
+    ETripoAbility LastFailedAbility = ETripoAbility::Dash;
     ETripoAbilityFailure LastFailure = ETripoAbilityFailure::None;
     void Finish(ETripoAbility Ability, UTripoAbilityInstance* Instance, bool bCancelled);
 };
