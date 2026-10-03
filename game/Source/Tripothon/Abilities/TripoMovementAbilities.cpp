@@ -25,7 +25,7 @@ void UTripoDashAbility::UpdateEffect(double)
         RequestCompletion();
     }
 }
-void UTripoDashAbility::EndEffect(bool) { if (auto* P = Player()) CastChecked<UTripoMovementComponent>(P->GetCharacterMovement())->EndBurst(); }
+void UTripoDashAbility::EndEffect(bool) { if (IsUp()) return; if (auto* P = Player()) CastChecked<UTripoMovementComponent>(P->GetCharacterMovement())->EndBurst(); }
 ETripoAbilityFailure UTripoWallJumpAbility::Validate(AActor*, const FTripoAbilityParameters&) const
 { return ETripoAbilityFailure::None; }
 ETripoAbilityFailure UTripoWallJumpAbility::BeginEffect(AActor*, const FTripoAbilityParameters& Parameters)

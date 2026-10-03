@@ -1,4 +1,5 @@
 #include "World/TripoMechanism.h"
+#include "World/TripoInteractionTarget.h"
 #include "World/TripoInteractorComponent.h"
 #include "Time/TripoHistoryComponent.h"
 #include "Progress/TripoProgressSubsystem.h"
@@ -30,12 +31,16 @@ ATripoMechanism::ATripoMechanism()
     Sensor->SetGenerateOverlapEvents(true);
     Sensor->SetBoxExtent(FVector(55, 55, 90));
     Sensor->SetRelativeLocation(FVector(0, 0, 110));
+    auto* Focus=CreateDefaultSubobject<UTripoInteractionTarget>(TEXT("FocusTarget"));
+    Focus->SetupAttachment(Body); Focus->SetBoxExtent(FVector(52,52,52)); Focus->HighlightMesh=Visual;
+    Focus->Prompt=FText::FromString(TEXT("操作开关"));
     Identity = CreateDefaultSubobject<UTripoIdentityComponent>(TEXT("Identity"));
     History = CreateDefaultSubobject<UTripoHistoryComponent>(TEXT("History"));
 }
 void ATripoMechanism::OnConstruction(const FTransform& Transform)
 {
     Super::OnConstruction(Transform);
+    if(auto* Focus=FindComponentByClass<UTripoInteractionTarget>()) Focus->SetCollisionEnabled(Kind==ETripoMechanismKind::Switch ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
     Sensor->SetCollisionEnabled(Kind == ETripoMechanismKind::Plate ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
 }
 void ATripoMechanism::BeginPlay()

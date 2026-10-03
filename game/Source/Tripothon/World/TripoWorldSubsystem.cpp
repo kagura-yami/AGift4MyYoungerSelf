@@ -4,6 +4,8 @@
 #include "Player/TripoCharacter.h"
 #include "Abilities/TripoAbilityComponent.h"
 #include "Core/TripoIdentityComponent.h"
+#include "World/TripoElevator.h"
+#include "World/TripoChaser.h"
 #include "Core/TripoRuntimeSubsystem.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -28,10 +30,12 @@ bool UTripoWorldSubsystem::IsSafeSpawn(ATripoCharacter* Player, const FVector& L
 bool UTripoWorldSubsystem::SetCheckpoint(ATripoCharacter* Player, FTransform Transform, bool bChallenge)
 {
     auto* R = UTripoRuntimeSubsystem::GetRuntime(this);
+    if (!ATripoElevator::AllStable(GetWorld())) { LastFailure=TEXT("Wait for the elevator to dock"); return false; }
     if (!R || R->GetRestorePhase() != ETripoRestorePhase::Running || !IsSafeSpawn(Player, Transform.GetLocation())) return false;
     FTripoCheckpoint New;
     New.Player = Transform; New.bValid = true; New.Cooldowns = Player->Abilities->ExportCooldowns();
     for (TActorIterator<ATripoMechanism> It(GetWorld()); It; ++It) New.Mechanisms.Add(It->Identity->GetStableId(), It->Capture());
+    for (TActorIterator<ATripoElevator> It(GetWorld()); It; ++It) New.ElevatorFloors.Add(It->Identity->GetStableId(),It->CurrentFloor);
     Checkpoint = New;
     if (bChallenge) ChallengeStart = New;
     return true;
@@ -51,6 +55,7 @@ bool UTripoWorldSubsystem::RestorePlayer(ATripoCharacter* Player, bool bRestart)
     R->AdvanceRestore(ETripoRestorePhase::AbilitiesCleared);
     for (TActorIterator<ATripoMechanism> It(GetWorld()); It; ++It)
         if (const auto* State = Snapshot.Mechanisms.Find(It->Identity->GetStableId())) It->Restore(*State);
+    for (TActorIterator<ATripoElevator> It(GetWorld()); It; ++It) { const int32* Floor=Snapshot.ElevatorFloors.Find(It->Identity->GetStableId()); It->RestoreFloor(Floor ? *Floor : It->InitialFloor); }
     R->AdvanceRestore(ETripoRestorePhase::WorldRestored);
     TArray<FTransform> Candidates = {Snapshot.Player, Checkpoint.Player};
     for (TActorIterator<APlayerStart> It(GetWorld()); It; ++It) Candidates.Add(It->GetActorTransform());
@@ -77,6 +82,7 @@ bool UTripoWorldSubsystem::RestorePlayer(ATripoCharacter* Player, bool bRestart)
     for (TActorIterator<ATripoMechanism> It(GetWorld()); It; ++It) It->RefreshGate();
     R->AdvanceRestore(ETripoRestorePhase::OverlapsRefreshed);
     R->AdvanceRestore(ETripoRestorePhase::Running);
+    for (TActorIterator<ATripoChaser> It(GetWorld()); It; ++It) It->ResetAfterRestore();
     LastFailure.Empty();
     return true;
 }

@@ -9,3 +9,12 @@ class TRIPOTHON_API ATripoGameMode : public AGameModeBase
 public:
     ATripoGameMode();
 };
+
+/** Front end world has no playable pawn or gameplay actors. */
+UCLASS()
+class TRIPOTHON_API ATripoFrontEndMode : public AGameModeBase
+{
+    GENERATED_BODY()
+public:
+    ATripoFrontEndMode();
+};

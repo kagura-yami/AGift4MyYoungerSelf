@@ -5,6 +5,7 @@
 #include "TripoCharacter.generated.h"
 
 class UInputAction;
+class UTripoInteractionTarget;
 class UInputMappingContext;
 class USpringArmComponent;
 class UTripoAbilityComponent;
@@ -24,6 +25,11 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UTripoInteractorComponent> Interactor;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UTripoIdentityComponent> Identity;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UTripoHistoryComponent> History;
+    FRotator SavedViewRotation = FRotator(-35.f,0.f,0.f);
+    virtual FRotator GetViewRotation() const override;
+    virtual void PossessedBy(AController* NewController) override;
+    virtual void PawnClientRestart() override;
+    virtual void UnPossessed() override;
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaSeconds) override;
     virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
@@ -42,8 +48,16 @@ public:
     // Development only: action injection exercises Enhanced Input, never teleportation.
     UFUNCTION(BlueprintCallable, Category="Tripo|Validation") void DriveForTest(float Seconds, float Forward, float Right, bool bJump);
     bool HandleForwardDisplacement();
+    UFUNCTION(BlueprintPure, Category="Tripo|Interaction") UTripoInteractionTarget* GetFocusedTarget() const { return FocusedTarget.Get(); }
+    void UpdateInteractionFocus();
+    void ClickFocused();
+    UPROPERTY(Transient) TWeakObjectPtr<UTripoInteractionTarget> FocusedTarget;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tripo|Stone") FVector StonePlacementOffset = FVector(160, 0, 16);
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tripo|Stone", meta=(ClampMin="100")) float StoneMinDistance = 120.f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tripo|Stone", meta=(ClampMin="100")) float StoneMaxDistance = 600.f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tripo|Stone", meta=(ClampMin="1")) float StoneScrollStep = 30.f;
+    UFUNCTION(BlueprintCallable, Category="Tripo|Stone") void AdjustStoneDistance(float Steps);
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float WalkSpeed = 540.f;
     UPROPERTY(EditDefaultsOnly, Category="Tripo|Movement", meta=(ClampMin="0")) float JumpSpeed = 620.f;
     // Horizontal speed multiplier for an ordinary jump; vertical launch speed is unchanged.
@@ -77,10 +91,10 @@ private:
     UPROPERTY() TObjectPtr<UInputAction> DashAction;
     UPROPERTY() TObjectPtr<UInputAction> UpAction;
     UPROPERTY() TObjectPtr<UInputAction> StoneAction;
+    UPROPERTY() TObjectPtr<UInputAction> StoneScrollAction;
     UPROPERTY() TObjectPtr<UInputAction> SlowAction;
     UPROPERTY() TObjectPtr<UInputAction> RewindAction;
     UPROPERTY() TObjectPtr<UInputAction> TargetRewindAction;
-    UPROPERTY() TObjectPtr<UInputAction> EchoAction;
     UPROPERTY() TObjectPtr<UStaticMeshComponent> StonePreview;
     bool bStonePreview = false;
     FVector PracticeStart;
@@ -105,10 +119,10 @@ private:
     void UpDash(const FInputActionValue& Value);
     void PreviewStone(const FInputActionValue& Value);
     void PlaceStone(const FInputActionValue& Value);
+    void ScrollStone(const FInputActionValue& Value);
     void SlowTarget(const FInputActionValue& Value);
     void RewindSelf(const FInputActionValue& Value);
     void RewindTarget(const FInputActionValue& Value);
-    void SpawnEcho(const FInputActionValue& Value);
     ATripoMechanism* FindTimeTarget() const;
     bool GameplayInputAllowed() const;
 };

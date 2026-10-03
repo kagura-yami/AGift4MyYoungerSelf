@@ -11,3 +11,6 @@ tools/.venv/
 **/__pycache__/
 **/.venv/
 artifacts/
+
+# Browser automation snapshots
+.playwright-cli/

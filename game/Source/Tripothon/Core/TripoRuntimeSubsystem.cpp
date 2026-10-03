@@ -31,7 +31,7 @@ bool UTripoRuntimeSubsystem::HasPauseReason(ETripoPauseReason Reason) const
 
 bool UTripoRuntimeSubsystem::SetPauseReason(ETripoPauseReason Reason, bool bPaused)
 {
-    if (Reason != ETripoPauseReason::Menu && Reason != ETripoPauseReason::Loading) return false;
+    if (Reason != ETripoPauseReason::Menu && Reason != ETripoPauseReason::Loading && Reason != ETripoPauseReason::Reward) return false;
     if (!GetWorld()) return false;
     const bool bWasSet = HasPauseReason(Reason);
     Clock.SetPaused(Reason, bPaused, FPlatformTime::Seconds());

@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Progress/TripoChallengeDefinition.h"
+#include "Progress/TripoGiftReceipt.h"
 #include "TripoProgressSubsystem.generated.h"
 class ATripoCharacter;
 class UTripoSaveGame;
@@ -41,7 +42,12 @@ public:
     void MarkViewed(FName Id) { Viewed.Add(Id); }
     UFUNCTION(BlueprintPure) int32 GetReplyChoice() const { return ReplyChoice; }
     bool SelectReply(int32 Choice);
+    UFUNCTION(BlueprintPure, Category="Tripo|Gift") bool HasClaimedGift(FName Key) const { return Gifts.Contains(Key); }
+    UFUNCTION(BlueprintPure, Category="Tripo|Gift") FTripoGiftReceipt GetGiftReceipt(FName Key) const { const auto* Value=Gifts.Find(Key); return Value ? *Value : FTripoGiftReceipt(); }
+    // Called only by a validated nearby gift actor; not a Blueprint remote-award shortcut.
+    bool ClaimGift(ATripoCharacter* Player, FName Key, const TArray<FTripoRewardOption>& Pool, FTripoGiftReceipt& OutReceipt);
 private:
+    UPROPERTY() TMap<FName, FTripoGiftReceipt> Gifts;
     UPROPERTY() int32 ReplyChoice = INDEX_NONE;
     UPROPERTY() TArray<int32> PendingTravelLevels;
     bool bEntryShown = false;

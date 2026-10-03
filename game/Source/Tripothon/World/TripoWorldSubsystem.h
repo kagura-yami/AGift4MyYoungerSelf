@@ -11,6 +11,8 @@ struct FTripoCheckpoint
     GENERATED_BODY()
     UPROPERTY() FTransform Player;
     UPROPERTY() TMap<FGuid, FTripoMechanismState> Mechanisms;
+    // Optional schema-1 field; missing keys use the level initial floor.
+    UPROPERTY() TMap<FGuid, int32> ElevatorFloors;
     UPROPERTY() TArray<double> Cooldowns;
     UPROPERTY() bool bValid = false;
 };

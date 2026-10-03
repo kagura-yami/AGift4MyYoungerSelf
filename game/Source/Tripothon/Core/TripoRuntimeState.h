@@ -3,7 +3,7 @@
 #include "TripoRuntimeState.generated.h"
 
 UENUM(BlueprintType)
-enum class ETripoPauseReason : uint8 { Menu, Loading };
+enum class ETripoPauseReason : uint8 { Menu, Loading, Reward };
 
 UENUM(BlueprintType)
 enum class ETripoRestorePhase : uint8

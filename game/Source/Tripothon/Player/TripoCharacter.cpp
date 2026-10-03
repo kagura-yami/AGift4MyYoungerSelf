@@ -1,6 +1,9 @@
 #include "Player/TripoCharacter.h"
 #include "Player/TripoLocomotionAnimInstance.h"
+#include "Time/TripoEchoActor.h"
+#include "Player/TripoPlayerController.h"
 #include "World/TripoTeleportPoint.h"
+#include "World/TripoGiftBox.h"
 #include "DrawDebugHelpers.h"
 #include "Materials/Material.h"
 #include "EngineUtils.h"
@@ -10,6 +13,8 @@
 #include "Lab/TripoHUD.h"
 #include "Story/TripoStoryTrigger.h"
 #include "World/TripoInteractorComponent.h"
+#include "World/TripoElevator.h"
+#include "World/TripoInteractionTarget.h"
 #include "World/TripoWorldSubsystem.h"
 #include "World/TripoMechanism.h"
 #include "Progress/TripoProgressSubsystem.h"
@@ -51,21 +56,30 @@ ATripoCharacter::ATripoCharacter(const FObjectInitializer& ObjectInitializer)
     bUseControllerRotationPitch = false;
     bUseControllerRotationRoll = false;
     GetCapsuleComponent()->InitCapsuleSize(34.f, 88.f);
+    // Set before movement initialization: newly spawned unpossessed echoes must find a floor.
+    GetCharacterMovement()->bRunPhysicsWithNoController = true;
     GetCharacterMovement()->GravityScale = 1.5f;
     GetCharacterMovement()->AirControl = .45f;
     GetCharacterMovement()->bOrientRotationToMovement = false;
     GetCharacterMovement()->bUseControllerDesiredRotation = false;
     GetCharacterMovement()->RotationRate = FRotator(0.f, 720.f, 0.f);
+    // Bodies may overlap when cloning; only world geometry should retract the camera.
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
     CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
     CameraArm->SetupAttachment(RootComponent);
     CameraArm->SetUsingAbsoluteRotation(true);
     CameraArm->bUsePawnControlRotation = true;
     CameraArm->TargetArmLength = 280.f;
+    CameraArm->TargetOffset = FVector(0,0,55);
+    CameraArm->SocketOffset = FVector(0,45,0);
     CameraArm->SetRelativeRotation(FRotator(-35.f, 0.f, 0.f));
-    CameraArm->bEnableCameraLag = true;
+    CameraArm->bEnableCameraLag = false;
+    CameraArm->bDoCollisionTest = true;
+    CameraArm->ProbeSize = 20.f;
+    CameraArm->ProbeChannel = ECC_Camera;
     CameraArm->CameraLagSpeed = 12.f;
     auto* Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-    Camera->SetupAttachment(CameraArm);
+    Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
     // Player visual: the authored mini-character on ACharacter's built-in mesh component.
     // Gameplay collision still belongs to the capsule; this mesh is view-only.
     // The source FBX is Z-up with the face on -Y, so the left-handed import lands the face on
@@ -109,10 +123,11 @@ ATripoCharacter::ATripoCharacter(const FObjectInitializer& ObjectInitializer)
     DashAction = CreateDefaultSubobject<UInputAction>(TEXT("Dash"));
     UpAction = CreateDefaultSubobject<UInputAction>(TEXT("UpDash"));
     StoneAction = CreateDefaultSubobject<UInputAction>(TEXT("Stone"));
+    StoneScrollAction = CreateDefaultSubobject<UInputAction>(TEXT("StoneScroll"));
+    StoneScrollAction->ValueType = EInputActionValueType::Axis1D;
     SlowAction = CreateDefaultSubobject<UInputAction>(TEXT("Slow"));
     RewindAction = CreateDefaultSubobject<UInputAction>(TEXT("RewindSelf"));
     TargetRewindAction = CreateDefaultSubobject<UInputAction>(TEXT("RewindTarget"));
-    EchoAction = CreateDefaultSubobject<UInputAction>(TEXT("Echo"));
     PauseAction->bTriggerWhenPaused = true;
     Mapping->MapKey(ForwardAction, EKeys::W);
     Mapping->MapKey(ForwardAction, EKeys::S).Modifiers.Add(CreateDefaultSubobject<UInputModifierNegate>(TEXT("Backward")));
@@ -123,15 +138,17 @@ ATripoCharacter::ATripoCharacter(const FObjectInitializer& ObjectInitializer)
     Mapping->MapKey(JumpAction, EKeys::SpaceBar);
     Mapping->MapKey(ResetAction, EKeys::F9);
     Mapping->MapKey(PauseAction, EKeys::Escape);
+    // PIE reserves Escape for Stop; P reaches the same pause/back action in every build.
+    Mapping->MapKey(PauseAction, EKeys::P);
     Mapping->MapKey(InteractAction, EKeys::E);
     Mapping->MapKey(RestartAction, EKeys::BackSpace);
     Mapping->MapKey(DashAction, EKeys::LeftShift);
     Mapping->MapKey(UpAction, EKeys::LeftControl);
     Mapping->MapKey(StoneAction, EKeys::Q);
+    Mapping->MapKey(StoneScrollAction, EKeys::MouseWheelAxis);
     Mapping->MapKey(SlowAction, EKeys::F);
     Mapping->MapKey(RewindAction, EKeys::R);
     Mapping->MapKey(TargetRewindAction, EKeys::T);
-    Mapping->MapKey(EchoAction, EKeys::C);
 }
 
 void ATripoCharacter::BeginPlay()
@@ -140,7 +157,8 @@ void ATripoCharacter::BeginPlay()
     Abilities->AddTickPrerequisiteComponent(GetCharacterMovement());
     History->AddTickPrerequisiteComponent(GetCharacterMovement());
     PracticeStart = GetActorLocation();
-    UTripoWorldSubsystem::Get(this)->SetCheckpoint(this, GetActorTransform());
+    if (!IsA<ATripoEchoActor>()) UTripoWorldSubsystem::Get(this)->SetCheckpoint(this, GetActorTransform());
+    GetCharacterMovement()->bRunPhysicsWithNoController = true;
     GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
     GetCharacterMovement()->JumpZVelocity = JumpSpeed;
     if (auto* PC = Cast<APlayerController>(GetController()))
@@ -151,8 +169,32 @@ void ATripoCharacter::BeginPlay()
     }
 }
 
+void ATripoCharacter::PossessedBy(AController* NewController)
+{
+    Super::PossessedBy(NewController);
+    if (auto* PC=Cast<APlayerController>(Controller))
+        if (auto* S=ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer())) S->AddMappingContext(Mapping,0);
+}
+void ATripoCharacter::PawnClientRestart()
+{
+    Super::PawnClientRestart();
+    if (auto* PC=Cast<APlayerController>(Controller))
+        if (auto* S=ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer())) S->AddMappingContext(Mapping,0);
+}
+FRotator ATripoCharacter::GetViewRotation() const { return Controller ? Super::GetViewRotation() : SavedViewRotation; }
+void ATripoCharacter::UnPossessed()
+{
+    SavedViewRotation=GetViewRotation();
+    if (auto* PC=Cast<APlayerController>(Controller))
+        if (auto* S=ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer())) S->RemoveMappingContext(Mapping);
+    bStonePreview=false;
+    StopJumping();
+    ConsumeMovementInputVector();
+    Super::UnPossessed();
+}
 void ATripoCharacter::SetupPlayerInputComponent(UInputComponent* Input)
 {
+    Input->BindKey(EKeys::LeftMouseButton,IE_Pressed,this,&ATripoCharacter::ClickFocused);
     Super::SetupPlayerInputComponent(Input);
     if (auto* Enhanced = Cast<UEnhancedInputComponent>(Input))
     {
@@ -169,10 +211,10 @@ void ATripoCharacter::SetupPlayerInputComponent(UInputComponent* Input)
         Enhanced->BindAction(UpAction, ETriggerEvent::Started, this, &ATripoCharacter::UpDash);
         Enhanced->BindAction(StoneAction, ETriggerEvent::Started, this, &ATripoCharacter::PreviewStone);
         Enhanced->BindAction(StoneAction, ETriggerEvent::Completed, this, &ATripoCharacter::PlaceStone);
+        Enhanced->BindAction(StoneScrollAction, ETriggerEvent::Triggered, this, &ATripoCharacter::ScrollStone);
         Enhanced->BindAction(SlowAction, ETriggerEvent::Started, this, &ATripoCharacter::SlowTarget);
         Enhanced->BindAction(RewindAction, ETriggerEvent::Started, this, &ATripoCharacter::RewindSelf);
         Enhanced->BindAction(TargetRewindAction, ETriggerEvent::Started, this, &ATripoCharacter::RewindTarget);
-        Enhanced->BindAction(EchoAction, ETriggerEvent::Started, this, &ATripoCharacter::SpawnEcho);
     }
 }
 
@@ -210,6 +252,16 @@ void ATripoCharacter::RequestJump(const FInputActionValue&)
 }
 void ATripoCharacter::Dash(const FInputActionValue&) { if (GameplayInputAllowed()) { FGuid H; Abilities->TryActivate(ETripoAbility::Dash, nullptr, H); } }
 void ATripoCharacter::UpDash(const FInputActionValue&) { if (GameplayInputAllowed()) { FGuid H; Abilities->TryActivate(ETripoAbility::UpDash, nullptr, H); } }
+void ATripoCharacter::AdjustStoneDistance(float Steps)
+{
+    if (!FMath::IsFinite(Steps)) return;
+    const float Min=FMath::Max(100.f,StoneMinDistance), Max=FMath::Max(Min,StoneMaxDistance);
+    StonePlacementOffset.X=FMath::Clamp(StonePlacementOffset.X+Steps*FMath::Max(1.f,StoneScrollStep),Min,Max);
+}
+void ATripoCharacter::ScrollStone(const FInputActionValue& Value)
+{
+    if (bStonePreview && GameplayInputAllowed()) AdjustStoneDistance(Value.Get<float>());
+}
 void ATripoCharacter::PreviewStone(const FInputActionValue&) { bStonePreview = GameplayInputAllowed() && Abilities->GetLevel(ETripoAbility::StepStone) > 0; }
 void ATripoCharacter::PlaceStone(const FInputActionValue&)
 {
@@ -232,24 +284,23 @@ ATripoMechanism* ATripoCharacter::FindTimeTarget() const
 void ATripoCharacter::SlowTarget(const FInputActionValue&) { if (GameplayInputAllowed()) { FGuid H; Abilities->TryActivate(ETripoAbility::Slow, FindTimeTarget(), H); } }
 void ATripoCharacter::RewindSelf(const FInputActionValue&) { if (GameplayInputAllowed()) { FGuid H; Abilities->TryActivate(ETripoAbility::Rewind, nullptr, H); } }
 void ATripoCharacter::RewindTarget(const FInputActionValue&) { if (GameplayInputAllowed()) { if (auto* Target = FindTimeTarget()) { FGuid H; Abilities->TryActivate(ETripoAbility::Rewind, Target, H); } else Abilities->ReportFailure(ETripoAbility::Rewind, ETripoAbilityFailure::NoTarget); } }
-void ATripoCharacter::SpawnEcho(const FInputActionValue&) { if (GameplayInputAllowed() && !Abilities->CancelAbility(ETripoAbility::Echo)) { FGuid H; Abilities->TryActivate(ETripoAbility::Echo, nullptr, H); } }
+
 void ATripoCharacter::RequestReset(const FInputActionValue&) { ResetPracticePosition(); }
 void ATripoCharacter::Interact(const FInputActionValue&)
 {
     if (!GameplayInputAllowed()) return;
+    UpdateInteractionFocus();
+    if(auto* Target=FocusedTarget.Get()) { Target->TryInteract(this); return; }
     if (auto* PC = Cast<APlayerController>(Controller)) if (auto* HUD = Cast<ATripoHUD>(PC->GetHUD())) if (HUD->OpenExchange()) return;
     for (TActorIterator<ATripoStoryTrigger> It(GetWorld()); It; ++It) if (It->Interact(this)) return;
-    ATripoMechanism* Nearest = nullptr; double Best = FMath::Square(250.);
-    for (TActorIterator<ATripoMechanism> It(GetWorld()); It; ++It)
-    {
-        const double D = FVector::DistSquared(It->GetActorLocation(), GetActorLocation());
-        if (It->Kind == ETripoMechanismKind::Switch && D < Best) { Best = D; Nearest = *It; }
-    }
-    if (Nearest) Nearest->Interact(this);
+
 }
 void ATripoCharacter::RestartChallenge(const FInputActionValue&) { if (GameplayInputAllowed()) UTripoProgressSubsystem::Get(this)->Restart(this); }
 void ATripoCharacter::TogglePause(const FInputActionValue&)
 {
+    if (auto* PC = Cast<APlayerController>(Controller))
+        if (auto* HUD = Cast<ATripoHUD>(PC->GetHUD()))
+            if (HUD->NavigateBack()) return;
     if (auto* Runtime = GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>())
         Runtime->SetPauseReason(ETripoPauseReason::Menu, !Runtime->HasPauseReason(ETripoPauseReason::Menu));
 }
@@ -264,7 +315,8 @@ void ATripoCharacter::LookForTest(float ViewYaw)
 void ATripoCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-    if (auto* Progress = UTripoProgressSubsystem::Get(this); Progress && Progress->HasPendingLoad()) Progress->ApplyPendingLoad(this);
+    if (auto* Progress = UTripoProgressSubsystem::Get(this); Progress && IsPlayerControlled() && Progress->HasPendingLoad()) Progress->ApplyPendingLoad(this);
+    UpdateInteractionFocus();
     if (!GameplayInputAllowed())
     {
         JumpRequestedAt = -1000.; TestSeconds = 0; bTestJump = false;
@@ -357,7 +409,8 @@ void ATripoCharacter::ResetAfterRestore()
 }
 bool ATripoCharacter::GameplayInputAllowed() const
 {
-    if (Interactor->bSuppressed) return false;
+    if (!Controller || Interactor->bSuppressed) return false;
+    if (const auto* PC=Cast<ATripoPlayerController>(Controller); PC && PC->IsEchoWheelOpen()) return false;
     auto* PC = Cast<APlayerController>(Controller); auto* HUD = PC ? Cast<ATripoHUD>(PC->GetHUD()) : nullptr;
     return !HUD || !HUD->IsGameplayBlocked();
 }
@@ -365,7 +418,7 @@ FString ATripoCharacter::GetStonePreviewHint() const
 {
     if (!bStonePreview) return TEXT("");
     FTripoAbilityParameters P; FVector L;
-    return Abilities->GetParameters(ETripoAbility::StepStone, P) && UTripoStoneAbility::CheckPlacement(const_cast<ATripoCharacter*>(this), P, L) == ETripoAbilityFailure::None ? TEXT("落点可用，松开 Q 放置") : TEXT("当前落点不可放置");
+    return Abilities->GetParameters(ETripoAbility::StepStone, P) && UTripoStoneAbility::CheckPlacement(const_cast<ATripoCharacter*>(this), P, L) == ETripoAbilityFailure::None ? TEXT("滚轮调节远近，松开 Q 放置") : TEXT("当前落点不可放置");
 }
 void ATripoCharacter::DriveForTest(float Seconds, float Forward, float Right, bool bJump)
 {
@@ -381,4 +434,38 @@ bool ATripoCharacter::HandleForwardDisplacement()
     for (TActorIterator<ATripoTeleportPoint> It(GetWorld()); It; ++It)
         if (It->TryTeleport(this)) return true;
     return false;
+}
+
+void ATripoCharacter::UpdateInteractionFocus()
+{
+    UTripoInteractionTarget* Next=nullptr;
+    if(GameplayInputAllowed())
+    {
+        FVector Eye; FRotator View; Controller->GetPlayerViewPoint(Eye,View);
+        FHitResult Hit; FCollisionQueryParams Q(SCENE_QUERY_STAT(InteractionFocus),false,this);
+        if(GetWorld()->LineTraceSingleByChannel(Hit,Eye,Eye+View.Vector()*1500,ECC_Visibility,Q))
+        {
+            Next=Cast<UTripoInteractionTarget>(Hit.GetComponent());
+            if(!Next && Hit.GetActor())
+            {
+                TInlineComponentArray<UTripoInteractionTarget*> Targets(Hit.GetActor());
+                for(auto* T:Targets)
+                    if(T->HighlightMesh==Hit.GetComponent()) { Next=T; break; }
+            }
+            if(Next && !Next->CanInteract(this)) Next=nullptr;
+        }
+    }
+    if(Next!=FocusedTarget.Get())
+    {
+        if(auto* Old=FocusedTarget.Get()) Old->SetFocused(false);
+        FocusedTarget=Next;
+        if(Next) Next->SetFocused(true);
+    }
+}
+
+void ATripoCharacter::ClickFocused()
+{
+    if(!GameplayInputAllowed()) return;
+    UpdateInteractionFocus();
+    if(auto* Target=FocusedTarget.Get()) Target->TryInteract(this);
 }

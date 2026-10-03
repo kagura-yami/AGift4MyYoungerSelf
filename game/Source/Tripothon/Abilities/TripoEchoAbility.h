@@ -9,8 +9,4 @@ class UTripoEchoAbility : public UTripoAbilityInstance
 public:
     virtual ETripoAbilityFailure Validate(AActor*, const FTripoAbilityParameters&) const override;
     virtual ETripoAbilityFailure BeginEffect(AActor*, const FTripoAbilityParameters&) override;
-    virtual void UpdateEffect(double Delta) override;
-    virtual void EndEffect(bool bCancelled) override;
-private:
-    TWeakObjectPtr<ATripoEchoActor> Echo;
 };

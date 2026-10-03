@@ -80,7 +80,8 @@ bool UTripoAbilityComponent::MeetsLevelFloor(ETripoAbility Id, int32 Required) c
 }
 double UTripoAbilityComponent::GetCooldownRemaining(ETripoAbility Id) const
 {
-    if (!GetWorld()) return 0.;
+    FTripoAbilityParameters Parameters;
+    if (!GetWorld() || !GetParameters(Id, Parameters) || Parameters.Cooldown <= 0) return 0.;
     auto* Runtime = UTripoRuntimeSubsystem::GetRuntime(this);
     return Runtime ? FMath::Max(0., ReadyAt.FindRef(Id) - Runtime->GetActionSeconds()) : 0.;
 }
@@ -111,7 +112,7 @@ ETripoAbilityFailure UTripoAbilityComponent::TryActivate(ETripoAbility Id, AActo
     if (!Instance) return Fail(ETripoAbilityFailure::NotImplemented);
     if (Instance->IsActive()) return Fail(ETripoAbilityFailure::AlreadyActive);
     const double Now = Runtime->GetActionSeconds();
-    if (ReadyAt.FindRef(Id) > Now) return Fail(ETripoAbilityFailure::Cooldown);
+    if (P->Cooldown > 0 && ReadyAt.FindRef(Id) > Now) return Fail(ETripoAbilityFailure::Cooldown);
     auto Result = Instance->Validate(Target, *P);
     if (Result != ETripoAbilityFailure::None) return Fail(Result);
     Result = Instance->BeginEffect(Target, *P);
@@ -158,17 +159,20 @@ bool UTripoAbilityComponent::Cancel(FGuid Handle)
 bool UTripoAbilityComponent::CancelAbility(ETripoAbility Id)
 { const auto* I = Instances.FindRef(Id).Get(); return I && Cancel(I->GetHandle()); }
 void UTripoAbilityComponent::ReportFailure(ETripoAbility Id, ETripoAbilityFailure Failure)
-{ LastFailure = Failure; OnFailed.Broadcast(Id, FGuid(), Failure, false); }
+{ LastFailedAbility = Id; LastFailure = Failure; OnFailed.Broadcast(Id, FGuid(), Failure, false); }
 FString UTripoAbilityComponent::GetFailureMessage() const
 {
     switch (LastFailure)
     {
     case ETripoAbilityFailure::None: return TEXT("");
     case ETripoAbilityFailure::Locked: return TEXT("此能力尚未解锁");
-    case ETripoAbilityFailure::NoTarget: return TEXT("没有可用目标或历史不足");
+    case ETripoAbilityFailure::NoTarget:
+        if (LastFailedAbility == ETripoAbility::Slow) return TEXT("F：面向 6 米内启用时间影响的平台；普通场景物体不能减慢");
+        if (LastFailedAbility == ETripoAbility::Rewind) return TEXT("R 回溯自身 / T 回溯前方 6 米内的时间平台；需先积累历史，站在原地回溯不会产生位移");
+        return TEXT("没有可用目标或历史不足");
     case ETripoAbilityFailure::Cooldown: return TEXT("能力仍在冷却");
     case ETripoAbilityFailure::AlreadyActive: return TEXT("能力正在运行");
-    case ETripoAbilityFailure::Capacity: return TEXT("石块已达数量上限，请等待到期");
+    case ETripoAbilityFailure::Capacity: return LastFailedAbility==ETripoAbility::Echo ? TEXT("分身已达数量上限，短按 X 回收最新分身或长按 X 选择回收") : TEXT("石块已达数量上限，请等待到期");
     case ETripoAbilityFailure::AirUseSpent: return TEXT("本次空中次数已使用，需要重新落地或离开墙面");
     case ETripoAbilityFailure::Blocked: return TEXT("位置被阻挡或当前状态不允许");
     default: return TEXT("当前无法使用此能力");
