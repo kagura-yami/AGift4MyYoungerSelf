@@ -5,6 +5,7 @@
 #include "Core/TripoRuntimeSubsystem.h"
 #include "Player/TripoCharacter.h"
 #include "Components/MeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInterface.h"
 #include "UObject/ConstructorHelpers.h"
 #include "World/TripoMechanism.h"
@@ -25,7 +26,7 @@ bool UTripoInteractionTarget::CanInteract(ATripoCharacter* P) const
     if(!bEnabled || !IsValid(P) || !P->IsPlayerControlled() || P->Interactor->bSuppressed || !R || R->IsActionPaused() ||
         R->GetRestorePhase()!=ETripoRestorePhase::Running || FVector::DistSquared(P->GetActorLocation(),GetComponentLocation())>FMath::Square(Reach)) return false;
     if(const auto* Lift=Cast<ATripoElevator>(GetOwner()); Lift && !Lift->CanUseTarget(this,P)) return false;
-    if(const auto* Gift=Cast<ATripoGiftBox>(GetOwner()); Gift && (!Gift->bEnabled || Gift->bOpened || !Gift->IsInReach(P))) return false;
+    if(const auto* Gift=Cast<ATripoGiftBox>(GetOwner())) return Gift->bEnabled && !Gift->bOpened && Gift->IsInReach(P);
     if(const auto* Mechanism=Cast<ATripoMechanism>(GetOwner()); Mechanism && Mechanism->Kind!=ETripoMechanismKind::Switch) return false;
     FHitResult Hit; FCollisionQueryParams Q(SCENE_QUERY_STAT(FocusReach),false,P);
     return !GetWorld()->LineTraceSingleByChannel(Hit,P->GetActorLocation(),GetComponentLocation(),ECC_Visibility,Q) || Hit.GetComponent()==this || Hit.GetComponent()==HighlightMesh;
@@ -36,7 +37,15 @@ bool UTripoInteractionTarget::TryInteract(ATripoCharacter* P)
     if(auto* Lift=Cast<ATripoElevator>(GetOwner())) return Lift->UseTarget(this,P);
     if(auto* Gift=Cast<ATripoGiftBox>(GetOwner())) return Gift->TryOpen(P);
     if(auto* Mechanism=Cast<ATripoMechanism>(GetOwner())) return Mechanism->Interact(P);
-    OnInteract.Broadcast(P); return true;
+    if (!InteractionEvent.IsNone())
+    {
+        UFunction* Event = GetOwner()->FindFunction(InteractionEvent);
+        if (!Event || Event->NumParms != 0) return false;
+        GetOwner()->ProcessEvent(Event,nullptr);
+    }
+    OnInteract.Broadcast(P);
+    if (bSingleUse) { bEnabled=false; SetFocused(false); }
+    return true;
 }
 void UTripoInteractionTarget::SetFocused(bool bFocused)
 {
@@ -45,4 +54,9 @@ void UTripoInteractionTarget::SetFocused(bool bFocused)
     if(!IsValid(HighlightMesh) || !HighlightMaterial) return;
     if(bFocused) { PreviousOverlay=HighlightMesh->GetOverlayMaterial(); HighlightMesh->SetOverlayMaterial(HighlightMaterial); }
     else { HighlightMesh->SetOverlayMaterial(PreviousOverlay); PreviousOverlay=nullptr; }
+    if (auto* Gift=Cast<ATripoGiftBox>(GetOwner()); Gift && Gift->LidMesh)
+    {
+        if (bFocused) { PreviousLidOverlay=Gift->LidMesh->GetOverlayMaterial(); Gift->LidMesh->SetOverlayMaterial(HighlightMaterial); }
+        else { Gift->LidMesh->SetOverlayMaterial(PreviousLidOverlay); PreviousLidOverlay=nullptr; }
+    }
 }

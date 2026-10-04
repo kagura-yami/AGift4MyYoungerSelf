@@ -41,7 +41,7 @@ def tick(dt):
   elif phase==6 and e.current_floor==1 and e.door_alpha>.99:
    check('Upper floor aligned',abs(p.get_actor_location().z-613.619)<8)
    place(-1430,826,614);pc.set_control_rotation(unreal.Rotator(pitch=-6.6,yaw=180,roll=0));step()
-  elif phase==7 and elapsed>4.5:
+  elif phase==7 and elapsed>e.auto_close_delay+1.5:
    check('Upper landing closes after exit',e.door_alpha==0)
    check('Upper down button focused',p.get_focused_target()==e.landing_controls[1]);check('Upper call accepted',e.landing_controls[1].try_interact(p));step()
   elif phase==8 and elapsed>1:

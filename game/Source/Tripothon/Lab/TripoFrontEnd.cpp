@@ -1,4 +1,5 @@
 #include "Lab/TripoHUD.h"
+#include "Progress/TripoProgressSubsystem.h"
 #include "Lab/TripoMenuStyle.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/SOverlay.h"
@@ -10,7 +11,7 @@
 TSharedRef<SWidget> ATripoHUD::BuildFrontEnd()
 {
     const TWeakObjectPtr<ATripoHUD> Weak(this);
-    const bool HasSave=UGameplayStatics::DoesSaveGameExist(TEXT("TripothonStory_A"),0) || UGameplayStatics::DoesSaveGameExist(TEXT("TripothonStory_B"),0);
+    const bool HasSave=UTripoProgressSubsystem::Get(this)->HasCompatibleSave(false);
     const FLinearColor Gold(.9f,.68f,.34f),Cream(.98f,.94f,.82f);
     // Slate owns the animation state; weak widget/HUD references avoid ownership cycles.
     struct FButtonMotion { float Hover=0, Press=0, Flash=0; double Trigger=-1; };

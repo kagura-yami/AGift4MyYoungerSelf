@@ -33,6 +33,14 @@ bool FTripoEchoControlTest::RunTest(const FString&)
     auto* Third=Cast<ATripoEchoActor>(PC->GetEchoBodies().Last());
     TestEqual(TEXT("Three clones"),PC->GetEchoCount(),3);
     TestFalse(TEXT("No fourth clone"),PC->CreateEcho());
+    PC->KeyForTest(EKeys::C,true); PC->KeyForTest(EKeys::C,false);
+    TestTrue(TEXT("C tap selects oldest clone without creating"),PC->GetPawn()==First && PC->GetEchoCount()==3);
+    PC->KeyForTest(EKeys::C,true); PC->KeyForTest(EKeys::C,false);
+    TestTrue(TEXT("C tap selects next clone"),PC->GetPawn()==PC->GetEchoBodies()[2]);
+    PC->KeyForTest(EKeys::C,true); PC->KeyForTest(EKeys::C,false);
+    TestTrue(TEXT("C tap reaches third clone"),PC->GetPawn()==Third);
+    PC->KeyForTest(EKeys::C,true); PC->KeyForTest(EKeys::C,false);
+    TestTrue(TEXT("C tap wraps to original"),PC->GetPawn()==P);
     TestTrue(TEXT("Open switch wheel"),PC->OpenEchoWheel());
     PC->InputKey(FInputKeyEventArgs::CreateSimulated(EKeys::MouseX,IE_Axis,48.f)); // Actual mouse input path: top original, right first clone.
     PC->PlayerCameraManager->UpdateCamera(.2f);

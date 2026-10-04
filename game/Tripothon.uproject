@@ -5,6 +5,7 @@
   "Description": "Tripothon gameplay development",
   "Modules": [{"Name":"Tripothon","Type":"Runtime","LoadingPhase":"Default"}],
   "Plugins": [
+    {"Name":"GeometryScripting","Enabled":true,"TargetAllowList":["Editor"]},
     {"Name":"EnhancedInput","Enabled":true},
     {"Name":"PythonScriptPlugin","Enabled":true,"TargetAllowList":["Editor"]},
     {"Name":"EditorScriptingUtilities","Enabled":true,"TargetAllowList":["Editor"]},

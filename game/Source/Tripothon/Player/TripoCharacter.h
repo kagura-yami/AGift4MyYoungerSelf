@@ -35,6 +35,10 @@ public:
     virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
     virtual void Landed(const FHitResult& Hit) override;
     void ResetAfterRestore();
+    UFUNCTION(BlueprintCallable, Category="Tripo|Buff") bool ApplySpeedBuff(float Multiplier, float Duration);
+    UFUNCTION(BlueprintPure, Category="Tripo|Buff") float GetSpeedBuffMultiplier() const;
+    float SpeedBuffMultiplier = 1.f;
+    double SpeedBuffExpires = 0.;
     FString GetStonePreviewHint() const;
 
     UFUNCTION(BlueprintPure, Category="Tripo|Camera") float GetCameraYaw() const;

@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/World.h"
+#include "Story/TripoStorySubsystem.h"
 
 void ATripoPlayerController::KeyForTest(FKey Key, bool bPressed)
 {
@@ -24,6 +25,31 @@ bool ATripoPlayerController::CanUseEchoInput() const
 }
 bool ATripoPlayerController::InputKey(const FInputKeyEventArgs& Params)
 {
+    auto* Story=GetWorld()->GetSubsystem<UTripoStorySubsystem>();
+    if (Story && Story->HasDialogue() && CanUseEchoInput() && !bEchoWheelOpen)
+    {
+        const bool bChoice=Story->IsLastLine() && Story->GetCurrentId()==TEXT("Story.Finale.SendReply");
+        if (Params.Key==EKeys::Enter || Params.Key==EKeys::Tab ||
+            (bChoice && (Params.Key==EKeys::One || Params.Key==EKeys::Two || Params.Key==EKeys::Three)))
+        {
+            if (Params.Event==IE_Pressed)
+            {
+                if (Params.Key==EKeys::Tab) Story->CloseEvent(true);
+                else if (!bChoice) Story->AdvanceDialogue();
+                else if (Params.Key!=EKeys::Enter)
+                    if (auto* HUD=Cast<ATripoHUD>(GetHUD()))
+                        HUD->HandleAction(FString::Printf(TEXT("reply.%d"),Params.Key==EKeys::One?0:Params.Key==EKeys::Two?1:2));
+            }
+            return true;
+        }
+    }
+    if (Params.Key==EKeys::V)
+    {
+        if (Params.Event==IE_Pressed && !bEchoWheelOpen && CanUseEchoInput())
+            if (auto* Source=Cast<ATripoCharacter>(GetPawn()))
+            { FGuid Handle; Source->Abilities->TryActivate(ETripoAbility::Echo,nullptr,Handle); }
+        return true;
+    }
     if (Params.Key==EKeys::C)
     {
         if (Params.Event==IE_Pressed && !bEchoKeyHeld && !bReclaimKeyHeld && !bEchoWheelOpen && CanUseEchoInput())
@@ -135,12 +161,7 @@ bool ATripoPlayerController::CreateEcho()
 }
 void ATripoPlayerController::TapEcho()
 {
-    if (auto* Source=Cast<ATripoCharacter>(GetPawn()))
-    {
-        FGuid Handle;
-        if (Source->Abilities->TryActivate(ETripoAbility::Echo,nullptr,Handle)==ETripoAbilityFailure::None && !EchoBodies.IsEmpty())
-            PossessEchoBody(EchoBodies.Last());
-    }
+    SwitchEcho();
 }
 bool ATripoPlayerController::SwitchEcho()
 {

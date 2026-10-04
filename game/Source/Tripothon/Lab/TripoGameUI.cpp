@@ -148,7 +148,7 @@ TEXT("空中面向可蹬跳墙面，按 Space 向外和向上弹跳。同一墙�
 TEXT("按住 Q 预览，滚轮调节远近，松开放置。位置受阻、禁建区域或达到数量上限时不能放置。"),
 TEXT("减慢前方 6 米内可受时间影响的平台。目标不能被遮挡。"),
 TEXT("R 回溯自身，T 回溯平台，共享等级与冷却。需要足够历史，遇阻挡可能提前结束。"),
-TEXT("短按 C 原地创建；长按 C 用轮盘切换。短按 X 回收最新分身；长按 X 选择回收。悬停预览，松开确认。"),
+TEXT("V 原地创建；短按 C 顺序切换，长按 C 用轮盘选择。短按 X 回收最新分身；长按 X 选择回收。悬停预览，松开确认。"),
 TEXT("开始挑战时自动增加奖励时间预算，无需主动施放。")};
 const FLinearColor Ink(.035f,.065f,.045f);
 const FLinearColor Cream(.91f,.85f,.68f);
@@ -223,7 +223,7 @@ FText ATripoHUD::SkillStatus(int32 Index) const
     }
     if (Id==ETripoAbility::Echo)
         if (const auto* PC=Cast<ATripoPlayerController>(PlayerOwner))
-            return FText::FromString(FString::Printf(TEXT("%d/%d · 长按 C 切换 · X 回收"),PC->GetEchoCount(),PC->GetEchoCapacity()));
+            return FText::FromString(FString::Printf(TEXT("%d/%d · V 创建 · C 切换 · X 回收"),PC->GetEchoCount(),PC->GetEchoCapacity()));
     const double Cooldown = C->Abilities->GetCooldownRemaining(Id);
     const auto* M = Cast<UTripoMovementComponent>(C->GetCharacterMovement());
     const bool bSpent = M && ((Index == 0 && M->bDashSpent) || (Index == 1 && M->bUpSpent));
@@ -516,7 +516,8 @@ TSharedRef<SWidget> ATripoHUD::BuildMenuPage()
         Controls(TEXT("Shift / Ctrl"),TEXT("平面位移 / 空中再次跃起"));
         Controls(TEXT("Q + 滚轮"),TEXT("按住预览、滚轮调距、松开放置垫脚石"));
         Controls(TEXT("F / R / T"),TEXT("减慢目标 / 回溯自身 / 回溯平台"));
-        Controls(TEXT("C"),TEXT("短按创建分身 · 长按轮盘切换"));
+        Controls(TEXT("C"),TEXT("短按顺序切换 · 长按轮盘选择"));
+        Controls(TEXT("V"),TEXT("原地创建分身"));
         Controls(TEXT("X"),TEXT("短按回收最新分身 · 长按选择回收"));
     }
     else

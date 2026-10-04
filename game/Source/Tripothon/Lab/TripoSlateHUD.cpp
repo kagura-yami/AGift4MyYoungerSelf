@@ -42,21 +42,28 @@ void ATripoHUD::BeginPlay()
     + SOverlay::Slot()
     [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
         .BorderBackgroundColor(FLinearColor(.018f,.035f,.029f,1.f))
-        .Visibility_Lambda([WeakThis] { return WeakThis.IsValid() && (WeakThis->bEntryMenu || (WeakThis->PlayerOwner && WeakThis->PlayerOwner->IsPaused())) ? EVisibility::HitTestInvisible : EVisibility::Collapsed; })]
+        .Visibility_Lambda([WeakThis]
+        {
+            if (!WeakThis.IsValid()) return EVisibility::Collapsed;
+            // Reward pauses freeze gameplay without covering the scene behind the floating panel.
+            const auto* Progress = UTripoProgressSubsystem::Get(WeakThis.Get());
+            const bool bReward = WeakThis->bGiftReceipt || (Progress && Progress->GetPhase() == ETripoChallengePhase::PendingReward);
+            const bool bMenu = WeakThis->bEntryMenu || (!bReward && WeakThis->PlayerOwner && WeakThis->PlayerOwner->IsPaused());
+            return bMenu ? EVisibility::HitTestInvisible : EVisibility::Collapsed;
+        })]
     + SOverlay::Slot()
     [SNew(SScaleBox).Stretch(EStretch::ScaleToFill)
         .Visibility_Lambda([WeakThis]{return WeakThis.IsValid() && WeakThis->bEntryMenu ? EVisibility::HitTestInvisible : EVisibility::Collapsed;})
         [SNew(SImage).Image(&MainMenuArtBrush)]]
-    + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(18)
-    [SNew(SBorder).Visibility_Lambda([WeakThis]{return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() ? EVisibility::HitTestInvisible : EVisibility::Collapsed;}).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(.015,.025,.045,.85))
-        [SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 16)).Text_Lambda([WeakThis] { return WeakThis.IsValid() ? WeakThis->StatusText() : FText::GetEmpty(); }).AutoWrapText(true).WrapTextAt(480)]]
     + SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Top).Padding(24)
     [SNew(STextBlock).ColorAndOpacity(FLinearColor(.95,.9,.75)).ShadowOffset(FVector2D(1,1)).Font(FCoreStyle::GetDefaultFontStyle("Regular",20)).Text_Lambda([WeakThis] { return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() ? WeakThis->ChallengeText() : FText::GetEmpty(); })]
-    + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(24,16,16,24)
+    + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(24,24,16,16)
     [SNew(SScaleBox).Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)
         .Visibility_Lambda([WeakThis] { return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() ? EVisibility::HitTestInvisible : EVisibility::Collapsed; })[BuildSkillBar()]]
     + SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center).Padding(24)
     [SNew(SScaleBox).Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)[SAssignNew(PanelHost, SBox)]]
+    + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(32,24,32,32)
+    [SNew(SScaleBox).Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)[SAssignNew(StoryHost,SBox).Visibility(EVisibility::HitTestInvisible)]]
     + SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center).Padding(12)
     [SNew(SScaleBox).Visibility(EVisibility::HitTestInvisible)
         .Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)[BuildEchoWheel()]];
@@ -66,12 +73,12 @@ void ATripoHUD::EndPlay(const EEndPlayReason::Type Reason)
 {
     if (RootWidget.IsValid() && GetWorld()->GetGameViewport()) GetWorld()->GetGameViewport()->RemoveViewportWidgetContent(RootWidget.ToSharedRef());
     if (bGiftReceipt) if (auto* R=UTripoRuntimeSubsystem::GetRuntime(this)) R->SetPauseReason(ETripoPauseReason::Reward,false);
-    RootWidget.Reset(); PanelHost.Reset(); UITextures.Empty(); Super::EndPlay(Reason);
+    RootWidget.Reset(); PanelHost.Reset(); StoryHost.Reset(); UITextures.Empty(); Super::EndPlay(Reason);
 }
 bool ATripoHUD::IsGameplayBlocked() const
 {
     auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
-    return bGiftReceipt || bEntryMenu || bCollection || bExchange || (PlayerOwner && PlayerOwner->IsPaused()) || (Story && Story->HasDialogue()) || (P && P->GetPhase() == ETripoChallengePhase::PendingReward);
+    return bGiftReceipt || bEntryMenu || bCollection || bExchange || (PlayerOwner && PlayerOwner->IsPaused()) || (P && P->GetPhase() == ETripoChallengePhase::PendingReward);
 }
 FText ATripoHUD::StatusText() const
 {
@@ -91,8 +98,21 @@ void ATripoHUD::RefreshUI()
     if (!PanelHost.IsValid()) return;
     if (!bEntryMenu && (!PlayerOwner || !PlayerOwner->IsPaused())) { bAbilityConfig = false; MenuPage = EMenuPage::Pause; }
     auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
+    const double Now=FPlatformTime::Seconds();
+    const float StoryDt=StoryLastTick>0?FMath::Clamp(float(Now-StoryLastTick),0.f,.25f):0.f;
+    StoryLastTick=Now;
+    const FString StoryKey=Story->HasDialogue()?Story->GetCurrentId().ToString()+TEXT(":")+FString::FromInt(Story->GetLineIndex()):FString();
+    if (TimedStoryLine!=StoryKey) { TimedStoryLine=StoryKey; StoryLineElapsed=0; }
+    if (Story->HasDialogue() && !IsGameplayBlocked())
+    {
+        StoryLineElapsed+=StoryDt;
+        const bool bAwaitChoice=Story->IsLastLine() && Story->GetCurrentId()==TEXT("Story.Finale.SendReply") && P->GetReplyChoice()==INDEX_NONE;
+        const float Duration=FMath::Clamp(2.f+Story->GetLine().Len()*.16f,4.f,12.f);
+        if (!bAwaitChoice && StoryLineElapsed>=Duration) { Story->AdvanceDialogue(); StoryLineElapsed=0; }
+    }
     const FString Key = FString::FromInt(int32(MenuPage)) + TEXT(":") + FString::FromInt(HandbookAbility) + TEXT(":") + FString::Printf(TEXT("%d:%d:%d:%d:%d:%s"),PlayerOwner && PlayerOwner->IsPaused(),int32(P->GetPhase()),bExchange,ExchangeFrom,ExchangeTo,Story->HasDialogue() ? *Story->GetCurrent().Id.ToString() : TEXT(""));
-    if (Key != PanelKey) { PanelKey = Key; RebuildPanel(); }
+    const FString FullKey=Key+FString::FromInt(Story->GetLineIndex());
+    if (FullKey != PanelKey) { PanelKey = FullKey; RebuildPanel(); }
     const bool bModal = IsGameplayBlocked();
     if (PlayerOwner && bModal != bWasModal)
     {
@@ -109,8 +129,15 @@ bool ATripoHUD::OpenExchange()
 }
 void ATripoHUD::RebuildPanel()
 {
+    StoryHost->SetContent(SNullWidget::NullWidget);
     if (bEntryMenu) { PanelHost->SetContent(MenuPage==EMenuPage::Pause ? BuildFrontEnd() : BuildMenuPage()); return; }
     if (bGiftReceipt) { PanelHost->SetContent(BuildGiftReceipt()); return; }
+    if (!IsGameplayBlocked() && GetWorld()->GetSubsystem<UTripoStorySubsystem>()->HasDialogue())
+    {
+        PanelHost->SetContent(SNullWidget::NullWidget);
+        StoryHost->SetContent(BuildStoryBubble());
+        return;
+    }
     if (!IsGameplayBlocked()) { PanelHost->SetContent(SNullWidget::NullWidget); return; }
     if (PlayerOwner && PlayerOwner->IsPaused() && !bEntryMenu && !bCollection && !bAbilityConfig) { PanelHost->SetContent(BuildMenuPage()); return; }
     const TWeakObjectPtr<ATripoHUD> WeakThis(this);
@@ -310,7 +337,7 @@ void ATripoHUD::HandleAction(FString Action)
         else if (P->SaveSafe(C)) P->NewGame(true);
     }
     else if (Action == TEXT("quit")) UKismetSystemLibrary::QuitGame(this,PlayerOwner,EQuitPreference::Quit,false);
-    else if (Action == TEXT("story")) Story->CloseEvent(false);
+    else if (Action == TEXT("story")) Story->AdvanceDialogue();
     else if (Action == TEXT("skip")) Story->CloseEvent(true);
     else if (Action.StartsWith(TEXT("reply.")) && Story->HasDialogue() && Story->GetCurrent().Id == TEXT("Story.Finale.SendReply"))
     { if (P->SelectReply(FCString::Atoi(*Action.Mid(6)))) { Story->CloseEvent(false); P->SaveSafe(C); } }

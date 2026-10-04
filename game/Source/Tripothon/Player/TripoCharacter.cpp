@@ -159,7 +159,7 @@ void ATripoCharacter::BeginPlay()
     PracticeStart = GetActorLocation();
     if (!IsA<ATripoEchoActor>()) UTripoWorldSubsystem::Get(this)->SetCheckpoint(this, GetActorTransform());
     GetCharacterMovement()->bRunPhysicsWithNoController = true;
-    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed * GetSpeedBuffMultiplier();
     GetCharacterMovement()->JumpZVelocity = JumpSpeed;
     if (auto* PC = Cast<APlayerController>(GetController()))
     {
@@ -292,6 +292,10 @@ void ATripoCharacter::Interact(const FInputActionValue&)
     UpdateInteractionFocus();
     if(auto* Target=FocusedTarget.Get()) { Target->TryInteract(this); return; }
     if (auto* PC = Cast<APlayerController>(Controller)) if (auto* HUD = Cast<ATripoHUD>(PC->GetHUD())) if (HUD->OpenExchange()) return;
+    // A completed chapter exit wins over its nearby, already-read gift dialogue.
+    auto* Progress=UTripoProgressSubsystem::Get(this);
+    for (TActorIterator<ATripoStoryTrigger> It(GetWorld()); It; ++It)
+        if (!Progress->GetChapterDestination(It->EventId).IsNone() && It->Interact(this)) return;
     for (TActorIterator<ATripoStoryTrigger> It(GetWorld()); It; ++It) if (It->Interact(this)) return;
 
 }
@@ -337,7 +341,7 @@ void ATripoCharacter::Tick(float DeltaSeconds)
     }
     const double Now = GetWorld()->GetTimeSeconds();
     const bool bGrounded = GetCharacterMovement()->IsMovingOnGround();
-    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed *
+    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed * GetSpeedBuffMultiplier() *
         (GetCharacterMovement()->IsFalling() && bJumpSpent ? JumpHorizontalSpeedScale : 1.f);
     // ControlRotation owns the view. Only the body follows it; movement and body
     // rotation never write back into the camera, so strafing cannot orbit the view.
@@ -351,7 +355,7 @@ void ATripoCharacter::Tick(float DeltaSeconds)
     if (GetCharacterMovement()->MovementMode != MOVE_Custom && TripoMovement::CanUseBufferedJump(Now, JumpRequestedAt, LastGroundedAt, bGrounded, bJumpSpent, JumpBufferSeconds, CoyoteSeconds))
     {
         // One impulse, also valid briefly after leaving a ledge. Landing rearms it.
-        GetCharacterMovement()->MaxWalkSpeed = WalkSpeed * JumpHorizontalSpeedScale;
+        GetCharacterMovement()->MaxWalkSpeed = WalkSpeed * GetSpeedBuffMultiplier() * JumpHorizontalSpeedScale;
         GetCharacterMovement()->Velocity.X *= JumpHorizontalSpeedScale;
         GetCharacterMovement()->Velocity.Y *= JumpHorizontalSpeedScale;
         GetCharacterMovement()->Velocity.Z = JumpSpeed;
@@ -380,7 +384,7 @@ void ATripoCharacter::Tick(float DeltaSeconds)
 void ATripoCharacter::Landed(const FHitResult& Hit)
 {
     Super::Landed(Hit);
-    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed * GetSpeedBuffMultiplier();
     bJumpSpent = false;
     CastChecked<UTripoMovementComponent>(GetCharacterMovement())->ResetAirUses();
     LastGroundedAt = GetWorld()->GetTimeSeconds();
@@ -400,6 +404,7 @@ void ATripoCharacter::ResetPracticePosition()
 }
 void ATripoCharacter::ResetAfterRestore()
 {
+    SpeedBuffMultiplier = 1.f; SpeedBuffExpires = 0.;
     bStonePreview = false; StonePreview->SetVisibility(false);
     CastChecked<UTripoMovementComponent>(GetCharacterMovement())->ResetAirUses();
     GetCharacterMovement()->StopMovementImmediately();
@@ -450,7 +455,7 @@ void ATripoCharacter::UpdateInteractionFocus()
             {
                 TInlineComponentArray<UTripoInteractionTarget*> Targets(Hit.GetActor());
                 for(auto* T:Targets)
-                    if(T->HighlightMesh==Hit.GetComponent()) { Next=T; break; }
+                    if(T->HighlightMesh==Hit.GetComponent() || Cast<ATripoGiftBox>(Hit.GetActor())) { Next=T; break; }
             }
             if(Next && !Next->CanInteract(this)) Next=nullptr;
         }
@@ -468,4 +473,20 @@ void ATripoCharacter::ClickFocused()
     if(!GameplayInputAllowed()) return;
     UpdateInteractionFocus();
     if(auto* Target=FocusedTarget.Get()) Target->TryInteract(this);
+}
+
+bool ATripoCharacter::ApplySpeedBuff(float Multiplier, float Duration)
+{
+    auto* Runtime = UTripoRuntimeSubsystem::GetRuntime(this);
+    if (!HasAuthority() || !IsPlayerControlled() || !GameplayInputAllowed() || !Runtime || Runtime->IsActionPaused() || Runtime->GetRestorePhase() != ETripoRestorePhase::Running || !FMath::IsFinite(Multiplier) || !FMath::IsFinite(Duration) || Duration <= 0.f) return false;
+    // Latest pickup replaces the previous effect; repeated pickups refresh duration.
+    SpeedBuffMultiplier = FMath::Clamp(Multiplier, .2f, 3.f);
+    SpeedBuffExpires = Runtime->GetActionSeconds() + Duration;
+    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed * SpeedBuffMultiplier * (GetCharacterMovement()->IsFalling() && bJumpSpent ? JumpHorizontalSpeedScale : 1.f);
+    return true;
+}
+float ATripoCharacter::GetSpeedBuffMultiplier() const
+{
+    auto* Runtime = UTripoRuntimeSubsystem::GetRuntime(this);
+    return Runtime && Runtime->GetActionSeconds() < SpeedBuffExpires ? SpeedBuffMultiplier : 1.f;
 }

@@ -12,7 +12,16 @@ bool UTripoStorySubsystem::OpenEvent(ATripoCharacter* Player, UTripoStoryCatalog
     for (FName Required : E->RequiredEvents) if (!P->HasApplied(Required)) return false;
     for (FName Required : E->RequiredChallenges) if (!P->HasCompleted(Required)) return false;
     if (!P->ApplyStory(Player, Id, E->GrantFloors)) return false;
-    Current = *E; Reader = Player; bOpen = true; return true;
+    Current = *E; Reader = Player; bOpen = true;
+    Lines.Reset(); LineIndex=0;
+    Current.Text.ToString().Replace(TEXT("\\n"),TEXT("\n")).ParseIntoArrayLines(Lines,true);
+    return true;
+}
+void UTripoStorySubsystem::AdvanceDialogue()
+{
+    if (!bOpen) return;
+    if (!IsLastLine()) ++LineIndex;
+    else CloseEvent(false);
 }
 void UTripoStorySubsystem::CloseEvent(bool bSkip)
 {
@@ -21,7 +30,10 @@ void UTripoStorySubsystem::CloseEvent(bool bSkip)
     {
         auto* P = UTripoProgressSubsystem::Get(Reader.Get());
         if (!bSkip) P->MarkViewed(Current.Id);
-        if (!Current.NextMap.IsNone()) P->Travel(Reader.Get(), Current.NextMap);
+        const FName ChapterMap=P->GetChapterDestination(Current.Id);
+        const FName Destination=ChapterMap.IsNone()?Current.NextMap:ChapterMap;
+        // Keep blocked exits retryable instead of silently closing the dialogue.
+        if (!Destination.IsNone() && !P->Travel(Reader.Get(),Destination)) { bOpen=true; return; }
     }
     Reader.Reset();
 }

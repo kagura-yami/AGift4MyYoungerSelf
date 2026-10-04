@@ -31,6 +31,8 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Elevator") TArray<TObjectPtr<UStaticMeshComponent>> LandingDoors;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Elevator") TArray<TObjectPtr<UBoxComponent>> LandingBarriers;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Elevator") TObjectPtr<UTripoInteractionTarget> CabinControl;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Elevator") TObjectPtr<UStaticMeshComponent> DoorButton;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Elevator") TObjectPtr<UTripoInteractionTarget> DoorControl;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Elevator") TArray<TObjectPtr<UTripoInteractionTarget>> LandingControls;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Elevator|Door") FVector UpperDoorOffset = FVector::ZeroVector;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Elevator|Door") bool bManualDoors = true;

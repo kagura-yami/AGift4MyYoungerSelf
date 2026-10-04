@@ -7,6 +7,6 @@ public class Tripothon : ModuleRules
         PublicIncludePaths.Add(ModuleDirectory);
         PublicDependencyModuleNames.AddRange(new[] {"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags"});
         if (Target.bBuildEditor) PrivateDependencyModuleNames.AddRange(new[] {"MeshDescription", "AssetRegistry"});
-        PrivateDependencyModuleNames.AddRange(new[] {"Slate", "SlateCore", "AIModule", "NavigationSystem"});
+        PrivateDependencyModuleNames.AddRange(new[] {"Slate", "SlateCore", "UMG", "AIModule", "NavigationSystem"});
     }
 }
