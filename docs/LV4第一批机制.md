@@ -8,7 +8,7 @@ UE **5.7.4**，打开 `/Game/Maps/L_Lv4MechanismWhitebox`，按编辑器播放�
 - **P** 打开暂停菜单；测试奖励面板也使用相同动作时钟暂停。
 - 电梯南侧为三点往返巡逻路线，两个绿色房间可躲藏。正面进入视野会被追；藏进去立即免抓，仇恨每秒减 45。
 - 出生区域同时有检查点和安全存档区。被抓后回到检查点，电梯和怪物一起恢复。
-- 测试分身可用已有能力配置面板先授予分身能力，再按 C 创建。门口的未操控分身也会阻止关门；移入轿厢后可以随电梯运行。
+- 测试分身可用已有能力配置面板先授予分身能力，再按 V 创建。门口的未操控分身也会阻止关门；移入轿厢后可以随电梯运行。
 
 ## 可摆放蓝图
 
@@ -138,7 +138,25 @@ UE **5.7.4**，打开 `/Game/Maps/L_Lv4MechanismWhitebox`，按编辑器播放�
 ### 门缝与门顶复查
 
 - 门板宽度改为 116.364 厘米，恢复 8 毫米中缝；深色密封条跟随左门运动，阻挡中缝后的景物。
-- 轿厢门楣加深至 80 厘米，两层增加固定门楣，封闭近距离仰视时暴露的门顶通道。
+- 轿厢门楣修正为局部 X=-80、厚度 16 厘米，与固定层门保留约 36 厘米间距；早期 80 厘米厚封板会穿过层门，已替换。两层保留固定门楣。
 - 视觉证据：`seam-mid00000.png`（半层轿厢内）、`seam-out00000.png`（入口仰视），位于 `tools/evaluation/elevator-rework/`。
 
 - 按钮高亮修正：`fit_lv4_button_highlight.py` 提取原模型上下按钮正面的多边形，覆盖层离表面约 0.07 厘米；一楼只亮上按钮，二楼只亮下按钮。底板保持原材质。已完成两层聚焦、呼梯及画面验证（`arrow-final00000.png`、`arrow-down-final00000.png`）。
+
+### 轿厢开门与移动分离
+- 绿色上按钮独立开门或延长开门；棕橙色下按钮关门并前往另一层。分别使用 DoorControl 与 CabinControl 聚焦和高亮。
+- 停靠且已关门时可重新开门；关门准备出发阶段按开门可取消出发；升降中禁止开门。到站及手动开门至少保持 5 秒，门口占用保护继续生效。
+- 关卡配置脚本：tools/scripts/setup_lv4_split_controls.py。PIE 交互验证：tools/evaluation/elevator-rework/split-controls-test.json。
+- 轿厢外壳使用 SM_Lv4MovingCabin_Clearance，将穿越层门的外装饰裁除；原始美术资源保持不变。
+
+### 固定门槛与出口门框复查
+- LV4_UpperShaftSill 缩回 X=-1590、厚度50厘米，后缘为-1615，不再穿过轿厢门内面（约-1634）。同步更新 fix_lv4_roof_return.py，避免重跑脚本恢复错误尺寸。
+- 原 LV4_FixedFrame_0/1 的窄框保留但隐藏并关闭碰撞；新固定侧框按层门234厘米净宽配置，去除出口中央悬空边框。
+- 修复脚本 fix_lv4_landing_clearance.py；内侧半层、开门及外侧截图为 elevator-rework/inside-mid-after.png、inside-open-after.png、landing-exterior-after.png。
+
+## 走廊速度球
+- `LV4_Pickup_*` 控制已有的 4 个绿色加速球、2 个蓝色减速球；玩家触碰后球隐藏，不阻挡通行。
+- 绿色速度倍率 1.5，蓝色倍率 0.65，持续 6 秒。后拾取的球替换当前效果，同类刷新持续时间，不累乘。
+- 使用行动时钟，暂停不消耗持续时间；普通跳跃保留速度效果，到期恢复基础速度。
+- 检查点恢复会清除角色速度效果，并重新显示已拾取的球。
+- 设置入口：`tools/scripts/setup_lv4_speed_pickups.py`；运行验证：`tools/scripts/validate_lv4_speed_pickups.py`。

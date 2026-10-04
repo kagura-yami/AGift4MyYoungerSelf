@@ -83,7 +83,11 @@ bool ATripoGiftBox::IsInReach(ATripoCharacter* Player) const
     if (!IsValid(Player) || !bEnabled || FVector::DistSquared(Player->GetActorLocation(),GetActorLocation())>FMath::Square(FMath::Max(50.f,InteractionDistance))) return false;
     FCollisionQueryParams Query(SCENE_QUERY_STAT(GiftReach),false,this);
     Query.AddIgnoredActor(Player);
-    return !GetWorld()->LineTraceTestByChannel(Player->GetActorLocation(),BoxMesh->GetComponentLocation(),ECC_Visibility,Query);
+    // Imported gift props have a bottom pivot resting on furniture. Aim at the
+    // visible mesh centre so the tabletop does not occlude the interaction.
+    FVector Eye=Player->GetPawnViewLocation(); FRotator View;
+    if (Player->GetController()) Player->GetController()->GetPlayerViewPoint(Eye,View);
+    return !GetWorld()->LineTraceTestByChannel(Eye,BoxMesh->Bounds.Origin,ECC_Visibility,Query);
 }
 ATripoGiftBox* ATripoGiftBox::FindNearby(ATripoCharacter* Player)
 {
@@ -111,7 +115,7 @@ bool ATripoGiftBox::TryOpen(ATripoCharacter* Player)
     LastError.Empty();
     OpenPresentationStart=FPlatformTime::Seconds();
     if (auto* PC=Cast<APlayerController>(Player->GetController()))
-        if (auto* HUD=Cast<ATripoHUD>(PC->GetHUD())) HUD->ShowGiftReceipt(Receipt.AbilityIndex,Receipt.GrantedLevel);
+        if (auto* HUD=Cast<ATripoHUD>(PC->GetHUD())) HUD->ShowGiftReceipt(Receipt.AbilityIndex,Receipt.GrantedLevel,OpenSeconds,Rewards.Num()>1);
     OnGiftOpened.Broadcast(Receipt);
     UpdateVisuals();
     return true;
@@ -132,8 +136,17 @@ void ATripoGiftBox::Tick(float Dt)
 void ATripoGiftBox::UpdateVisuals()
 {
     const float Ease=OpenAlpha*OpenAlpha*(3.f-2.f*OpenAlpha);
-    LidMesh->SetRelativeLocation(ClosedLidLocation+FVector(0,0,LidLift*Ease));
-    LidMesh->SetRelativeRotation(ClosedLidRotation+FRotator(-20*Ease,0,0));
+    if (const UStaticMesh* Mesh=LidMesh->GetStaticMesh())
+    {
+        // Rotate around the rear rim, not the imported mesh's bottom pivot.
+        // The lid remains attached to the box after the reward is collected.
+        const FBox Bounds=Mesh->GetBoundingBox();
+        const FVector Hinge=FVector(Bounds.Min.X,Bounds.GetCenter().Y,Bounds.Min.Z)*LidMesh->GetRelativeScale3D();
+        const FQuat Closed=ClosedLidRotation.Quaternion();
+        const FQuat Open=Closed*FQuat(FVector::YAxisVector,FMath::DegreesToRadians(-100.f*Ease));
+        LidMesh->SetRelativeRotation(Open);
+        LidMesh->SetRelativeLocation(ClosedLidLocation+Closed.RotateVector(Hinge)-Open.RotateVector(Hinge));
+    }
     auto* Player=Cast<ATripoCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
     Prompt->SetVisibility(IsValid(Player) && FVector::DistSquared(Player->GetActorLocation(),GetActorLocation())<FMath::Square(FMath::Max(50.f,InteractionDistance)+60.f));
     if (auto* Camera=UGameplayStatics::GetPlayerCameraManager(this,0))

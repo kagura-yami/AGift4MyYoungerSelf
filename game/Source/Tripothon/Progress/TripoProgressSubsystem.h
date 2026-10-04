@@ -8,7 +8,7 @@ class ATripoCharacter;
 class UTripoSaveGame;
 UENUM(BlueprintType)
 enum class ETripoChallengePhase : uint8 { Idle, Running, PendingReward, Committed };
-UCLASS()
+UCLASS(Config=Game)
 class TRIPOTHON_API UTripoProgressSubsystem : public UGameInstanceSubsystem
 {
     GENERATED_BODY()
@@ -31,6 +31,11 @@ public:
     UFUNCTION(BlueprintCallable) bool SaveSafe(ATripoCharacter* Player);
     UFUNCTION(BlueprintCallable) bool ContinueGame(bool bLab);
     UFUNCTION(BlueprintCallable) void NewGame(bool bLab);
+    UFUNCTION(BlueprintPure) bool HasCompatibleSave(bool bLab) const;
+    UFUNCTION(BlueprintPure) FName GetChapterDestination(FName EventId) const;
+    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category="Story|Flow") FString FirstChapterMap;
+    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category="Story|Flow") FString SecondChapterMap;
+    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category="Story|Flow") FString ThirdChapterMap;
     UFUNCTION(BlueprintCallable) bool Travel(ATripoCharacter* Player, FName MapPackage);
     bool ApplyPendingLoad(ATripoCharacter* Player);
     bool HasPendingLoad() const { return PendingLoad != nullptr || !PendingTravelLevels.IsEmpty(); }

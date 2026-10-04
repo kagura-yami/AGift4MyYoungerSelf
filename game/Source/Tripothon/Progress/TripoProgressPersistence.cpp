@@ -84,6 +84,7 @@ bool UTripoProgressSubsystem::ApplyPendingLoad(ATripoCharacter* Player)
 }
 void UTripoProgressSubsystem::NewGame(bool bLab)
 {
+    if (!bLab && !FPackageName::DoesPackageExist(FirstChapterMap)) { Message=TEXT("第一关地图不可用"); return; }
     PendingLoad = nullptr; Completed.Empty(); Viewed.Empty(); Applied.Empty(); Exchanges.Empty(); Candidates.Empty(); Current = nullptr;
     ReplyChoice = INDEX_NONE; PendingTravelLevels.Empty(); Gifts.Empty();
     Phase = ETripoChallengePhase::Idle; CurrentId = NAME_None; RunSeed = int32(GetTypeHash(FGuid::NewGuid()));
@@ -97,7 +98,7 @@ void UTripoProgressSubsystem::NewGame(bool bLab)
     }
     GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>()->BeginRun(FGuid::NewGuid());
     GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>()->SetPauseReason(ETripoPauseReason::Menu, false);
-    UGameplayStatics::OpenLevel(GetGameInstance(), bLab ? TEXT("/Game/Maps/L_LogicLab") : TEXT("/Game/Maps/lv4"));
+    UGameplayStatics::OpenLevel(GetGameInstance(), bLab ? FName(TEXT("/Game/Maps/L_LogicLab")) : FName(*FirstChapterMap));
 }
 bool UTripoProgressSubsystem::Travel(ATripoCharacter* Player, FName Map)
 {
@@ -119,4 +120,22 @@ bool UTripoProgressSubsystem::SelectReply(int32 Choice)
     if (ReplyChoice != INDEX_NONE) return ReplyChoice == Choice;
     ReplyChoice = Choice;
     return true;
+}
+
+bool UTripoProgressSubsystem::HasCompatibleSave(bool bLab) const
+{
+    for (const TCHAR* Suffix : {TEXT("A"),TEXT("B")}) {
+        const FString Slot=FString::Printf(TEXT("Tripothon%s_%s"),bLab?TEXT("Lab"):TEXT("Story"),Suffix);
+        if (!UGameplayStatics::DoesSaveGameExist(Slot,0)) continue;
+        const auto* Save=Cast<UTripoSaveGame>(UGameplayStatics::LoadGameFromSlot(Slot,0));
+        if (Save && Save->IsValidData() && Save->bLab==bLab && FPackageName::DoesPackageExist(Save->MapPackage)) return true;
+    }
+    return false;
+}
+FName UTripoProgressSubsystem::GetChapterDestination(FName EventId) const
+{
+    const FString Map=UGameplayStatics::GetCurrentLevelName(this,true);
+    if (Map==FPackageName::GetShortName(FirstChapterMap) && EventId==TEXT("Story.Home.Exit")) return FName(*SecondChapterMap);
+    if (Map==FPackageName::GetShortName(SecondChapterMap) && EventId==TEXT("Story.School.ScreenPortal")) return FName(*ThirdChapterMap);
+    return NAME_None;
 }

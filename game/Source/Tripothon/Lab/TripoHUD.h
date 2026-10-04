@@ -21,7 +21,7 @@ public:
     bool bSkipEntryMenuInEditor = true;
     bool IsGameplayBlocked() const;
     bool OpenExchange();
-    void ShowGiftReceipt(int32 AbilityIndex, int32 Level);
+    void ShowGiftReceipt(int32 AbilityIndex, int32 Level, float RevealDelay=0.f, bool bRandomDraw=false);
     UFUNCTION(BlueprintPure) bool IsGiftReceiptOpen() const { return bGiftReceipt; }
     UFUNCTION(BlueprintCallable) void HandleAction(FString Action);
     // Esc returns through tutorial/settings before releasing the menu pause.
@@ -43,6 +43,7 @@ private:
     FSlateBrush UpgradeBrush;
     FSlateBrush ItemBrush;
     FSlateBrush DialogueBrush;
+    FSlateBrush StoryBubbleBrush;
     static const FButtonStyle& MenuButtonStyle();
     TSharedRef<SWidget> FramePanel(TSharedRef<SWidget> Content,const FSlateBrush* Art,FVector2D Size,FMargin Padding);
     FSlateBrush EchoWheelBrush;
@@ -61,11 +62,18 @@ private:
     FText ChallengeText() const;
     TSharedPtr<SWidget> RootWidget;
     TSharedPtr<SBox> PanelHost;
+    TSharedPtr<SBox> StoryHost;
+    TSharedRef<SWidget> BuildStoryBubble();
     FString PanelKey;
+    FString TimedStoryLine;
+    double StoryLastTick = 0;
+    float StoryLineElapsed = 0;
     bool bGiftReceipt = false;
     int32 GiftAbility = INDEX_NONE;
     int32 GiftLevel = 0;
     double GiftRevealStart = 0;
+    double GiftSpinStart = 0;
+    bool bGiftSpin = false;
     TSharedRef<SWidget> BuildGiftReceipt();
     bool bWasModal = false;
     bool bExchange = false;

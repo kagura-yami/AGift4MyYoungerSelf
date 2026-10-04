@@ -5,13 +5,16 @@
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SBoxPanel.h"
+#include "Widgets/SOverlay.h"
 
-void ATripoHUD::ShowGiftReceipt(int32 AbilityIndex, int32 Level)
+void ATripoHUD::ShowGiftReceipt(int32 AbilityIndex, int32 Level, float RevealDelay, bool bRandomDraw)
 {
     if (bGiftReceipt || AbilityIndex < INDEX_NONE || AbilityIndex >= 8) return;
     GiftAbility=AbilityIndex;
     GiftLevel=Level;
-    GiftRevealStart=FPlatformTime::Seconds();
+    bGiftSpin=bRandomDraw && AbilityIndex!=INDEX_NONE;
+    GiftSpinStart=FPlatformTime::Seconds()+FMath::Max(0.f,RevealDelay);
+    GiftRevealStart=GiftSpinStart+(bGiftSpin?3.6:0.0);
     bGiftReceipt=true;
     if (auto* R=UTripoRuntimeSubsystem::GetRuntime(this)) R->SetPauseReason(ETripoPauseReason::Reward,true);
     PanelKey.Empty();
@@ -56,6 +59,31 @@ TSharedRef<SWidget> ATripoHUD::BuildGiftReceipt()
         [TripoMenu::Label(TEXT("收下礼物 · 继续旅途"),20,TripoMenu::Paper,true,false)]];
     Column->AddSlot().AutoHeight().HAlign(HAlign_Center)[TripoMenu::Label(TEXT("能力已生效 · 在安全点存档可保存本次收获"),13,TripoMenu::Muted)];
     auto Panel=FramePanel(Column,&ItemBrush,FVector2D(820,780),FMargin(155,145,125,125));
-    return SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("NoBrush")).Padding(0)
+    auto ReceiptPanel=SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("NoBrush")).Padding(0)
         .ColorAndOpacity_Lambda([WeakThis]{return FLinearColor(1,1,1,WeakThis.IsValid()?FMath::Clamp(float((FPlatformTime::Seconds()-WeakThis->GiftRevealStart-.2)/.4),0.f,1.f):1.f);})[Panel];
+    auto Spin=SNew(SVerticalBox);
+    Spin->AddSlot().AutoHeight().HAlign(HAlign_Center).Padding(0,0,0,22)
+        [TripoMenu::Label(TEXT("礼物正在揭晓"),22,TripoMenu::Paper,true)];
+    Spin->AddSlot().AutoHeight().HAlign(HAlign_Center)
+        [SNew(SBox).WidthOverride(132).HeightOverride(132)
+            [SNew(SImage).Image_Lambda([WeakThis]() -> const FSlateBrush*
+            {
+                if (!WeakThis.IsValid()) return nullptr;
+                // Integral of linearly decreasing speed: 32 icon steps in 3.2 seconds.
+                // Offset the sequence so the final step lands on the committed reward.
+                const double U=FMath::Clamp((FPlatformTime::Seconds()-WeakThis->GiftSpinStart)/3.2,0.0,1.0);
+                const int32 Step=FMath::Min(32,FMath::FloorToInt(32.0*(2.0*U-U*U)+.000001));
+                return &WeakThis->SkillBrushes[(WeakThis->GiftAbility+Step)%8];
+            })]];
+    Spin->AddSlot().AutoHeight().HAlign(HAlign_Center).Padding(0,22,0,0)
+        [TripoMenu::Label(TEXT("一份新的可能，正在到来"),15,TripoMenu::Paper)];
+    return SNew(SOverlay)
+        +SOverlay::Slot()[ReceiptPanel]
+        +SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center)
+        [SNew(SBox).Visibility_Lambda([WeakThis]
+        {
+            const double Now=FPlatformTime::Seconds();
+            return WeakThis.IsValid() && WeakThis->bGiftSpin && Now>=WeakThis->GiftSpinStart && Now<WeakThis->GiftRevealStart+.2
+                ?EVisibility::HitTestInvisible:EVisibility::Collapsed;
+        })[Spin]];
 }

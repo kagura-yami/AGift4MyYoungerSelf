@@ -27,7 +27,7 @@ e.set_editor_property('landing_door_offset',unreal.Vector(-38.696,0,0))
 e.restore_floor(0)
 # Door leaves span z=0..354; cabin roof is above 400. Overlapping inner surround seals the shaft view.
 cube=unreal.load_asset('/Engine/BasicShapes/Cube')
-for name,pos,size in [('Header',(-110,0,399),(80,320,110)),('LeftJamb',(-80,-140,177),(16,48,358)),('RightJamb',(-80,140,177),(16,48,358)),('Threshold',(-80,0,1),(16,320,4))]:
+for name,pos,size in [('Header',(-80,0,399),(16,320,110)),('LeftJamb',(-80,-140,177),(16,48,358)),('RightJamb',(-80,140,177),(16,48,358)),('Threshold',(-80,0,1),(16,320,4))]:
  label='LV4_CabinSeal_'+name;a=by.get(label) or aes.spawn_actor_from_class(unreal.StaticMeshActor,unreal.Vector(),unreal.Rotator())
  a.modify();a.set_actor_label(label);a.set_folder_path('LV4_Mechanisms/WestElevator/CabinTrim')
  c=a.static_mesh_component;c.set_mobility(unreal.ComponentMobility.MOVABLE);c.set_static_mesh(cube);c.set_material(0,trim);c.set_collision_profile_name('BlockAll')

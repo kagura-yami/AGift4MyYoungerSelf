@@ -42,6 +42,13 @@ ATripoElevator::ATripoElevator()
     CabinControl->SetupAttachment(Button); CabinControl->SetRelativeScale3D(FVector(100.f/12,100.f/12,5));
     CabinControl->SetBoxExtent(FVector(9,9,13)); CabinControl->HighlightMesh=Cast<UMeshComponent>(Button);
     CabinControl->Prompt=FText::FromString(TEXT("前往另一层"));
+    DoorButton=Mesh(TEXT("DoorButton"),Cabin,FVector(100,115,145),FVector(12,12,20));
+    DoorControl=CreateDefaultSubobject<UTripoInteractionTarget>(TEXT("DoorControl"));
+    DoorControl->SetupAttachment(DoorButton);
+    DoorControl->SetRelativeScale3D(FVector(100.f/12,100.f/12,5));
+    DoorControl->SetBoxExtent(FVector(9,9,13));
+    DoorControl->HighlightMesh=DoorButton;
+    DoorControl->Prompt=FText::FromString(TEXT("开门 / 延长开门"));
     for (int32 I=0;I<2;++I)
     {
         auto* CallMesh=Mesh(*FString::Printf(TEXT("CallButton%d"),I),RootComponent,FVector(-175,140,110+600*I),FVector(8,16,16));
@@ -90,6 +97,9 @@ bool ATripoElevator::Interact(ATripoCharacter* Player)
 }
 bool ATripoElevator::CanUseTarget(const UTripoInteractionTarget* Target, ATripoCharacter* Player) const
 {
+    if(Target==DoorControl)
+        return Phase!=ETripoElevatorPhase::Moving && Contains(CabinVolume,Player,false) &&
+            FVector::DistSquared(Player->GetActorLocation(),DoorButton->GetComponentLocation())<=FMath::Square(InteractionDistance);
     if(!IsStable()) return false;
     if(Target==CabinControl) return Contains(CabinVolume,Player,false) && FVector::DistSquared(Player->GetActorLocation(),Button->GetComponentLocation())<=FMath::Square(InteractionDistance);
     return LandingControls.Contains(Target);
@@ -97,6 +107,13 @@ bool ATripoElevator::CanUseTarget(const UTripoInteractionTarget* Target, ATripoC
 bool ATripoElevator::UseTarget(UTripoInteractionTarget* Target, ATripoCharacter* Player)
 {
     if(!Target || !Target->CanInteract(Player)) return false;
+    if(Target==DoorControl)
+    {
+        // A separate open command can cancel departure while still docked.
+        Phase=ETripoElevatorPhase::Docked; Destination=CurrentFloor;
+        bDoorRequested=true; CloseRemaining=FMath::Max(5.f,AutoCloseDelay);
+        return true;
+    }
     if(Target==CabinControl) { Destination=1-CurrentFloor; Phase=ETripoElevatorPhase::ClosingForTravel; bDoorRequested=false; return true; }
     const int32 Requested=LandingControls.IndexOfByKey(Target);
     if(Requested==INDEX_NONE) return false;
@@ -150,7 +167,7 @@ void ATripoElevator::Tick(float DeltaSeconds)
         const float DesiredSpeed=FMath::Min(FMath::Max(1.f,TravelSpeed),FMath::Sqrt(2*FMath::Max(1.f,TravelAcceleration)*Distance));
         CurrentSpeed=FMath::FInterpConstantTo(CurrentSpeed,DesiredSpeed,Dt,FMath::Max(1.f,TravelAcceleration));
         Cabin->SetRelativeLocation(FMath::VInterpConstantTo(Cabin->GetRelativeLocation(),Goal,Dt,FMath::Max(1.f,CurrentSpeed)));
-        if(Cabin->GetRelativeLocation().Equals(Goal,.01)) { CurrentFloor=Destination; CurrentSpeed=0; Phase=ETripoElevatorPhase::Docked; bDoorRequested=true; CloseRemaining=AutoCloseDelay; }
+        if(Cabin->GetRelativeLocation().Equals(Goal,.01)) { CurrentFloor=Destination; CurrentSpeed=0; Phase=ETripoElevatorPhase::Docked; bDoorRequested=true; CloseRemaining=FMath::Max(5.f,AutoCloseDelay); }
     }
     else
     {

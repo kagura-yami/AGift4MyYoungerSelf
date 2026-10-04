@@ -19,10 +19,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") TObjectPtr<UMeshComponent> HighlightMesh;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") TObjectPtr<UMaterialInterface> HighlightMaterial;
     UPROPERTY(BlueprintAssignable, Category="Interaction") FTripoFocusedInteraction OnInteract;
+    /** Optional parameterless Blueprint event for existing authored mechanisms. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") FName InteractionEvent;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Interaction") bool bSingleUse = false;
     UFUNCTION(BlueprintPure, Category="Interaction") bool CanInteract(ATripoCharacter* Player) const;
     UFUNCTION(BlueprintCallable, Category="Interaction") bool TryInteract(ATripoCharacter* Player);
     void SetFocused(bool bFocused);
 private:
     UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PreviousOverlay;
+    UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PreviousLidOverlay;
     bool bHighlighted = false;
 };

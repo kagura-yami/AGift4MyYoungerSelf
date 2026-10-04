@@ -7,6 +7,7 @@ class UPrimitiveComponent;
 class UTextRenderComponent;
 class UTripoStoryCatalog;
 class ATripoCharacter;
+class UWidgetComponent;
 UCLASS()
 class TRIPOTHON_API ATripoStoryTrigger : public AActor
 {
@@ -22,6 +23,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite) FName EventId;
     UPROPERTY(EditAnywhere, BlueprintReadWrite) FString Hint = TEXT("E / inspect");
     UPROPERTY(EditAnywhere, BlueprintReadWrite) bool bAutomatic = true;
+    /** Use a fixed world-space wall notice instead of a modal conversation. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Story|Presentation") bool bWallNotice = false;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Story|Presentation") TObjectPtr<UWidgetComponent> WallNotice;
 private:
     UFUNCTION() void Enter(UPrimitiveComponent* Component, AActor* Other, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool bSweep, const FHitResult& Hit);
 };

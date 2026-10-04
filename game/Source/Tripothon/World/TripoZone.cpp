@@ -15,11 +15,18 @@ ATripoZone::ATripoZone()
     Volume->SetCollisionResponseToAllChannels(ECR_Ignore); Volume->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
     Label = CreateDefaultSubobject<UTextRenderComponent>(TEXT("Label")); Label->SetupAttachment(Volume);
     Label->SetRelativeLocation(FVector(0,0,180)); Label->SetWorldSize(32);
+    Label->SetHiddenInGame(true);
     Identity = CreateDefaultSubobject<UTripoIdentityComponent>(TEXT("Identity"));
     ProtectedLevels.Init(0, 8);
 }
 void ATripoZone::OnConstruction(const FTransform& Transform) { Super::OnConstruction(Transform); Label->SetText(FText::FromString(Hint)); }
-void ATripoZone::BeginPlay() { Super::BeginPlay(); Volume->OnComponentBeginOverlap.AddDynamic(this, &ATripoZone::Enter); }
+void ATripoZone::BeginPlay()
+{
+    Super::BeginPlay();
+    // Authoring labels are not player-facing UI; also override older map instances.
+    Label->SetHiddenInGame(true);
+    Volume->OnComponentBeginOverlap.AddDynamic(this, &ATripoZone::Enter);
+}
 bool ATripoZone::Contains(const FVector& Point) const
 {
     const FVector Local = Volume->GetComponentTransform().InverseTransformPosition(Point); const FVector Extent = Volume->GetUnscaledBoxExtent();
