@@ -1,4 +1,5 @@
 #include "Player/TripoCharacter.h"
+#include "Player/TripoPlayerSettings.h"
 #include "Player/TripoLocomotionAnimInstance.h"
 #include "Time/TripoEchoActor.h"
 #include "Player/TripoPlayerController.h"
@@ -221,7 +222,7 @@ void ATripoCharacter::SetupPlayerInputComponent(UInputComponent* Input)
 void ATripoCharacter::MoveForward(const FInputActionValue& Value)
 {
     if (!GameplayInputAllowed()) return;
-    AddMovementInput(FRotator(0.f, GetCameraYaw(), 0.f).Vector(), Value.Get<float>());
+    AddMovementInput(bDebugFlying ? GetControlRotation().Vector() : FRotator(0.f, GetCameraYaw(), 0.f).Vector(), Value.Get<float>());
     ++MovementEvents;
 }
 void ATripoCharacter::MoveRight(const FInputActionValue& Value)
@@ -234,24 +235,25 @@ void ATripoCharacter::Look(const FInputActionValue& Value)
 {
     if (!GameplayInputAllowed()) return;
     if (Controller) Controller->SetControlRotation(FRotator(Controller->GetControlRotation().Pitch,
-        FRotator::NormalizeAxis(Controller->GetControlRotation().Yaw + Value.Get<float>() * 1.5f), 0.f));
+        FRotator::NormalizeAxis(Controller->GetControlRotation().Yaw + Value.Get<float>() * UTripoPlayerSettings::Get()->MouseSensitivity), 0.f));
 }
 void ATripoCharacter::LookPitch(const FInputActionValue& Value)
 {
     if (!GameplayInputAllowed() || !Controller) return;
     const FRotator View = Controller->GetControlRotation();
-    const float Pitch = FMath::Clamp(FRotator::NormalizeAxis(View.Pitch) + Value.Get<float>() * 1.5f, MinViewPitch, MaxViewPitch);
+    const float Pitch = FMath::Clamp(FRotator::NormalizeAxis(View.Pitch) + Value.Get<float>() * UTripoPlayerSettings::Get()->MouseSensitivity * (UTripoPlayerSettings::Get()->bInvertLookY ? -1.f : 1.f), MinViewPitch, MaxViewPitch);
     Controller->SetControlRotation(FRotator(Pitch, View.Yaw, 0.f));
 }
 void ATripoCharacter::RequestJump(const FInputActionValue&)
 {
+    if (bDebugFlying) return;
     if (!GameplayInputAllowed()) return;
     FGuid Handle;
     if (GetCharacterMovement()->IsFalling() && Abilities->GetLevel(ETripoAbility::WallJump) > 0 && Abilities->TryActivate(ETripoAbility::WallJump, nullptr, Handle) == ETripoAbilityFailure::None) return;
     JumpRequestedAt = GetWorld()->GetTimeSeconds();
 }
-void ATripoCharacter::Dash(const FInputActionValue&) { if (GameplayInputAllowed()) { FGuid H; Abilities->TryActivate(ETripoAbility::Dash, nullptr, H); } }
-void ATripoCharacter::UpDash(const FInputActionValue&) { if (GameplayInputAllowed()) { FGuid H; Abilities->TryActivate(ETripoAbility::UpDash, nullptr, H); } }
+void ATripoCharacter::Dash(const FInputActionValue&) { if (!bDebugFlying && GameplayInputAllowed()) { FGuid H; Abilities->TryActivate(ETripoAbility::Dash, nullptr, H); } }
+void ATripoCharacter::UpDash(const FInputActionValue&) { if (!bDebugFlying && GameplayInputAllowed()) { FGuid H; Abilities->TryActivate(ETripoAbility::UpDash, nullptr, H); } }
 void ATripoCharacter::AdjustStoneDistance(float Steps)
 {
     if (!FMath::IsFinite(Steps)) return;
@@ -329,6 +331,15 @@ void ATripoCharacter::Tick(float DeltaSeconds)
         return;
     }
     TRACE_CPUPROFILER_EVENT_SCOPE(TripoCharacterTick);
+    if (bDebugFlying)
+    {
+        if (auto* PC=Cast<APlayerController>(Controller))
+        {
+            const float Vertical=(PC->IsInputKeyDown(EKeys::SpaceBar)?1.f:0.f)-(PC->IsInputKeyDown(EKeys::LeftControl)?1.f:0.f);
+            AddMovementInput(FVector::UpVector,Vertical);
+            GetCharacterMovement()->MaxFlySpeed=PC->IsInputKeyDown(EKeys::LeftShift)?2400.f:900.f;
+        }
+    }
     if (bStonePreview)
     {
         FTripoAbilityParameters P; FVector L;
@@ -404,6 +415,7 @@ void ATripoCharacter::ResetPracticePosition()
 }
 void ATripoCharacter::ResetAfterRestore()
 {
+    bDebugFlying=false;
     SpeedBuffMultiplier = 1.f; SpeedBuffExpires = 0.;
     bStonePreview = false; StonePreview->SetVisibility(false);
     CastChecked<UTripoMovementComponent>(GetCharacterMovement())->ResetAirUses();
@@ -489,4 +501,16 @@ float ATripoCharacter::GetSpeedBuffMultiplier() const
 {
     auto* Runtime = UTripoRuntimeSubsystem::GetRuntime(this);
     return Runtime && Runtime->GetActionSeconds() < SpeedBuffExpires ? SpeedBuffMultiplier : 1.f;
+}
+
+void ATripoCharacter::SetDebugFlying(bool bEnabled)
+{
+    if (!IsPlayerControlled()) return;
+    Abilities->CancelAll();
+    bDebugFlying=bEnabled;
+    JumpRequestedAt=LastGroundedAt=-1000.; bJumpSpent=false;
+    StopJumping(); ConsumeMovementInputVector();
+    GetCharacterMovement()->StopMovementImmediately();
+    GetCharacterMovement()->MaxFlySpeed=900.f;
+    GetCharacterMovement()->SetMovementMode(bEnabled ? MOVE_Flying : MOVE_Falling);
 }

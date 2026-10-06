@@ -6,6 +6,7 @@
 #include "Core/TripoIdentityComponent.h"
 #include "World/TripoElevator.h"
 #include "World/TripoChaser.h"
+#include "World/TripoFloatingPlatform.h"
 #include "Core/TripoRuntimeSubsystem.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -25,7 +26,7 @@ bool UTripoWorldSubsystem::IsSafeSpawn(ATripoCharacter* Player, const FVector& L
     FHitResult Floor;
     const float HalfHeight = Capsule->GetScaledCapsuleHalfHeight();
     if (!GetWorld()->LineTraceSingleByChannel(Floor, Location, Location - FVector(0,0,HalfHeight + 100), ECC_Visibility, Query) || Floor.ImpactNormal.Z < .7f) return false;
-    return Floor.GetActor() && !Floor.GetActor()->ActorHasTag(TEXT("TripoTemporary")) && !Cast<ATripoMechanism>(Floor.GetActor());
+    return Floor.GetActor() && !Floor.GetActor()->ActorHasTag(TEXT("TripoTemporary")) && !Floor.GetActor()->ActorHasTag(TEXT("TripoFloating")) && !Cast<ATripoMechanism>(Floor.GetActor());
 }
 bool UTripoWorldSubsystem::SetCheckpoint(ATripoCharacter* Player, FTransform Transform, bool bChallenge)
 {
@@ -72,6 +73,7 @@ bool UTripoWorldSubsystem::RestorePlayer(ATripoCharacter* Player, bool bRestart)
         return false;
     }
     Player->ResetAfterRestore();
+    for (TActorIterator<ATripoFloatingPlatform> It(GetWorld());It;++It) It->ResetBuoyancy();
     if (bRestart) Player->Abilities->ImportCooldowns(Snapshot.Cooldowns);
     R->AdvanceRestore(ETripoRestorePhase::PlayerRestored);
     for (TActorIterator<AActor> It(GetWorld()); It; ++It) if (auto* H = It->FindComponentByClass<UTripoHistoryComponent>()) H->Clear();

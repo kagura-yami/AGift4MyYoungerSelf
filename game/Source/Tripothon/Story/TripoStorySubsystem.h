@@ -17,11 +17,14 @@ public:
     bool IsLastLine() const { return LineIndex >= Lines.Num()-1; }
     FString GetLine() const { return Lines.IsValidIndex(LineIndex) ? Lines[LineIndex] : FString(); }
     UFUNCTION(BlueprintPure) bool HasDialogue() const { return bOpen; }
+    void SetWorldSpeaker(AActor* Speaker) { WorldSpeaker=Speaker; }
+    AActor* GetWorldSpeaker() const { return bOpen ? WorldSpeaker.Get() : nullptr; }
     UFUNCTION(BlueprintPure) FName GetCurrentId() const { return bOpen ? Current.Id : NAME_None; }
     const FTripoStoryEvent& GetCurrent() const { return Current; }
 private:
     UPROPERTY() FTripoStoryEvent Current;
     TWeakObjectPtr<ATripoCharacter> Reader;
+    TWeakObjectPtr<AActor> WorldSpeaker;
     bool bOpen = false;
     TArray<FString> Lines;
     int32 LineIndex = 0;

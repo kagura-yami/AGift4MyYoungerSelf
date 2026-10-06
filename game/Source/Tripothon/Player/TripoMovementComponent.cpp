@@ -1,7 +1,22 @@
 #include "Player/TripoMovementComponent.h"
+#include "Player/TripoCharacter.h"
 #include "Core/TripoRuntimeSubsystem.h"
 #include "GameFramework/Character.h"
 #include "Engine/World.h"
+void UTripoMovementComponent::CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration)
+{
+    const auto* Player=Cast<ATripoCharacter>(CharacterOwner);
+    if (MovementMode==MOVE_Flying && Player && Player->bDebugFlying)
+    {
+        // Debug navigation follows current input immediately, without accumulated momentum.
+        // PhysFlying still sweeps the capsule and handles walls normally.
+        Velocity=GetMaxAcceleration()>SMALL_NUMBER
+            ? (Acceleration/GetMaxAcceleration()).GetClampedToMaxSize(1.f)*GetMaxSpeed()
+            : FVector::ZeroVector;
+        return;
+    }
+    Super::CalcVelocity(DeltaTime,Friction,bFluid,BrakingDeceleration);
+}
 ETripoAbilityFailure UTripoMovementComponent::CanBurst(bool bUp) const
 {
     if (!CharacterOwner || (!IsMovingOnGround() && !IsFalling())) return ETripoAbilityFailure::Blocked;

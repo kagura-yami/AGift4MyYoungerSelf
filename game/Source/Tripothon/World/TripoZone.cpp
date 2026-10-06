@@ -7,8 +7,12 @@
 #include "Components/BoxComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "EngineUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Core/TripoRuntimeSubsystem.h"
 ATripoZone::ATripoZone()
 {
+    PrimaryActorTick.bCanEverTick=true;
     Volume = CreateDefaultSubobject<UBoxComponent>(TEXT("Volume")); SetRootComponent(Volume);
     Volume->SetBoxExtent(FVector(100, 200, 100));
     Volume->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -26,6 +30,16 @@ void ATripoZone::BeginPlay()
     // Authoring labels are not player-facing UI; also override older map instances.
     Label->SetHiddenInGame(true);
     Volume->OnComponentBeginOverlap.AddDynamic(this, &ATripoZone::Enter);
+}
+void ATripoZone::Tick(float DeltaSeconds)
+{
+    Super::Tick(DeltaSeconds);
+    if (!bAutoCheckpoint && Kind!=ETripoZoneKind::Finish && Kind!=ETripoZoneKind::Checkpoint) return;
+    auto* P=Cast<ATripoCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
+    if (!P || !Contains(P->GetActorLocation())) { CheckpointOccupant.Reset(); return; }
+    const auto* R=UTripoRuntimeSubsystem::GetRuntime(this);
+    if (CheckpointOccupant==P || P->bDebugFlying || !P->GetCharacterMovement()->IsMovingOnGround() || !R || R->IsActionPaused()) return;
+    if (UTripoWorldSubsystem::Get(this)->SetCheckpoint(P,P->GetActorTransform())) CheckpointOccupant=P;
 }
 bool ATripoZone::Contains(const FVector& Point) const
 {

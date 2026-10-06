@@ -79,3 +79,21 @@ bool UTripoProgressSubsystem::Exchange(ATripoCharacter* Player, FGuid Transactio
     if (!Player->Abilities->ImportLevels(Levels)) return false;
     Exchanges.Add(Transaction); Message = TEXT("Exchange committed"); return true;
 }
+
+int32 UTripoProgressSubsystem::GetFinishGiftCount(FName Id) const
+{
+    const FString Key=TEXT("ChallengeGifts.")+Id.ToString();
+    return Viewed.Contains(FName(*(Key+TEXT(".Two")))) ? 2 : Viewed.Contains(FName(*(Key+TEXT(".One")))) ? 1 : 0;
+}
+bool UTripoProgressSubsystem::FinishWithGifts(ATripoCharacter* Player, FName Id)
+{
+    auto* R=UTripoRuntimeSubsystem::GetRuntime(Player);
+    if (!IsValid(Player) || !Player->IsPlayerControlled() || !R || R->IsActionPaused() || Player->Interactor->bSuppressed ||
+        Phase!=ETripoChallengePhase::Running || CurrentId!=Id || Completed.Contains(Id)) return false;
+    if (!UTripoWorldSubsystem::Get(Player)->SetCheckpoint(Player,Player->GetActorTransform())) return false;
+    FinishElapsed=GetElapsed(); bChoice=TripoReward::ChoiceEligible(FinishElapsed,EffectiveBudget);
+    Viewed.Add(FName(*(TEXT("ChallengeGifts.")+Id.ToString()+(bChoice ? TEXT(".Two") : TEXT(".One")))));
+    Completed.Add(Id); Candidates.Empty(); Phase=ETripoChallengePhase::Committed;
+    SaveSafe(Player);
+    return true;
+}

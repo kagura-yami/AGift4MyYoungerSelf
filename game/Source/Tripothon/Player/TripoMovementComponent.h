@@ -9,6 +9,7 @@ class TRIPOTHON_API UTripoMovementComponent : public UCharacterMovementComponent
     GENERATED_BODY()
 public:
     virtual void PhysCustom(float DeltaTime, int32 Iterations) override;
+    virtual void CalcVelocity(float DeltaTime, float Friction, bool bFluid, float BrakingDeceleration) override;
     ETripoAbilityFailure CanBurst(bool bUp) const;
     bool BeginBurst(bool bUp, FVector Direction, float DistanceOrSpeed, float Duration);
     void EndBurst();

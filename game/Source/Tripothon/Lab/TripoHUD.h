@@ -6,13 +6,17 @@
 class SWidget;
 class SBox;
 class ATripoCharacter;
+class ATripoChapterGift;
 class UTexture2D;
+class ATripoSchoolBooks;
+class ATripoOfficeCipher;
 struct FButtonStyle;
 UCLASS()
 class TRIPOTHON_API ATripoHUD : public AHUD
 {
     GENERATED_BODY()
 public:
+    UFUNCTION(BlueprintPure, Category="Inventory") int32 GetInventoryKeyCount() const;
     virtual void DrawHUD() override;
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type Reason) override;
@@ -22,16 +26,27 @@ public:
     bool IsGameplayBlocked() const;
     bool OpenExchange();
     void ShowGiftReceipt(int32 AbilityIndex, int32 Level, float RevealDelay=0.f, bool bRandomDraw=false);
+    void ShowOfficeCipher(ATripoOfficeCipher* Puzzle,bool bLock);
+    void CloseOfficeCipher();
+    void ShowChapterGift(ATripoChapterGift* Gift);
     UFUNCTION(BlueprintPure) bool IsGiftReceiptOpen() const { return bGiftReceipt; }
     UFUNCTION(BlueprintCallable) void HandleAction(FString Action);
     // Esc returns through tutorial/settings before releasing the menu pause.
     bool NavigateBack();
 private:
+    TWeakObjectPtr<ATripoOfficeCipher> OfficeCipher;
+    TWeakObjectPtr<ATripoOfficeCipher> InventoryCipher;
+    FSlateBrush InventoryCipherBrush;
+    bool bCipherLock=false;
+    FString CipherCode;
+    FSlateBrush CipherCardBrush;
+    FSlateBrush CipherPageBrush;
+    TSharedRef<SWidget> BuildOfficeCipher();
     bool bFrontEnd = false;
     bool bConfirmNewGame = false;
     FString FrontEndMessage;
     TSharedRef<SWidget> BuildFrontEnd();
-    enum class EMenuPage : uint8 { Pause, Settings, Tutorial, Handbook, More };
+    enum class EMenuPage : uint8 { Pause, Settings, Preferences, Tutorial, Handbook, More };
     EMenuPage MenuPage = EMenuPage::Pause;
     int32 HandbookAbility = 0;
     UPROPERTY(Transient) TArray<TObjectPtr<UTexture2D>> UITextures;
@@ -57,7 +72,15 @@ private:
     double StoneRecoveryUntil = 0;
     bool bStoneIndicatorInitialized = false;
     TSharedRef<SWidget> BuildSkillBar();
+    TSharedRef<SWidget> BuildInventory();
+    bool HasInventory() const;
+    FString GetPuzzleHint() const;
+    TWeakObjectPtr<ATripoSchoolBooks> SchoolBooks;
+    FSlateBrush InventoryBookBrushes[3];
+    FSlateBrush InventoryKeyBrush;
+    TArray<TWeakObjectPtr<AActor>> InventoryDoors;
     TSharedRef<SWidget> BuildMenuPage();
+    TSharedRef<SWidget> BuildSettingsControls();
     FText SkillStatus(int32 Index) const;
     FText ChallengeText() const;
     TSharedPtr<SWidget> RootWidget;
@@ -69,6 +92,8 @@ private:
     double StoryLastTick = 0;
     float StoryLineElapsed = 0;
     bool bGiftReceipt = false;
+    TWeakObjectPtr<ATripoChapterGift> ChapterGift;
+    TSharedRef<SWidget> BuildChapterGift();
     int32 GiftAbility = INDEX_NONE;
     int32 GiftLevel = 0;
     double GiftRevealStart = 0;

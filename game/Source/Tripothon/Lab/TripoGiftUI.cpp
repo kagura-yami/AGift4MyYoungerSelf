@@ -1,11 +1,13 @@
 #include "Lab/TripoHUD.h"
 #include "Lab/TripoMenuStyle.h"
+#include "World/TripoChapterGift.h"
 #include "Core/TripoRuntimeSubsystem.h"
 #include "Widgets/Images/SImage.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/SOverlay.h"
+#include "Lab/STripoSkillCard.h"
 
 void ATripoHUD::ShowGiftReceipt(int32 AbilityIndex, int32 Level, float RevealDelay, bool bRandomDraw)
 {
@@ -21,6 +23,7 @@ void ATripoHUD::ShowGiftReceipt(int32 AbilityIndex, int32 Level, float RevealDel
 }
 TSharedRef<SWidget> ATripoHUD::BuildGiftReceipt()
 {
+    if (ChapterGift.IsValid()) return BuildChapterGift();
     static const TCHAR* Names[]={TEXT("平面位移"),TEXT("上位移"),TEXT("蹬墙跳"),TEXT("垫脚石"),TEXT("局部减慢"),TEXT("时回"),TEXT("分身"),TEXT("奖励加时")};
     static const TCHAR* Descriptions[]={TEXT("向前冲出一段距离，跨过眼前的阻碍。"),TEXT("在空中再次跃起，延续向前的惯性。"),TEXT("借助墙面发力，跃向更高的地方。"),TEXT("放下一块临时落脚点，为自己铺路。"),TEXT("放慢附近的时间，留出从容应对的余地。"),TEXT("回到片刻之前，重新选择下一步。"),TEXT("留下分身，在不同位置之间切换操控。"),TEXT("为限时挑战争取更多时间。")};
     const bool bKeepsake=GiftAbility==INDEX_NONE;
@@ -86,4 +89,40 @@ TSharedRef<SWidget> ATripoHUD::BuildGiftReceipt()
             return WeakThis.IsValid() && WeakThis->bGiftSpin && Now>=WeakThis->GiftSpinStart && Now<WeakThis->GiftRevealStart+.2
                 ?EVisibility::HitTestInvisible:EVisibility::Collapsed;
         })[Spin]];
+}
+
+void ATripoHUD::ShowChapterGift(ATripoChapterGift* Gift)
+{
+    if (!IsValid(Gift) || bGiftReceipt) return;
+    ChapterGift=Gift; bGiftReceipt=true; bGiftSpin=false; PanelKey.Empty();
+    UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Reward,true);
+}
+TSharedRef<SWidget> ATripoHUD::BuildChapterGift()
+{
+    static const TCHAR* Names[]={TEXT("平面位移"),TEXT("上位移"),TEXT("蹬墙跳"),TEXT("垫脚石"),TEXT("局部减慢"),TEXT("时回"),TEXT("分身"),TEXT("奖励加时")};
+    static const TCHAR* Descriptions[]={TEXT("向前瞬移一段距离。\n越过缺口，抵达对岸。"),TEXT("在空中再跳一次。\n跳得更高，也跳得更远。"),TEXT("贴着墙面再次起跳。\n墙也能成为落脚点。"),TEXT("在脚下放一块临时平台。\n没有路，就自己搭一步。"),TEXT("让附近的机关慢下来。\n看准空隙，再出发。"),TEXT("回到几秒前的位置。\n走错了，可以重来。"),TEXT("留下一个可切换的分身。\n两边的事，轮流来。"),TEXT("增加限时挑战的时间。\n给自己多留一点余地。")};
+    const TWeakObjectPtr<ATripoHUD> WeakThis(this);
+    auto Chosen=MakeShared<bool>(false);
+    auto Column=SNew(SVerticalBox);
+    Column->AddSlot().AutoHeight().HAlign(HAlign_Center)[TripoMenu::Label(ChapterGift->ChapterCaption,14,TripoMenu::Paper)];
+    Column->AddSlot().AutoHeight().HAlign(HAlign_Center).Padding(0,10)[TripoMenu::Label(TEXT("临行前，再拆一份礼物"),30,TripoMenu::Paper,true)];
+    Column->AddSlot().AutoHeight().HAlign(HAlign_Center)[TripoMenu::Label(TEXT("选一个带走，升至二级"),15,FLinearColor(.78,.75,.67))];
+    auto Cards=SNew(SHorizontalBox);
+    if (ChapterGift->GetChoices().IsEmpty())
+    {
+        Column->AddSlot().AutoHeight().Padding(0,25)[TripoMenu::Label(TEXT("能力都已满级。继续往前走吧。"),18,TripoMenu::Paper)];
+        Column->AddSlot().AutoHeight()[SNew(SButton).ButtonStyle(&MenuButtonStyle()).ContentPadding(18)
+            .OnClicked_Lambda([WeakThis]{if(WeakThis.IsValid()) WeakThis->HandleAction(TEXT("gift.choose.full"));return FReply::Handled();})
+            [TripoMenu::Label(TEXT("出发"),22,TripoMenu::Paper,true)]];
+    }
+    for (int32 Ability:ChapterGift->GetChoices())
+    {
+        Cards->AddSlot().AutoWidth().Padding(10,0)
+        [SNew(STripoSkillCard).Ability(Ability).Icon(&SkillBrushes[Ability])
+            .Title(Names[Ability]).Description(Descriptions[Ability]).Chosen(Chosen)
+            .OnSelected_Lambda([WeakThis,Ability]{if(WeakThis.IsValid()) WeakThis->HandleAction(FString::Printf(TEXT("gift.choose.%d"),Ability));})];
+    }
+    Column->AddSlot().AutoHeight().HAlign(HAlign_Center).Padding(0,32,0,24)[Cards];
+    Column->AddSlot().AutoHeight().HAlign(HAlign_Center)[TripoMenu::Label(ChapterGift->ExitHint,14,FLinearColor(.78,.75,.67))];
+    return SNew(SBox).WidthOverride(1040)[Column];
 }
