@@ -2,6 +2,9 @@
 #include "Progress/TripoProgressSubsystem.h"
 #include "Player/TripoCharacter.h"
 #include "World/TripoInteractorComponent.h"
+#include "World/TripoDialogueNPC.h"
+#include "Lab/TripoHUD.h"
+#include "GameFramework/PlayerController.h"
 UTripoStorySubsystem* UTripoStorySubsystem::Get(const UObject* Context) { return Context && Context->GetWorld() ? Context->GetWorld()->GetSubsystem<UTripoStorySubsystem>() : nullptr; }
 bool UTripoStorySubsystem::OpenEvent(ATripoCharacter* Player, UTripoStoryCatalog* Catalog, FName Id)
 {
@@ -35,5 +38,9 @@ void UTripoStorySubsystem::CloseEvent(bool bSkip)
         // Keep blocked exits retryable instead of silently closing the dialogue.
         if (!Destination.IsNone() && !P->Travel(Reader.Get(),Destination)) { bOpen=true; return; }
     }
+    if(!bSkip && Reader.IsValid())
+        if(auto* NPC=Cast<ATripoDialogueNPC>(WorldSpeaker.Get()); NPC && NPC->EndingMovie)
+            if(auto* PC=Cast<APlayerController>(Reader->GetController()))
+                if(auto* HUD=Cast<ATripoHUD>(PC->GetHUD())) HUD->PlayStoryMovie(NPC->EndingMovie,NPC->EndingMovieMaterial);
     Reader.Reset();
 }

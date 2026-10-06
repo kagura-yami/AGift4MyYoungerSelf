@@ -307,6 +307,7 @@ TSharedRef<SWidget> ATripoHUD::BuildSkillBar()
 }
 bool ATripoHUD::NavigateBack()
 {
+    if (bStoryMovie) { StopStoryMovie(); return true; }
     if (OfficeCipher.IsValid()) { CloseOfficeCipher(); return true; }
     if (bGiftReceipt) { HandleAction(TEXT("gift.confirm")); return true; }
     if (bEntryMenu && bConfirmNewGame) { bConfirmNewGame=false; PanelKey.Empty(); return true; }

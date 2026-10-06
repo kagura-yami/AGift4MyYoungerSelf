@@ -1,0 +1,30 @@
+import unreal
+ed=unreal.get_editor_subsystem(unreal.UnrealEditorSubsystem)
+aa=unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+ls=unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
+assert ed.get_editor_world().get_path_name().startswith('/Game/Maps/School/School_v2.')
+actors=aa.get_all_level_actors()
+door=next(a for a in actors if a.get_name()=='BP_CanOpenDoor_C_1')
+assert (door.get_actor_location()-unreal.Vector(505.433797,-347.571623,98.007424)).length()<5
+door.modify();door.set_actor_enable_collision(False)
+folder='/Game/Blueprint/Door';name='BP_SchoolOfficeExit'
+bp=unreal.load_asset(folder+'/'+name)
+if not bp:
+    factory=unreal.BlueprintFactory();factory.set_editor_property('parent_class',unreal.TripoChapterExit)
+    bp=unreal.AssetToolsHelpers.get_asset_tools().create_asset(name,folder,unreal.Blueprint,factory)
+cdo=unreal.get_default_object(bp.generated_class());cdo.modify()
+cdo.set_editor_property('destination','/Game/Maps/lv4')
+unreal.EditorAssetLibrary.save_loaded_asset(bp,False)
+by={a.get_actor_label():a for a in actors}
+loc=unreal.Vector(485,-347.571623,208)
+exit=by.get('School_Door_ToOffice') or aa.spawn_actor_from_class(bp.generated_class(),loc)
+exit.modify();exit.set_actor_label('School_Door_ToOffice');exit.set_folder_path('Gameplay/ChapterExit')
+exit.set_actor_location(loc,False,True);exit.volume.set_box_extent(unreal.Vector(25,48,108))
+exit.set_editor_property('destination','/Game/Maps/lv4')
+safe=by.get('School_Door_ExitSafe') or aa.spawn_actor_from_class(unreal.TripoZone,loc)
+safe.modify();safe.set_actor_label('School_Door_ExitSafe');safe.set_folder_path('Gameplay/ChapterExit')
+safe.set_editor_property('kind',unreal.TripoZoneKind.SAFE);safe.set_editor_property('hint','')
+safe.get_component_by_class(unreal.TextRenderComponent).set_visibility(False)
+safe.volume.set_box_extent(unreal.Vector(110,100,150))
+ls.save_current_level();aa.set_selected_level_actors([exit])
+print('SAVED',exit.destination,exit.get_actor_location())

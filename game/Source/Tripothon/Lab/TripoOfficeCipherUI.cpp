@@ -10,6 +10,54 @@
 #include "Widgets/SCanvas.h"
 #include "Widgets/SOverlay.h"
 
+// Use the stationary surface's local coordinates so UI scaling and card motion
+// cannot change the drag origin. Mouse capture also keeps a fast drag continuous.
+class SCipherDragSurface : public SCompoundWidget
+{
+public:
+    SLATE_BEGIN_ARGS(SCipherDragSurface) {}
+        SLATE_ARGUMENT(TWeakObjectPtr<ATripoOfficeCipher>, Puzzle)
+        SLATE_DEFAULT_SLOT(FArguments, Content)
+    SLATE_END_ARGS()
+    void Construct(const FArguments& Args)
+    {
+        Puzzle=Args._Puzzle;
+        SetClipping(EWidgetClipping::ClipToBounds);
+        ChildSlot[Args._Content.Widget];
+    }
+    virtual FReply OnMouseButtonDown(const FGeometry& Geometry,const FPointerEvent& Event) override
+    {
+        if(Event.GetEffectingButton()==EKeys::LeftMouseButton && Puzzle.IsValid() && Puzzle->bCardOnPage)
+        {
+            const FVector2D Local=Geometry.AbsoluteToLocal(Event.GetScreenSpacePosition());
+            const FVector2D Relative=Local-FVector2D(80,32)-Puzzle->CardOffset;
+            if(Relative.X>=0 && Relative.Y>=0 && Relative.X<=324 && Relative.Y<=576)
+            {
+                DragStart=Local; OffsetStart=Puzzle->CardOffset;
+                return FReply::Handled().CaptureMouse(SharedThis(this));
+            }
+        }
+        return FReply::Unhandled();
+    }
+    virtual FReply OnMouseMove(const FGeometry& Geometry,const FPointerEvent& Event) override
+    {
+        if(HasMouseCapture() && Puzzle.IsValid())
+        {
+            Puzzle->MoveCard(OffsetStart+Geometry.AbsoluteToLocal(Event.GetScreenSpacePosition())-DragStart);
+            return FReply::Handled();
+        }
+        return FReply::Unhandled();
+    }
+    virtual FReply OnMouseButtonUp(const FGeometry&,const FPointerEvent& Event) override
+    {
+        return Event.GetEffectingButton()==EKeys::LeftMouseButton && HasMouseCapture()
+            ?FReply::Handled().ReleaseMouseCapture():FReply::Unhandled();
+    }
+private:
+    TWeakObjectPtr<ATripoOfficeCipher> Puzzle;
+    FVector2D DragStart,OffsetStart;
+};
+
 void ATripoHUD::ShowOfficeCipher(ATripoOfficeCipher* Puzzle,bool bLock)
 {
     if(!IsValid(Puzzle)) return;
@@ -39,7 +87,7 @@ TSharedRef<SWidget> ATripoHUD::BuildOfficeCipher()
     };
     auto Column=SNew(SVerticalBox);
     auto Header=SNew(SHorizontalBox);
-    Header->AddSlot().FillWidth(1)[TripoMenu::Label(bCipherLock?TEXT("上锁的抽屉"):TEXT("交接笔记"),28,TripoMenu::Paper,true)];
+    Header->AddSlot().FillWidth(1)[TripoMenu::Label(bCipherLock?TEXT("保险箱密码"):TEXT("交接笔记"),28,TripoMenu::Paper,true)];
     Header->AddSlot().AutoWidth()[Button(TEXT("收起  Esc"),[H]{if(H.IsValid()) H->CloseOfficeCipher();})];
     Column->AddSlot().AutoHeight().Padding(0,0,0,20)[Header];
     if(bCipherLock)
@@ -51,7 +99,7 @@ TSharedRef<SWidget> ATripoHUD::BuildOfficeCipher()
             .OnVerifyTextChanged_Lambda([](const FText& T,FText& Error)
             {const FString S=T.ToString(); if(S.Len()>4){Error=FText::FromString(TEXT("密码为四位数字"));return false;} for(TCHAR C:S) if(C<TEXT('0')||C>TEXT('9')){Error=FText::FromString(TEXT("请输入数字"));return false;} return true;});
         Column->AddSlot().AutoHeight().Padding(0,0,0,16)[Input];
-        Column->AddSlot().AutoHeight()[Button(TEXT("打开锁"),[H,P]
+        Column->AddSlot().AutoHeight()[Button(TEXT("确认密码 · 前往目的地"),[H,P]
         {if(H.IsValid() && P.IsValid() && P->SubmitCode(H->Player(),H->CipherCode)) H->CloseOfficeCipher();})];
         Column->AddSlot().AutoHeight().Padding(0,16)[SNew(STextBlock).Font(TripoMenu::Font(16)).ColorAndOpacity(FLinearColor(.95,.65,.35))
             .Text_Lambda([P]{return P.IsValid()?FText::FromString(P->Feedback):FText::GetEmpty();})];
@@ -83,9 +131,11 @@ TSharedRef<SWidget> ATripoHUD::BuildOfficeCipher()
             PageCanvas->AddSlot().Position(FVector2D(35+(I%4)*70,115+(I/4)*175)).Size(FVector2D(38,40))
             [SNew(STextBlock).Font(TripoMenu::Font(18)).ColorAndOpacity(TripoMenu::Muted)
                 .Text_Lambda([P,I]{return FText::AsNumber(P.IsValid()?(P->Page*3+I*7)%10:0);})];
-        PageCanvas->AddSlot().Position(FVector2D(0,0)).Size(FVector2D(324,576))
+        PageCanvas->AddSlot().Position_Lambda([P]{return P.IsValid()?P->CardOffset:FVector2D::ZeroVector;}).Size(FVector2D(324,576))
             [SNew(SImage).Image(&CipherCardBrush).Visibility_Lambda([P]{return P.IsValid() && P->bCardOnPage?EVisibility::HitTestInvisible:EVisibility::Collapsed;})];
-        Row->AddSlot().AutoWidth()[SNew(SBox).WidthOverride(324).HeightOverride(576)[PageCanvas]];
+        Row->AddSlot().AutoWidth()[SNew(SBox).WidthOverride(484).HeightOverride(640)
+            [SNew(SCipherDragSurface).Puzzle(P)
+                [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("NoBrush")).Padding(FMargin(80,32))[PageCanvas]]]];
         auto Notes=SNew(SVerticalBox);
         Notes->AddSlot().AutoHeight()[TripoMenu::Label(TEXT("留给接手的人"),22,TripoMenu::Paper,true)];
         Notes->AddSlot().AutoHeight().Padding(0,16,0,28)[TripoMenu::Label(TEXT("卡片旁的数字是页码。\n沿着箭头，找出每个孔里藏着的数字。"),17,TripoMenu::Paper)];
@@ -95,10 +145,10 @@ TSharedRef<SWidget> ATripoHUD::BuildOfficeCipher()
             .OnClicked_Lambda([P]{if(P.IsValid())P->ToggleCard();return FReply::Handled();})
             [SNew(STextBlock).Font(TripoMenu::Font(18)).ColorAndOpacity(TripoMenu::Paper)
                 .Text_Lambda([P]{return FText::FromString(!P.IsValid() || !P->bHasCard?TEXT("还没有打孔卡"):P->bCardOnPage?TEXT("取下卡片"):TEXT("放上打孔卡"));})]];
-        Notes->AddSlot().AutoHeight().Padding(0,18)[TripoMenu::Label(TEXT("卡片可以留在书上翻页。\n记下数字，再去试试抽屉的锁。"),14,FLinearColor(.64,.66,.59))];
+        Notes->AddSlot().AutoHeight().Padding(0,18)[TripoMenu::Label(TEXT("按住鼠标左键拖动打孔卡。\n翻页会保留卡片的位置。\n记下数字，在保险箱输入密码。"),14,FLinearColor(.64,.66,.59))];
         Row->AddSlot().AutoWidth().Padding(30,24,0,0)[SNew(SBox).WidthOverride(240)[Notes]];
         Column->AddSlot().AutoHeight()[Row];
     }
-    return SNew(SBox).WidthOverride(bCipherLock?470:860)
+    return SNew(SBox).WidthOverride(bCipherLock?510:1020)
         [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(.024,.028,.026,.98)).Padding(30)[Column]];
 }

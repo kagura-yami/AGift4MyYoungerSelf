@@ -7,6 +7,8 @@
 #include "Progress/TripoProgressSubsystem.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "Components/CapsuleComponent.h"
+#include "Player/TripoMovementComponent.h"
 
 ATripoOfficeCipher::ATripoOfficeCipher()
 {
@@ -57,24 +59,42 @@ bool ATripoOfficeCipher::OpenBook(ATripoCharacter* P)
     if(!InReach(P,BookTarget)) return false;
     auto* PC=Cast<APlayerController>(P->GetController()); auto* HUD=PC?Cast<ATripoHUD>(PC->GetHUD()):nullptr;
     if(!HUD || HUD->IsGameplayBlocked()) return false;
+    bCardOnPage=bHasCard;
     Feedback.Empty(); HUD->ShowOfficeCipher(this,false); return true;
 }
 bool ATripoOfficeCipher::OpenLock(ATripoCharacter* P)
 {
-    if(bUnlocked || !InReach(P,DrawerTarget)) return false;
+    if(!InReach(P,DrawerTarget)) return false;
     auto* PC=Cast<APlayerController>(P->GetController()); auto* HUD=PC?Cast<ATripoHUD>(PC->GetHUD()):nullptr;
     if(!HUD || HUD->IsGameplayBlocked()) return false;
     Feedback.Empty(); HUD->ShowOfficeCipher(this,true); return true;
 }
 void ATripoOfficeCipher::SelectPage(int32 N) { Page=FMath::Clamp(N,1,7); }
 void ATripoOfficeCipher::ToggleCard() { if(bHasCard) bCardOnPage=!bCardOnPage; }
+void ATripoOfficeCipher::MoveCard(FVector2D Offset)
+{
+    if(bHasCard && bCardOnPage && FMath::IsFinite(Offset.X) && FMath::IsFinite(Offset.Y))
+        CardOffset=FVector2D(FMath::Clamp(Offset.X,-100.,100.),FMath::Clamp(Offset.Y,-130.,130.));
+}
 int32 ATripoOfficeCipher::Digit(int32 N,int32 Hole) const
 { const int32 I=(N-1)*4+Hole; return N>=1 && N<=7 && Hole>=0 && Hole<4 && PageDigits.IsValidIndex(I)?FMath::Clamp(PageDigits[I],0,9):0; }
 bool ATripoOfficeCipher::SubmitCode(ATripoCharacter* P,const FString& Code)
 {
-    if(bUnlocked || !bHasCard || !InReach(P,DrawerTarget)) { Feedback=TEXT("先找到留在白板上的线索。"); return false; }
+    if(!InReach(P,DrawerTarget)) { Feedback=TEXT("请靠近保险箱。"); return false; }
     const FString Expected=FString::Printf(TEXT("%d%d%d%d"),Digit(3,0),Digit(7,1),Digit(5,2),Digit(1,3));
     if(Code!=Expected) { Feedback=TEXT("锁没有打开，再核对一下。"); return false; }
+    if(!IsValid(CodeDestination)) { Feedback=TEXT("尚未设置传送目的地。"); return false; }
+    const FVector Goal=CodeDestination->GetActorLocation();
+    const auto* Capsule=P->GetCapsuleComponent();
+    FCollisionQueryParams Query(SCENE_QUERY_STAT(CipherLanding),false,P);
+    if(GetWorld()->OverlapBlockingTestByChannel(Goal,FQuat::Identity,ECC_Pawn,
+        FCollisionShape::MakeCapsule(Capsule->GetScaledCapsuleRadius(),Capsule->GetScaledCapsuleHalfHeight()),Query))
+    { Feedback=TEXT("目的地被遮挡，请调整蓝图落点。"); return false; }
+    const FRotator Facing(0,CodeDestination->GetActorRotation().Yaw,0);
+    if(!P->TeleportTo(Goal,Facing,false,true)) { Feedback=TEXT("暂时无法到达目的地。"); return false; }
+    CastChecked<UTripoMovementComponent>(P->GetCharacterMovement())->EndBurst();
+    P->GetCharacterMovement()->StopMovementImmediately();
+    if(auto* PC=Cast<APlayerController>(P->GetController())) PC->SetControlRotation(Facing);
     TArray<int32> Floors; Floors.Init(0,8);
     UTripoProgressSubsystem::Get(this)->ApplyStory(P,FName(*(PuzzleId.ToString()+TEXT(".Unlocked"))),Floors);
     bUnlocked=true; Feedback=TEXT("咔哒。"); RefreshObjects();
@@ -83,16 +103,16 @@ bool ATripoOfficeCipher::SubmitCode(ATripoCharacter* P,const FString& Code)
 void ATripoOfficeCipher::RefreshObjects()
 {
     Card->SetVisibility(!bHasCard); Card->SetCollisionEnabled(bHasCard?ECollisionEnabled::NoCollision:ECollisionEnabled::QueryAndPhysics);
-    CardTarget->bEnabled=!bHasCard; DrawerTarget->bEnabled=!bUnlocked;
+    CardTarget->bEnabled=!bHasCard; DrawerTarget->bEnabled=true;
     CardTarget->SetCollisionEnabled(bHasCard?ECollisionEnabled::NoCollision:ECollisionEnabled::QueryOnly);
-    DrawerTarget->SetCollisionEnabled(bUnlocked?ECollisionEnabled::NoCollision:ECollisionEnabled::QueryOnly);
-    if(Reward) { Reward->bEnabled=bUnlocked && OpenAlpha>.95f; Reward->SetActorHiddenInGame(!Reward->bEnabled); Reward->SetActorEnableCollision(Reward->bEnabled); }
+    DrawerTarget->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    if(Reward) { Reward->bEnabled=false; Reward->SetActorHiddenInGame(true); Reward->SetActorEnableCollision(false); }
 }
 void ATripoOfficeCipher::Tick(float Dt)
 {
     Super::Tick(Dt); OpenAlpha=FMath::FInterpConstantTo(OpenAlpha,bUnlocked?1.f:0.f,Dt,1.3f);
     const float T=OpenAlpha*OpenAlpha*(3-2*OpenAlpha);
-    Drawer->SetRelativeLocation(DrawerClosed+DrawerTravel*T);
+    Drawer->SetRelativeLocation(DrawerClosed);
     if(Reward) Reward->SetActorLocation(RewardClosed+GetActorTransform().TransformVectorNoScale(DrawerTravel)*T);
     RefreshObjects();
 }

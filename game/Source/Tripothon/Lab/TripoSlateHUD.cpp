@@ -84,6 +84,7 @@ void ATripoHUD::BeginPlay()
 }
 void ATripoHUD::EndPlay(const EEndPlayReason::Type Reason)
 {
+    StopStoryMovie();
     if (RootWidget.IsValid() && GetWorld()->GetGameViewport()) GetWorld()->GetGameViewport()->RemoveViewportWidgetContent(RootWidget.ToSharedRef());
     if (bGiftReceipt) if (auto* R=UTripoRuntimeSubsystem::GetRuntime(this)) R->SetPauseReason(ETripoPauseReason::Reward,false);
     CloseOfficeCipher();
@@ -92,7 +93,7 @@ void ATripoHUD::EndPlay(const EEndPlayReason::Type Reason)
 bool ATripoHUD::IsGameplayBlocked() const
 {
     auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
-    return OfficeCipher.IsValid() || bGiftReceipt || bEntryMenu || bCollection || bExchange || (PlayerOwner && PlayerOwner->IsPaused()) || (P && P->GetPhase() == ETripoChallengePhase::PendingReward);
+    return bStoryMovie || OfficeCipher.IsValid() || bGiftReceipt || bEntryMenu || bCollection || bExchange || (PlayerOwner && PlayerOwner->IsPaused()) || (P && P->GetPhase() == ETripoChallengePhase::PendingReward);
 }
 FText ATripoHUD::StatusText() const
 {
