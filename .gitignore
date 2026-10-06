@@ -14,3 +14,18 @@ artifacts/
 
 # Browser automation snapshots
 .playwright-cli/
+
+# Local credentials, certificates and deployment state
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.sample
+**/frpc.toml
+**/turnserver.conf
+**/turn-secret.txt
+*.pem
+*.key
+*.pfx
+*.p12
+**/tools/evaluation/
+game/Build/Windows/FileOpenOrder/

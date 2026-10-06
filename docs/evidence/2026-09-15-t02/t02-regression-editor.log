@@ -886,23 +886,23 @@ LogConfig: Set CVar [[r.VRS.ContrastAdaptiveShading:1]]
 [2026.09.15-13.43.51:623][  0]LogDerivedDataCache: Display: ../../../Engine/DerivedDataCache/Compressed.ddp: Opened pak cache for reading. (1729 MiB)
 [2026.09.15-13.43.51:623][  0]LogDerivedDataCache: FDerivedDataBackendGraph: EnterprisePak pak cache file ../../../Enterprise/DerivedDataCache/Compressed.ddp not found, will not use a pak cache.
 [2026.09.15-13.43.51:623][  0]LogDerivedDataCache: Unable to find inner node EnterprisePak for hierarchy Hierarchy.
-[2026.09.15-13.43.51:626][  0]LogZenServiceInstance: Found Zen config default=C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Data
+[2026.09.15-13.43.51:626][  0]LogZenServiceInstance: Found Zen config default=C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Data
 [2026.09.15-13.43.51:626][  0]LogZenServiceInstance: Display: Launching zen utility 'C:/Apps/UE/UE_5.7/Engine/Binaries/Win64/zen.exe service status'.
 [2026.09.15-13.43.52:156][  0]LogZenServiceInstance: Display: Launching zen utility 'C:/Apps/UE/UE_5.7/Engine/Binaries/Win64/zen.exe service status'.
 [2026.09.15-13.43.52:307][  0]LogTurnkeySupport: Completed SDK detection: ExitCode = 0
-[2026.09.15-13.43.52:690][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/kagurayami/AppData/Local/UnrealEngine/5.7/Saved/Zen/zen.version', version: '5.7.6-202510061608-windows-x64-release-9a1ebb9'
+[2026.09.15-13.43.52:690][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/USER/AppData/Local/UnrealEngine/5.7/Saved/Zen/zen.version', version: '5.7.6-202510061608-windows-x64-release-9a1ebb9'
 [2026.09.15-13.43.52:691][  0]LogZenServiceInstance: InTree version at 'C:/Apps/UE/UE_5.7/Engine/Binaries/Win64/zenserver.exe' is '5.7.6-202510061608-windows-x64-release-9a1ebb9'
-[2026.09.15-13.43.52:691][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install/zen.version', version: '5.7.6-202510061608-windows-x64-release-9a1ebb9'
-[2026.09.15-13.43.52:691][  0]LogZenServiceInstance: Installed version at 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is '5.7.6-202510061608-windows-x64-release-9a1ebb9'
-[2026.09.15-13.43.52:691][  0]LogZenServiceInstance: Display: Installed service at 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is up to date
+[2026.09.15-13.43.52:691][  0]LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install/zen.version', version: '5.7.6-202510061608-windows-x64-release-9a1ebb9'
+[2026.09.15-13.43.52:691][  0]LogZenServiceInstance: Installed version at 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is '5.7.6-202510061608-windows-x64-release-9a1ebb9'
+[2026.09.15-13.43.52:691][  0]LogZenServiceInstance: Display: Installed service at 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is up to date
 [2026.09.15-13.43.52:692][  0]LogZenServiceInstance: No current process using the data dir found, launching a new instance
-[2026.09.15-13.43.52:692][  0]LogZenServiceInstance: Display: Launching executable 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe', working dir 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install', data dir 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Data', args '--port 8558 --data-dir C:\Users\kagurayami\AppData\Local\UnrealEngine\Common\Zen\Data --http asio --gc-cache-duration-seconds 1209600 --gc-interval-seconds 21600 --gc-low-diskspace-threshold 2147483648 --cache-bucket-limit-overwrites --quiet --http-forceloopback --owner-pid 81060  --child-id Zen_81060_Startup'
+[2026.09.15-13.43.52:692][  0]LogZenServiceInstance: Display: Launching executable 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe', working dir 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install', data dir 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Data', args '--port 8558 --data-dir C:\Users\USER\AppData\Local\UnrealEngine\Common\Zen\Data --http asio --gc-cache-duration-seconds 1209600 --gc-interval-seconds 21600 --gc-low-diskspace-threshold 2147483648 --cache-bucket-limit-overwrites --quiet --http-forceloopback --owner-pid 81060  --child-id Zen_81060_Startup'
 [2026.09.15-13.43.52:860][  0]LogZenServiceInstance: Display: Unreal Zen Storage Server HTTP service at http://[::1]:8558 status: OK!.
 [2026.09.15-13.43.52:861][  0]LogZenServiceInstance: Local ZenServer AutoLaunch initialization completed in 0.170 seconds
 [2026.09.15-13.43.52:863][  0]LogDerivedDataCache: Display: ZenLocal: Using ZenServer HTTP service at [::1] with namespace ue.ddc status: OK!.
-[2026.09.15-13.43.52:880][  0]LogDerivedDataCache: C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/DerivedDataCache: Speed tests took 0.02 seconds.
-[2026.09.15-13.43.52:880][  0]LogDerivedDataCache: Display: C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/DerivedDataCache: Performance: Latency=0.08ms. RandomReadSpeed=378.46MBs, RandomWriteSpeed=68.56MBs. Assigned SpeedClass 'Local'
-[2026.09.15-13.43.52:882][  0]LogDerivedDataCache: Local: Using data cache path C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/DerivedDataCache: DeleteOnly
+[2026.09.15-13.43.52:880][  0]LogDerivedDataCache: C:/Users/USER/AppData/Local/UnrealEngine/Common/DerivedDataCache: Speed tests took 0.02 seconds.
+[2026.09.15-13.43.52:880][  0]LogDerivedDataCache: Display: C:/Users/USER/AppData/Local/UnrealEngine/Common/DerivedDataCache: Performance: Latency=0.08ms. RandomReadSpeed=378.46MBs, RandomWriteSpeed=68.56MBs. Assigned SpeedClass 'Local'
+[2026.09.15-13.43.52:882][  0]LogDerivedDataCache: Local: Using data cache path C:/Users/USER/AppData/Local/UnrealEngine/Common/DerivedDataCache: DeleteOnly
 [2026.09.15-13.43.52:882][  0]LogDerivedDataCache: ZenShared: Disabled because Host is set to 'None'
 [2026.09.15-13.43.52:882][  0]LogDerivedDataCache: Unable to find inner node ZenShared for hierarchy Hierarchy.
 [2026.09.15-13.43.52:882][  0]LogDerivedDataCache: Shared: Disabled because no path is configured.
@@ -910,7 +910,7 @@ LogConfig: Set CVar [[r.VRS.ContrastAdaptiveShading:1]]
 [2026.09.15-13.43.52:882][  0]LogDerivedDataCache: Cloud: Disabled because Host is set to 'None'
 [2026.09.15-13.43.52:882][  0]LogDerivedDataCache: Unable to find inner node Cloud for hierarchy Hierarchy.
 [2026.09.15-13.43.52:883][  0]LogShaderCompilers: Guid format shader working directory is 2 characters bigger than the processId version (../../../../../../Dev/Projects/UE/Tripothon/game/Intermediate/Shaders/WorkingDirectory/81060/).
-[2026.09.15-13.43.52:883][  0]LogShaderCompilers: Cleaned the shader compiler working directory 'C:/Users/kagurayami/AppData/Local/Temp/UnrealShaderWorkingDir/A77B03A645B24025A1D4869BC195D16F/'.
+[2026.09.15-13.43.52:883][  0]LogShaderCompilers: Cleaned the shader compiler working directory 'C:/Users/USER/AppData/Local/Temp/UnrealShaderWorkingDir/A77B03A645B24025A1D4869BC195D16F/'.
 [2026.09.15-13.43.52:883][  0]LogXGEController: Cannot use XGE Controller as Incredibuild is not installed on this machine.
 [2026.09.15-13.43.52:884][  0]LogUbaHorde: Display: UBA/Horde Configuration [Uba.Provider.Horde]: Not Enabled
 [2026.09.15-13.43.52:884][  0]LogShaderCompilers: Display: No distributed shader compiler controller found
@@ -1114,7 +1114,7 @@ LogConfig: Set CVar [[r.VRS.ContrastAdaptiveShading:1]]
 [2026.09.15-13.43.58:818][  0]LogWebBrowser: Loaded CEF3 version 128.4.13.3057 from C:/Apps/UE/UE_5.7/Engine/Binaries/ThirdParty/CEF3/Win64/128.4.13+ge76af7e+chromium-128.0.6613.138
 [2026.09.15-13.43.58:820][  0]LogCEFBrowser: CEF GPU acceleration enabled
 [2026.09.15-13.43.59:031][  0]LogDesktopPlatform: Enumerating Projects From Engine Ver: 5.7
-[2026.09.15-13.43.59:031][  0]LogDesktopPlatform: Looking for directories to scan from : C:/Users/kagurayami/AppData/Local/UnrealEngine/5.7/Saved/Config/WindowsEditor
+[2026.09.15-13.43.59:031][  0]LogDesktopPlatform: Looking for directories to scan from : C:/Users/USER/AppData/Local/UnrealEngine/5.7/Saved/Config/WindowsEditor
 [2026.09.15-13.43.59:031][  0]LogDesktopPlatform: Searching for previously created project directories...
 [2026.09.15-13.43.59:031][  0]LogDesktopPlatform: Found directory: "C:/Dev/Projects/UE"
 [2026.09.15-13.43.59:031][  0]LogDesktopPlatform: Found project "(ProjectName="C:/Dev/Projects/UE/我的项目/我的项目.uproject",LastOpenTime=2026.05.20-04.29.24)" in recently opened files
@@ -1129,7 +1129,7 @@ LogConfig: Set CVar [[r.VRS.ContrastAdaptiveShading:1]]
 [2026.09.15-13.43.59:035][  0]LogProjectBrowser: Looking for projects...
 [2026.09.15-13.43.59:035][  0]LogProjectBrowser: Found Engine Installation "5.7"(C:/Apps/UE/UE_5.7)
 [2026.09.15-13.43.59:036][  0]LogDesktopPlatform: Enumerating Projects From Engine Ver: 5.7
-[2026.09.15-13.43.59:036][  0]LogDesktopPlatform: Looking for directories to scan from : C:/Users/kagurayami/AppData/Local/UnrealEngine/5.7/Saved/Config/WindowsEditor
+[2026.09.15-13.43.59:036][  0]LogDesktopPlatform: Looking for directories to scan from : C:/Users/USER/AppData/Local/UnrealEngine/5.7/Saved/Config/WindowsEditor
 [2026.09.15-13.43.59:036][  0]LogDesktopPlatform: Searching for previously created project directories...
 [2026.09.15-13.43.59:036][  0]LogDesktopPlatform: Found directory: "C:/Dev/Projects/UE"
 [2026.09.15-13.43.59:036][  0]LogDesktopPlatform: Found project "(ProjectName="C:/Dev/Projects/UE/我的项目/我的项目.uproject",LastOpenTime=2026.05.20-04.29.24)" in recently opened files
@@ -1269,7 +1269,7 @@ LogConfig: Set CVar [[r.VRS.ContrastAdaptiveShading:1]]
 [2026.09.15-13.45.37:854][288]LogViewport: Display: Viewport MouseCaptureMode Changed, CapturePermanently_IncludingInitialMouseDown -> CapturePermanently
 [2026.09.15-13.45.37:854][288]PIE: 登陆的服务器
 [2026.09.15-13.45.37:858][288]PIE: PIE总开始时间：0.071秒。
-[2026.09.15-13.45.52:883][333]LogDerivedDataCache: C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/DerivedDataCache: Maintenance finished in +00:00:00.001 and deleted 0 files with total size 0 MiB and 0 empty folders. Scanned 0 files in 1 folders with total size 0 MiB.
+[2026.09.15-13.45.52:883][333]LogDerivedDataCache: C:/Users/USER/AppData/Local/UnrealEngine/Common/DerivedDataCache: Maintenance finished in +00:00:00.001 and deleted 0 files with total size 0 MiB and 0 empty folders. Scanned 0 files in 1 folders with total size 0 MiB.
 [2026.09.15-13.45.53:092][333]LogTripoRuntime: Pause reason=0 set=1 active=1 action=15.254389
 [2026.09.15-13.45.53:092][333]LogTripoRuntime: Pause reason=1 set=1 active=1 action=15.254389
 [2026.09.15-13.45.53:435][334]LogTripoRuntime: Pause reason=0 set=0 active=1 action=15.254389
@@ -1333,7 +1333,7 @@ LogConfig: Set CVar [[r.VRS.ContrastAdaptiveShading:1]]
 [2026.09.15-13.46.07:396][370]LogHttp: Warning: 	verb=[POST] url=[https://datarouter.ol.epicgames.com/datarouter/api/v1/public/data?SessionID=%7B8064D07C-4310-E297-9B30-A28D3CF6AC28%7D&AppID=UEEditor.Rocket.Release&AppVersion=5.7.4-51494982%2B%2B%2BUE5%2BRelease-5.7&UserID=0a888f424aac40f2766f6fac704623dd%7Ca1c59744f28f4527a7749e3ffef56f2f%7C86124140-86b3-4824-b564-9db96361afd9&AppEnvironment=datacollector-binary&UploadType=eteventstream] refs=[2] status=Processing
 [2026.09.15-13.46.07:434][370]LogEOSShared: FEOSSDKManager::Shutdown EOS_Shutdown Result=[EOS_Success]
 [2026.09.15-13.46.07:434][370]RenderDocPlugin: plugin has been unloaded.
-[2026.09.15-13.46.07:434][370]LogXGEController: Cleaning working directory: C:/Users/kagurayami/AppData/Local/Temp/UnrealXGEWorkingDir/
+[2026.09.15-13.46.07:434][370]LogXGEController: Cleaning working directory: C:/Users/USER/AppData/Local/Temp/UnrealXGEWorkingDir/
 [2026.09.15-13.46.07:437][370]LogPakFile: Destroying PakPlatformFile
 [2026.09.15-13.46.07:444][370]LogD3D11RHI: Shutdown
 [2026.09.15-13.46.07:444][370]LogD3D11RHI: CleanupD3DDevice

@@ -8,8 +8,8 @@ Using C:\Apps\VisualStudio\MSBuild\Current\Bin\MSBuild.exe
 Executing commands...
 Setting up ProjectParams for C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject
 ********** BUILD COMMAND STARTED **********
-Running: C:\Apps\UE\UE_5.7\Engine\Binaries\ThirdParty\DotNet\8.0.412\win-x64\dotnet.exe "C:\Apps\UE\UE_5.7\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" -Target="TripothonEditor Win64 Development -Project=C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject" -Target="Tripothon Win64 Development -Project=C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject  -remoteini=\"C:\Dev\Projects\UE\Tripothon\game\"  -MaxParallelActions=2 -NoUBA " -log="C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\UBA-TripothonEditor-Win64-Development.txt"
-Log file: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\UBA-TripothonEditor-Win64-Development.txt
+Running: C:\Apps\UE\UE_5.7\Engine\Binaries\ThirdParty\DotNet\8.0.412\win-x64\dotnet.exe "C:\Apps\UE\UE_5.7\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" -Target="TripothonEditor Win64 Development -Project=C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject" -Target="Tripothon Win64 Development -Project=C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject  -remoteini=\"C:\Dev\Projects\UE\Tripothon\game\"  -MaxParallelActions=2 -NoUBA " -log="C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\UBA-TripothonEditor-Win64-Development.txt"
+Log file: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\UBA-TripothonEditor-Win64-Development.txt
 Using 'git status' to determine working set for adaptive non-unity build (C:\Dev\Projects\UE\Tripothon).
 Invalidating makefile for Tripothon (source file added)
 UHT compiled-in object format Default
@@ -136,13 +136,13 @@ LogDerivedDataCache: Display: Memory: Max Cache Size: -1 MB
 LogDerivedDataCache: Display: ../../../Engine/DerivedDataCache/Compressed.ddp: Opened pak cache for reading. (1729 MiB)
 LogZenServiceInstance: Display: Launching zen utility 'C:/Apps/UE/UE_5.7/Engine/Binaries/Win64/zen.exe service status'.
 LogZenServiceInstance: Display: Launching zen utility 'C:/Apps/UE/UE_5.7/Engine/Binaries/Win64/zen.exe service status'.
-LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/kagurayami/AppData/Local/UnrealEngine/5.7/Saved/Zen/zen.version', version: '5.7.6-202510061608-windows-x64-release-9a1ebb9'
-LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install/zen.version', version: '5.7.6-202510061608-windows-x64-release-9a1ebb9'
-LogZenServiceInstance: Display: Installed service at 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is up to date
-LogZenServiceInstance: Display: Launching executable 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe', working dir 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Install', data dir 'C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/Zen/Data', args '--port 8558 --data-dir C:\Users\kagurayami\AppData\Local\UnrealEngine\Common\Zen\Data --http asio --gc-cache-duration-seconds 1209600 --gc-interval-seconds 21600 --gc-low-diskspace-threshold 2147483648 --cache-bucket-limit-overwrites --quiet --http-forceloopback --owner-pid 27936  --child-id Zen_27936_Startup'
+LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/USER/AppData/Local/UnrealEngine/5.7/Saved/Zen/zen.version', version: '5.7.6-202510061608-windows-x64-release-9a1ebb9'
+LogZenServiceInstance: Display: Read zen version cache file from 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install/zen.version', version: '5.7.6-202510061608-windows-x64-release-9a1ebb9'
+LogZenServiceInstance: Display: Installed service at 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe' is up to date
+LogZenServiceInstance: Display: Launching executable 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install/zenserver.exe', working dir 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Install', data dir 'C:/Users/USER/AppData/Local/UnrealEngine/Common/Zen/Data', args '--port 8558 --data-dir C:\Users\USER\AppData\Local\UnrealEngine\Common\Zen\Data --http asio --gc-cache-duration-seconds 1209600 --gc-interval-seconds 21600 --gc-low-diskspace-threshold 2147483648 --cache-bucket-limit-overwrites --quiet --http-forceloopback --owner-pid 27936  --child-id Zen_27936_Startup'
 LogZenServiceInstance: Display: Unreal Zen Storage Server HTTP service at http://[::1]:8558 status: OK!.
 LogDerivedDataCache: Display: ZenLocal: Using ZenServer HTTP service at [::1] with namespace ue.ddc status: OK!.
-LogDerivedDataCache: Display: C:/Users/kagurayami/AppData/Local/UnrealEngine/Common/DerivedDataCache: Performance: Latency=0.15ms. RandomReadSpeed=326.61MBs, RandomWriteSpeed=42.19MBs. Assigned SpeedClass 'Local'
+LogDerivedDataCache: Display: C:/Users/USER/AppData/Local/UnrealEngine/Common/DerivedDataCache: Performance: Latency=0.15ms. RandomReadSpeed=326.61MBs, RandomWriteSpeed=42.19MBs. Assigned SpeedClass 'Local'
 LogUbaHorde: Display: UBA/Horde Configuration [Uba.Provider.Horde]: Not Enabled
 LogShaderCompilers: Display: No distributed shader compiler controller found
 LogShaderCompilers: Display: Using 21 local workers for shader compilation
@@ -556,13 +556,13 @@ Including config file C:\Dev\Projects\UE\Tripothon\game\Config\DefaultGame.ini
 Including config file C:\Dev\Projects\UE\Tripothon\game\Config\DefaultEngine.ini
 Cleaning Stage Directory: C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows
 Creating pak using staging manifest.
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PrePak_Windows_NonUFSFiles.txt, NumItems: 33
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PrePak_Windows_NonUFSFilesDebug.txt, NumItems: 6
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PrePak_Windows_UFSFiles.txt, NumItems: 2561
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PrePak_Windows_NonUFSFiles.txt, NumItems: 33
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PrePak_Windows_NonUFSFilesDebug.txt, NumItems: 6
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PrePak_Windows_UFSFiles.txt, NumItems: 2561
 No matching platform for PakFileRules for Section ExcludeContentForMobile : Windows
 Using 0 pak order files:
-Running UnrealPak with arguments: "C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject"  -cryptokeys="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json" -unattended -patchpaddingalign=2048 -compressionformats=Oodle -compresslevel=4 -compressmethod=Kraken  -platform=Windows  -CreateMultiple="C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PakCommands.txt"
-Running: C:\Apps\UE\UE_5.7\Engine\Binaries\Win64\UnrealPak.exe "C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject"  -cryptokeys="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json" -unattended -patchpaddingalign=2048 -compressionformats=Oodle -compresslevel=4 -compressmethod=Kraken  -platform=Windows  -CreateMultiple="C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PakCommands.txt"
+Running UnrealPak with arguments: "C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject"  -cryptokeys="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json" -unattended -patchpaddingalign=2048 -compressionformats=Oodle -compresslevel=4 -compressmethod=Kraken  -platform=Windows  -CreateMultiple="C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PakCommands.txt"
+Running: C:\Apps\UE\UE_5.7\Engine\Binaries\Win64\UnrealPak.exe "C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject"  -cryptokeys="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json" -unattended -patchpaddingalign=2048 -compressionformats=Oodle -compresslevel=4 -compressmethod=Kraken  -platform=Windows  -CreateMultiple="C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\PakCommands.txt"
 LogPakFile: Display: ProjectDir: ../../../../../../Dev/Projects/UE/Tripothon/game/
 LogPakFile: Display: Parsing crypto keys from a crypto key cache file
 LogPakFile: Display: CompressionFormats in priority order: Oodle, Zlib
@@ -586,8 +586,8 @@ LogPakFile: Display:
 LogPakFile: Display: Writer and Compression Threads exited.
 LogPakFile: Display: UnrealPak executed in 0.218111 seconds
 Took 0.58s to run UnrealPak.exe, ExitCode=0
-Running UnrealPak with arguments: "C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject" -CreateGlobalContainer="C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows\Tripothon\Content\Paks\global.utoc" -PackageStoreManifest="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\packagestore.manifest" -CookedDirectory="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows" -Commands="C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\IoStoreCommands.txt" -ScriptObjects="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\scriptobjects.bin" -patchpaddingalign=2048 -compressionformats=Oodle -compresslevel=4 -compressmethod=Kraken   -cryptokeys="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json" -compressionMinBytesSaved=1024 -compressionMinPercentSaved=5 -WriteBackMetadataToAssetRegistry=Disabled -platform=Windows  -unattended
-Running: C:\Apps\UE\UE_5.7\Engine\Binaries\Win64\UnrealPak.exe "C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject" -CreateGlobalContainer="C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows\Tripothon\Content\Paks\global.utoc" -PackageStoreManifest="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\packagestore.manifest" -CookedDirectory="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows" -Commands="C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\IoStoreCommands.txt" -ScriptObjects="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\scriptobjects.bin" -patchpaddingalign=2048 -compressionformats=Oodle -compresslevel=4 -compressmethod=Kraken   -cryptokeys="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json" -compressionMinBytesSaved=1024 -compressionMinPercentSaved=5 -WriteBackMetadataToAssetRegistry=Disabled -platform=Windows  -unattended
+Running UnrealPak with arguments: "C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject" -CreateGlobalContainer="C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows\Tripothon\Content\Paks\global.utoc" -PackageStoreManifest="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\packagestore.manifest" -CookedDirectory="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows" -Commands="C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\IoStoreCommands.txt" -ScriptObjects="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\scriptobjects.bin" -patchpaddingalign=2048 -compressionformats=Oodle -compresslevel=4 -compressmethod=Kraken   -cryptokeys="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json" -compressionMinBytesSaved=1024 -compressionMinPercentSaved=5 -WriteBackMetadataToAssetRegistry=Disabled -platform=Windows  -unattended
+Running: C:\Apps\UE\UE_5.7\Engine\Binaries\Win64\UnrealPak.exe "C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject" -CreateGlobalContainer="C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows\Tripothon\Content\Paks\global.utoc" -PackageStoreManifest="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\packagestore.manifest" -CookedDirectory="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows" -Commands="C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\IoStoreCommands.txt" -ScriptObjects="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\scriptobjects.bin" -patchpaddingalign=2048 -compressionformats=Oodle -compresslevel=4 -compressmethod=Kraken   -cryptokeys="C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json" -compressionMinBytesSaved=1024 -compressionMinPercentSaved=5 -WriteBackMetadataToAssetRegistry=Disabled -platform=Windows  -unattended
 LogPakFile: Display: ProjectDir: ../../../../../../Dev/Projects/UE/Tripothon/game/
 LogIoStore: Display: ==================== IoStore Utils ====================
 LogIoStore: Display: Parsing crypto keys from a crypto key cache file 'C:\Dev\Projects\UE\Tripothon\game\Saved\Cooked\Windows\Tripothon\Metadata\Crypto.json'
@@ -602,7 +602,7 @@ LogIoStore: Display: Using compression min bytes saved '1024'
 LogIoStore: Display: Using compression min percent saved '5'
 LogIoStore: Display: Using max partition size '0'
 LogIoStore: Display: Not using DDC for compression
-LogIoStore: Display: Using command list file: 'C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\IoStoreCommands.txt'
+LogIoStore: Display: Using command list file: 'C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\IoStoreCommands.txt'
 LogIoStore: Display: Selected Oodle level 4 (Normal) from command line for shaders
 LogIoStore: Display: Fetched 442 oplog items from Manifest in 0.00 seconds
 LogIoStore: Display: Parsed 442 oplog items 0.00 seconds, 465 chunks
@@ -709,9 +709,9 @@ LogIoStore: Display:
 LogIoStore: Display: Success
 LogPakFile: Display: UnrealPak executed in 0.574139 seconds
 Took 0.99s to run UnrealPak.exe, ExitCode=0
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_UFSFiles.txt, NumItems: 2562
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFiles.txt, NumItems: 33
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFilesDebug.txt, NumItems: 6
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_UFSFiles.txt, NumItems: 2562
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFiles.txt, NumItems: 33
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFilesDebug.txt, NumItems: 6
 Copying NonUFSFiles to staging directory: C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows
 Copying DebugFiles to staging directory: C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows
 Stage command time: 2.91 s

@@ -1,13 +1,12 @@
 """Import the supplied card unchanged; cut its four windows in the material."""
 import unreal
 from pathlib import Path
-import shutil
 
 root=Path(unreal.Paths.project_dir()).resolve().parent
 source=root/'tools/assets/office_cipher/card.png'
 source.parent.mkdir(parents=True,exist_ok=True)
 if not source.exists():
-    shutil.copy2('C:/Users/KAGURA~1/AppData/Local/Temp/codex-clipboard-c4df5d7a-5a94-468a-a637-3202b151337f.png',source)
+    raise FileNotFoundError('Place the reference card at tools/assets/office_cipher/card.png before importing.')
 path='/Game/UI/OfficeCipher'
 texture=unreal.load_asset(path+'/T_CipherCard')
 if not texture:
