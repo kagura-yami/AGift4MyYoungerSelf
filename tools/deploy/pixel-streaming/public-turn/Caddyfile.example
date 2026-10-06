@@ -1,0 +1,12 @@
+# Example for Caddy installed directly on the same VPS as frps.
+# Set frps proxyBindAddr = "127.0.0.1" if all mapped services should be private.
+# Otherwise restrict public access to remotePort 18080 with the VPS firewall.
+# Replace the domain and point its DNS to this VPS. Caddy needs TCP 80/443.
+play.example.com {
+    handle /downloads/* {
+        reverse_proxy 127.0.0.1:18081
+    }
+    handle {
+        reverse_proxy 127.0.0.1:18080
+    }
+}

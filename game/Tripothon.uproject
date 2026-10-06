@@ -7,6 +7,7 @@
   "Plugins": [
     {"Name":"GeometryScripting","Enabled":true,"TargetAllowList":["Editor"]},
     {"Name":"EnhancedInput","Enabled":true},
+    {"Name":"PixelStreaming2","Enabled":true,"SupportedTargetPlatforms":["Win64"]},
     {"Name":"PythonScriptPlugin","Enabled":true,"TargetAllowList":["Editor"]},
     {"Name":"EditorScriptingUtilities","Enabled":true,"TargetAllowList":["Editor"]},
     {"Name":"ModelContextProtocol","Enabled":true,"TargetAllowList":["Editor"],"SupportedTargetPlatforms":["Win64"]}

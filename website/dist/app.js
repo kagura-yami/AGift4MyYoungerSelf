@@ -28,4 +28,22 @@ function selectSkill(index,focus=false){
 tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectSkill(i));tab.addEventListener('keydown',e=>{let next=i;if(e.key==='ArrowDown'||e.key==='ArrowRight')next=(i+1)%8;else if(e.key==='ArrowUp'||e.key==='ArrowLeft')next=(i+7)%8;else if(e.key==='Home')next=0;else if(e.key==='End')next=7;else return;e.preventDefault();selectSkill(next,true);});});
 if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('js-motion');const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target);}}),{threshold:.06});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));}
 const config=window.GIFT_SITE||{};
-if(config.downloadUrl){try{const url=new URL(config.downloadUrl);if(url.protocol==='https:'){const link=document.querySelector('#download-link');link.href=url.href;link.hidden=false;link.rel='noopener';document.querySelector('#download-pending').hidden=true;document.querySelector('#release-status').textContent=config.releaseLabel||'Windows 试玩版';document.querySelector('.release-note').textContent='下载完成后，请完整解压文件夹再启动游戏。';}}catch{ /* 无效地址保持待开放，不生成失效链接。 */ }}
+// Only public HTTPS destinations may become live actions; never publish localhost.
+function publicHttps(value){
+ if(typeof value!=='string'||!value.trim())return null;
+ try{
+  const url=new URL(value);
+  const host=url.hostname.toLowerCase();
+  if(url.protocol!=='https:'||url.username||url.password||!host.includes('.')||host==='localhost'||host.endsWith('.localhost')||host.endsWith('.local')||host.endsWith('.test')||host==='example.com'||host.endsWith('.example.com')||host.startsWith('[')||/^\d+\.\d+\.\d+\.\d+$/.test(host))return null;
+  return url.href;
+ }catch{return null;}
+}
+function enableEntry(id,value,status,label){
+ const href=publicHttps(value);if(!href)return;
+ const link=document.querySelector(`#${id}-link`);
+ link.href=href;link.hidden=false;
+ document.querySelector(`#${id}-pending`).hidden=true;
+ document.querySelector(status).textContent=label;
+}
+enableEntry('play',config.playUrl,'#play-status',config.playLabel||'在线试玩已开放');
+enableEntry('download',config.downloadUrl,'#release-status',config.releaseLabel||'Windows 离线 Demo · 约 2.21 GB');
