@@ -1,0 +1,26 @@
+name: tripothon-webplay
+services:
+  signalling:
+    image: tripothon-signalling:ue5.7-4fb38b9
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WEB_PORT:-8080}:8080"
+      - "127.0.0.1:${STREAMER_PORT:-8888}:8888"
+    volumes:
+      - ./runtime:/config:ro
+      - ./Data/signalling:/opt/pixel-streaming/SignallingWebServer/logs
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+  downloads:
+    image: nginx:1.28-alpine
+    profiles: [downloads]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${DOWNLOAD_PORT:-8081}:80"
+    volumes:
+      - ./downloads.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./Downloads:/srv/downloads:ro

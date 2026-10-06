@@ -1,0 +1,21 @@
+# Run native frpc.exe on the Windows game host, alongside Docker Desktop.
+serverAddr = "YOUR_FRPS_HOST"
+serverPort = 7000
+auth.method = "token"
+auth.token = "REPLACE_WITH_YOUR_FRP_TOKEN"
+transport.tls.enable = true
+
+[[proxies]]
+name = "tripothon-web"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 8080
+remotePort = 18080
+# Do not forward the game/streamer port 8888.
+
+[[proxies]]
+name = "tripothon-downloads"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 8081
+remotePort = 18081

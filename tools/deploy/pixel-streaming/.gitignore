@@ -1,0 +1,7 @@
+runtime/
+Data/
+Game/
+*.tar
+frpc.toml
+.env
+Downloads/

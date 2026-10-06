@@ -1,0 +1,10 @@
+# Run on the public Linux VPS, not Docker Desktop on the game PC.
+name: tripothon-turn
+services:
+  turn:
+    image: coturn/coturn:4.6.3
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./turnserver.conf:/etc/coturn/turnserver.conf:ro
+    command: ["-c", "/etc/coturn/turnserver.conf"]
