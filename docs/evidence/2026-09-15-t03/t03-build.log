@@ -1,6 +1,6 @@
 Using bundled DotNet SDK version: 8.0.412 win-x64
 Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" TripothonEditor Win64 Development -Project=C:\Dev\Projects\UE\Tripothon\game\Tripothon.uproject -WaitMutex -NoHotReloadFromIDE -MaxParallelActions=2 -NoUBA
-Log file: C:\Users\kagurayami\AppData\Local\UnrealBuildTool\Log.txt
+Log file: C:\Users\USER\AppData\Local\UnrealBuildTool\Log.txt
 Using 'git status' to determine working set for adaptive non-unity build (C:\Dev\Projects\UE\Tripothon).
 Building TripothonEditor...
 Using Visual Studio 2022 14.44.35224 toolchain (C:\Apps\VisualStudio\VC\Tools\MSVC\14.44.35207) and Windows 10.0.26100.0 SDK (C:\Program Files (x86)\Windows Kits\10).

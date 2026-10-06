@@ -8,9 +8,9 @@ LogIoStore: Display:
 LogIoStore: Display: Success
 LogPakFile: Display: UnrealPak executed in 0.550062 seconds
 Took 0.98s to run UnrealPak.exe, ExitCode=0
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_UFSFiles.txt, NumItems: 2562
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFiles.txt, NumItems: 33
-DumpManifest: C:\Users\kagurayami\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFilesDebug.txt, NumItems: 6
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_UFSFiles.txt, NumItems: 2562
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFiles.txt, NumItems: 33
+DumpManifest: C:\Users\USER\AppData\Roaming\Unreal Engine\AutomationTool\Logs\C+Apps+UE+UE_5.7\FinalCopyWin64_NonUFSFilesDebug.txt, NumItems: 6
 Copying NonUFSFiles to staging directory: C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows
 Copying DebugFiles to staging directory: C:\Dev\Projects\UE\Tripothon\game\Saved\StagedBuilds\Windows
 Stage command time: 3.09 s
