@@ -23,6 +23,9 @@ public:
     UPROPERTY(VisibleAnywhere,BlueprintReadOnly) TObjectPtr<UTripoInteractionTarget> DrawerTarget;
     UPROPERTY(EditAnywhere,BlueprintReadWrite) TObjectPtr<ATripoChapterGift> Reward;
     UPROPERTY(EditAnywhere,BlueprintReadWrite) TObjectPtr<UMaterialInterface> CardUI;
+    /** Place a BP_CipherArrival in the level. Its origin is the player's capsule centre. */
+    UPROPERTY(EditInstanceOnly,BlueprintReadWrite,Category="Cipher|Teleport") TObjectPtr<AActor> CodeDestination;
+    UPROPERTY(VisibleInstanceOnly,BlueprintReadOnly,Category="Cipher") FVector2D CardOffset=FVector2D::ZeroVector;
     UPROPERTY(EditAnywhere,BlueprintReadWrite) FVector DrawerTravel=FVector(0,35,0);
     UPROPERTY(EditAnywhere,BlueprintReadWrite) FName PuzzleId=TEXT("Company.Cipher");
     // Four printed digits per page: top left, bottom left, top right, bottom right.
@@ -37,6 +40,7 @@ public:
     UFUNCTION(BlueprintCallable) bool OpenLock(ATripoCharacter* Player);
     UFUNCTION(BlueprintCallable) void SelectPage(int32 Number);
     UFUNCTION(BlueprintCallable) void ToggleCard();
+    UFUNCTION(BlueprintCallable) void MoveCard(FVector2D Offset);
     UFUNCTION(BlueprintCallable) bool SubmitCode(ATripoCharacter* Player,const FString& Code);
     UFUNCTION(BlueprintPure) int32 Digit(int32 PageNumber,int32 Hole) const;
 private:

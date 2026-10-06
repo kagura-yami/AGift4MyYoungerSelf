@@ -6,6 +6,7 @@ class UBoxComponent;
 class UArrowComponent;
 class ATripoChaser;
 class ATripoCharacter;
+class ATripoChaseHideZone;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTripoChaseStarted, ATripoChaser*, Chaser);
 
 /** Owns the spawned pursuer. Recovery clears it; walking into the volume again starts a new attempt. */
@@ -22,6 +23,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase") TSubclassOf<ATripoChaser> ChaserClass;
     // Optional level TargetPoint. Otherwise use the movable SpawnMarker component.
     UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Chase") TObjectPtr<AActor> SpawnPoint;
+    // Entering one of these safe rooms ends only this trigger's encounter.
+    UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category="Chase") TArray<TObjectPtr<ATripoChaseHideZone>> ExitZones;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase") bool bEnabled = true;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase") bool bRearmAfterRestore = true;
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Chase") TObjectPtr<ATripoChaser> ActiveChaser;

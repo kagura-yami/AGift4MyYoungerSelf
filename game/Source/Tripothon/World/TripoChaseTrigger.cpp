@@ -1,5 +1,6 @@
 #include "World/TripoChaseTrigger.h"
 #include "World/TripoChaser.h"
+#include "World/TripoChaseHideZone.h"
 #include "World/TripoInteractorComponent.h"
 #include "Player/TripoCharacter.h"
 #include "Core/TripoRuntimeSubsystem.h"
@@ -39,6 +40,8 @@ bool ATripoChaseTrigger::ActivateChase(ATripoCharacter* Player)
         !IsValid(Player) || !Player->IsPlayerControlled() || Player->Interactor->bSuppressed ||
         (R && (R->IsActionPaused() || R->GetRestorePhase()!=ETripoRestorePhase::Running))) return false;
     const FTransform Transform = IsValid(SpawnPoint) ? SpawnPoint->GetActorTransform() : SpawnMarker->GetComponentTransform();
+    for (const auto& Zone : ExitZones)
+        if (IsValid(Zone) && Zone->ContainsPoint(Player->GetActorLocation())) return false;
     FActorSpawnParameters Params;
     Params.Owner = this;
     Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
@@ -87,6 +90,12 @@ void ATripoChaseTrigger::Tick(float Dt)
     if (R && (R->IsActionPaused() || R->GetRestorePhase()!=ETripoRestorePhase::Running)) return;
     auto* Player = Cast<ATripoCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
     if (!IsValid(Player)) return;
+    for (const auto& Zone : ExitZones)
+        if (IsValid(Zone) && Zone->ContainsPoint(Player->GetActorLocation()))
+        {
+            if (IsValid(ActiveChaser)) EndChase(false);
+            return;
+        }
     const FVector Local = Volume->GetComponentTransform().InverseTransformPosition(Player->GetActorLocation());
     const FVector Extent = Volume->GetUnscaledBoxExtent();
     const bool bInside = FMath::Abs(Local.X)<=Extent.X && FMath::Abs(Local.Y)<=Extent.Y && FMath::Abs(Local.Z)<=Extent.Z;

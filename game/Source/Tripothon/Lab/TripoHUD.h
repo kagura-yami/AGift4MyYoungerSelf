@@ -10,6 +10,11 @@ class ATripoChapterGift;
 class UTexture2D;
 class ATripoSchoolBooks;
 class ATripoOfficeCipher;
+class UMediaSource;
+class UMediaPlayer;
+class UMediaTexture;
+class UMaterialInterface;
+class UMaterialInstanceDynamic;
 struct FButtonStyle;
 UCLASS()
 class TRIPOTHON_API ATripoHUD : public AHUD
@@ -33,7 +38,20 @@ public:
     UFUNCTION(BlueprintCallable) void HandleAction(FString Action);
     // Esc returns through tutorial/settings before releasing the menu pause.
     bool NavigateBack();
+    UFUNCTION(BlueprintCallable) bool PlayStoryMovie(UMediaSource* Source,UMaterialInterface* Material);
+    UFUNCTION(BlueprintCallable) void StopStoryMovie();
+    UFUNCTION(BlueprintPure) bool IsStoryMoviePlaying() const { return bStoryMovie; }
 private:
+    bool bStoryMovie=false;
+    UPROPERTY(Transient) TObjectPtr<UMediaPlayer> StoryMoviePlayer;
+    UPROPERTY(Transient) TObjectPtr<UMediaTexture> StoryMovieTexture;
+    UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> StoryMovieMaterial;
+    TSharedPtr<SWidget> StoryMovieWidget;
+    FSlateBrush StoryMovieBrush;
+    FTimerHandle StoryMovieTimeout;
+    UFUNCTION() void StoryMovieOpened(FString Url);
+    UFUNCTION() void StoryMovieFailed(FString Url);
+    UFUNCTION() void StoryMovieFinished();
     TWeakObjectPtr<ATripoOfficeCipher> OfficeCipher;
     TWeakObjectPtr<ATripoOfficeCipher> InventoryCipher;
     FSlateBrush InventoryCipherBrush;
