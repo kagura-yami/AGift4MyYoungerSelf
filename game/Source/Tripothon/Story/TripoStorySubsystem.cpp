@@ -12,7 +12,7 @@ bool UTripoStorySubsystem::OpenEvent(ATripoCharacter* Player, UTripoStoryCatalog
     for (FName Required : E->RequiredEvents) if (!P->HasApplied(Required)) return false;
     for (FName Required : E->RequiredChallenges) if (!P->HasCompleted(Required)) return false;
     if (!P->ApplyStory(Player, Id, E->GrantFloors)) return false;
-    Current = *E; Reader = Player; bOpen = true;
+    Current = *E; Reader = Player; bOpen = true; WorldSpeaker.Reset();
     Lines.Reset(); LineIndex=0;
     Current.Text.ToString().Replace(TEXT("\\n"),TEXT("\n")).ParseIntoArrayLines(Lines,true);
     return true;

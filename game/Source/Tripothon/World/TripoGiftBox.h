@@ -32,7 +32,7 @@ public:
     UPROPERTY(VisibleInstanceOnly,BlueprintReadOnly,Category="Gift") FTripoGiftReceipt Receipt;
     UPROPERTY(VisibleInstanceOnly,BlueprintReadOnly,Category="Gift") FString LastError;
     UPROPERTY(BlueprintAssignable,Category="Gift") FTripoGiftOpened OnGiftOpened;
-    UFUNCTION(BlueprintCallable,Category="Gift") bool TryOpen(ATripoCharacter* Player);
+    UFUNCTION(BlueprintCallable,Category="Gift") virtual bool TryOpen(ATripoCharacter* Player);
     UFUNCTION(BlueprintPure,Category="Gift") FName GetReceiptKey() const;
     UFUNCTION(BlueprintPure,Category="Gift") bool IsInReach(ATripoCharacter* Player) const;
     UFUNCTION(CallInEditor,Category="Gift") void GenerateNewGiftId();

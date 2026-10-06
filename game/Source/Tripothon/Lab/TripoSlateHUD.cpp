@@ -1,3 +1,4 @@
+#include "Player/TripoPlayerSettings.h"
 #include "Lab/TripoHUD.h"
 #include "Lab/TripoMenuStyle.h"
 #include "Player/TripoCharacter.h"
@@ -5,6 +6,8 @@
 #include "Progress/TripoProgressSubsystem.h"
 #include "Story/TripoStorySubsystem.h"
 #include "World/TripoZone.h"
+#include "World/TripoChapterGift.h"
+#include "World/TripoOfficeCipher.h"
 #include "World/TripoWorldSubsystem.h"
 #include "Core/TripoRuntimeSubsystem.h"
 #include "Engine/GameViewportClient.h"
@@ -27,7 +30,8 @@ static const TCHAR* AbilityNames[] = {TEXT("平面位移"),TEXT("上位移"),TEX
 ATripoCharacter* ATripoHUD::Player() const { return Cast<ATripoCharacter>(GetOwningPawn()); }
 bool ATripoHUD::CanConfigureAbilities() const
 {
-    return GetWorld() && UGameplayStatics::GetCurrentLevelName(this, true).Equals(TEXT("lv4"), ESearchCase::IgnoreCase);
+    // The shared controller binds F2 in every gameplay map, including new chapters.
+    return GetWorld() && !bFrontEnd && IsValid(Player());
 }
 void ATripoHUD::BeginPlay()
 {
@@ -38,6 +42,7 @@ void ATripoHUD::BeginPlay()
     bEntryMenu = bFrontEnd || (!bSkipEntryMenu && !Progress->IsLabWorld(this) && Progress->ConsumeEntryMenu());
     if (bFrontEnd) Progress->ConsumeEntryMenu();
     InitializeUIArt();
+    UTripoPlayerSettings::Get()->ApplyAudio(this);
     RootWidget = SNew(SOverlay)
     + SOverlay::Slot()
     [SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
@@ -47,7 +52,7 @@ void ATripoHUD::BeginPlay()
             if (!WeakThis.IsValid()) return EVisibility::Collapsed;
             // Reward pauses freeze gameplay without covering the scene behind the floating panel.
             const auto* Progress = UTripoProgressSubsystem::Get(WeakThis.Get());
-            const bool bReward = WeakThis->bGiftReceipt || (Progress && Progress->GetPhase() == ETripoChallengePhase::PendingReward);
+            const bool bReward = WeakThis->OfficeCipher.IsValid() || WeakThis->bGiftReceipt || (Progress && Progress->GetPhase() == ETripoChallengePhase::PendingReward);
             const bool bMenu = WeakThis->bEntryMenu || (!bReward && WeakThis->PlayerOwner && WeakThis->PlayerOwner->IsPaused());
             return bMenu ? EVisibility::HitTestInvisible : EVisibility::Collapsed;
         })]
@@ -60,6 +65,14 @@ void ATripoHUD::BeginPlay()
     + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Top).Padding(24,24,16,16)
     [SNew(SScaleBox).Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)
         .Visibility_Lambda([WeakThis] { return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() ? EVisibility::HitTestInvisible : EVisibility::Collapsed; })[BuildSkillBar()]]
+    + SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Bottom).Padding(32,24,32,32)
+    [SNew(SScaleBox).Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)
+        .Visibility_Lambda([WeakThis]{return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() && WeakThis->HasInventory() ? EVisibility::HitTestInvisible : EVisibility::Collapsed;})[BuildInventory()]]
+    + SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Bottom).Padding(24,24,24,110)
+    [SNew(STextBlock).Font(TripoMenu::Font(20)).ColorAndOpacity(TripoMenu::Paper)
+        .ShadowOffset(FVector2D(1,2)).ShadowColorAndOpacity(FLinearColor::Black)
+        .Visibility_Lambda([WeakThis]{return WeakThis.IsValid() && !WeakThis->IsGameplayBlocked() ? EVisibility::HitTestInvisible:EVisibility::Collapsed;})
+        .Text_Lambda([WeakThis]{return FText::FromString(WeakThis.IsValid()?WeakThis->GetPuzzleHint():FString());})]
     + SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Center).Padding(24)
     [SNew(SScaleBox).Stretch(EStretch::ScaleToFit).StretchDirection(EStretchDirection::DownOnly)[SAssignNew(PanelHost, SBox)]]
     + SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(32,24,32,32)
@@ -73,12 +86,13 @@ void ATripoHUD::EndPlay(const EEndPlayReason::Type Reason)
 {
     if (RootWidget.IsValid() && GetWorld()->GetGameViewport()) GetWorld()->GetGameViewport()->RemoveViewportWidgetContent(RootWidget.ToSharedRef());
     if (bGiftReceipt) if (auto* R=UTripoRuntimeSubsystem::GetRuntime(this)) R->SetPauseReason(ETripoPauseReason::Reward,false);
+    CloseOfficeCipher();
     RootWidget.Reset(); PanelHost.Reset(); StoryHost.Reset(); UITextures.Empty(); Super::EndPlay(Reason);
 }
 bool ATripoHUD::IsGameplayBlocked() const
 {
     auto* P = UTripoProgressSubsystem::Get(this); auto* Story = GetWorld()->GetSubsystem<UTripoStorySubsystem>();
-    return bGiftReceipt || bEntryMenu || bCollection || bExchange || (PlayerOwner && PlayerOwner->IsPaused()) || (P && P->GetPhase() == ETripoChallengePhase::PendingReward);
+    return OfficeCipher.IsValid() || bGiftReceipt || bEntryMenu || bCollection || bExchange || (PlayerOwner && PlayerOwner->IsPaused()) || (P && P->GetPhase() == ETripoChallengePhase::PendingReward);
 }
 FText ATripoHUD::StatusText() const
 {
@@ -130,6 +144,7 @@ bool ATripoHUD::OpenExchange()
 void ATripoHUD::RebuildPanel()
 {
     StoryHost->SetContent(SNullWidget::NullWidget);
+    if (OfficeCipher.IsValid()) { PanelHost->SetContent(BuildOfficeCipher()); return; }
     if (bEntryMenu) { PanelHost->SetContent(MenuPage==EMenuPage::Pause ? BuildFrontEnd() : BuildMenuPage()); return; }
     if (bGiftReceipt) { PanelHost->SetContent(BuildGiftReceipt()); return; }
     if (!IsGameplayBlocked() && GetWorld()->GetSubsystem<UTripoStorySubsystem>()->HasDialogue())
@@ -165,6 +180,8 @@ void ATripoHUD::RebuildPanel()
     else if (bAbilityConfig && CanConfigureAbilities() && Player())
     {
         Heading(TEXT("能力配置"),TEXT("选择等级立即生效 · F2 返回游戏"));
+        Button(Player()->bDebugFlying ? TEXT("关闭自由飞行 · 恢复正常移动") : TEXT("开启自由飞行测试"),TEXT("debug.fly"));
+        Text(TEXT("飞行：WASD 移动 · 鼠标转向 · Space 上升 · Ctrl 下降 · Shift 加速；保留墙体碰撞。"));
         Content->AddSlot().AutoHeight().Padding(8)[SNew(STextBlock).ColorAndOpacity(FLinearColor(.025,.055,.04))
             .Font(TripoMenu::Font(14)).Text(FText::FromString(TEXT("0 级移除，1–3 级获得或升级。保存安全进度可保留配置，新游戏会重置。")))
             .AutoWrapText(true).WrapTextAt(700)];
@@ -263,6 +280,19 @@ void ATripoHUD::HandleAction(FString Action)
     }
     if (bGiftReceipt)
     {
+        if (ChapterGift.IsValid())
+        {
+            if (Action==TEXT("gift.choose.full") || Action.StartsWith(TEXT("gift.choose.")))
+            {
+                const FString Value=Action.RightChop(12);
+                if ((Value==TEXT("full") || Value.IsNumeric()) && ChapterGift->ChooseSkill(Player(),Value==TEXT("full") ? INDEX_NONE : FCString::Atoi(*Value)))
+                {
+                    ChapterGift.Reset(); bGiftReceipt=false; PanelKey.Empty();
+                    UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Reward,false);
+                }
+            }
+            return;
+        }
         if (Action == TEXT("gift.confirm") && FPlatformTime::Seconds()-GiftRevealStart >= .85)
         {
             if (auto* R=UTripoRuntimeSubsystem::GetRuntime(this)) R->SetPauseReason(ETripoPauseReason::Reward,false);
@@ -275,6 +305,7 @@ void ATripoHUD::HandleAction(FString Action)
     {
         if (!bEntryMenu && (!PlayerOwner || !PlayerOwner->IsPaused())) return;
         if (Action == TEXT("ui.settings")) MenuPage=EMenuPage::Settings;
+        else if (Action == TEXT("ui.preferences")) MenuPage=EMenuPage::Preferences;
         else if (Action == TEXT("ui.more")) MenuPage=EMenuPage::More;
         else if (Action == TEXT("ui.tutorial")) MenuPage=EMenuPage::Tutorial;
         else if (Action == TEXT("ui.handbook")) MenuPage=EMenuPage::Handbook;
@@ -287,6 +318,13 @@ void ATripoHUD::HandleAction(FString Action)
         PanelKey.Empty(); return;
     }
     if (!C) return;
+    if (Action == TEXT("debug.fly") && bAbilityConfig && CanConfigureAbilities())
+    {
+        C->SetDebugFlying(!C->bDebugFlying);
+        bAbilityConfig=false;
+        UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Menu,false);
+        PanelKey.Empty(); return;
+    }
     if (Action == TEXT("resume")) UTripoRuntimeSubsystem::GetRuntime(this)->SetPauseReason(ETripoPauseReason::Menu,false);
     else if (Action == TEXT("save")) P->SaveSafe(C);
     else if (Action == TEXT("load")) P->ContinueGame(P->IsLabWorld(this));

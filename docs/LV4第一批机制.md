@@ -160,3 +160,9 @@ UE **5.7.4**，打开 `/Game/Maps/L_Lv4MechanismWhitebox`，按编辑器播放�
 - 使用行动时钟，暂停不消耗持续时间；普通跳跃保留速度效果，到期恢复基础速度。
 - 检查点恢复会清除角色速度效果，并重新显示已拾取的球。
 - 设置入口：`tools/scripts/setup_lv4_speed_pickups.py`；运行验证：`tools/scripts/validate_lv4_speed_pickups.py`。
+
+## 窗口跳槽路线
+- 原公司办公室窗口新增 `LV4_CompanyWindowEntry/Exit` 配对点，面向窗外在入口 100 cm 范围内使用左 Shift，穿窗落到既有外侧窄板；出口不触发反向传送。
+- 保留原平台和跨楼间距。落板后等待位移冷却，朝右前方对面公司入口起跳，再在空中使用向前位移。
+- 实测二级平面位移可以完成跨楼；一级从平台中心直接跳冲距离不足。测试仅在 PIE 临时解锁二级，不改变正式技能升级规则。
+- `setup_lv4_company_window.py` 设置入口；`validate_lv4_company_window.py` 验证朝向限制、技能触发、平台站稳和对面落地。

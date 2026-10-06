@@ -8,11 +8,14 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Materials/MaterialInterface.h"
 #include "EngineUtils.h"
 #include "UObject/ConstructorHelpers.h"
 
 ATripoElevator::ATripoElevator()
 {
+    static ConstructorHelpers::FObjectFinder<UMaterialInterface> Steel(TEXT("/Game/Materials/Lv4/M_CabinBrushedSteel.M_CabinBrushedSteel"));
+    CabinWallMaterial=Steel.Object;
     LandingButtonActors.SetNum(2); LandingButtonOffsets={FVector(0,13,24),FVector(0,13,8)};
     PrimaryActorTick.bCanEverTick = true;
     PrimaryActorTick.TickGroup = TG_PrePhysics;
@@ -66,6 +69,21 @@ void ATripoElevator::OnConstruction(const FTransform& Transform)
 {
     Super::OnConstruction(Transform);
     if (!HasActorBegunPlay()) { CurrentFloor=FMath::Clamp(InitialFloor,0,1); Cabin->SetRelativeLocation(CurrentFloor ? Stop1 : Stop0); }
+    if (CabinWallMaterial)
+    {
+        TInlineComponentArray<UStaticMeshComponent*> Meshes(this);
+        for (auto* Mesh:Meshes)
+            if (Mesh->GetFName()==TEXT("BackWall") || Mesh->GetFName()==TEXT("SideWallLeft") || Mesh->GetFName()==TEXT("SideWallRight"))
+                Mesh->SetMaterial(0,CabinWallMaterial);
+    }
+    // Keep the cabin side-wall front edges behind the landing facade.
+    TInlineComponentArray<UStaticMeshComponent*> CabinMeshes(this);
+    for (auto* Mesh:CabinMeshes)
+        if (Mesh->GetFName()==TEXT("SideWallLeft") || Mesh->GetFName()==TEXT("SideWallRight"))
+        {
+            FVector P=Mesh->GetRelativeLocation(); P.X=20.f; Mesh->SetRelativeLocation(P);
+            FVector S=Mesh->GetRelativeScale3D(); S.X=2.8f; Mesh->SetRelativeScale3D(S);
+        }
     UpdateControlAnchors();
     ApplyDoors();
 }

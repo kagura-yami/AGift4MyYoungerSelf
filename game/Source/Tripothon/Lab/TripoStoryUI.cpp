@@ -12,6 +12,7 @@
 TSharedRef<SWidget> ATripoHUD::BuildStoryBubble()
 {
     const auto* Story=GetWorld()->GetSubsystem<UTripoStorySubsystem>();
+    if (Story->GetWorldSpeaker()) return SNullWidget::NullWidget;
     FString Line=Story->GetLine(),Speaker=TEXT("旁白");
     int32 Split=INDEX_NONE;
     if ((Line.FindChar(TEXT('：'),Split) || Line.FindChar(TEXT(':'),Split)) && Split>0 && Split<16)

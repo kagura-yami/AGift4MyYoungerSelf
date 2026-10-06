@@ -16,6 +16,8 @@ class TRIPOTHON_API ATripoElevator : public AActor
 {
     GENERATED_BODY()
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Elevator|Appearance") TObjectPtr<class UMaterialInterface> CabinWallMaterial;
+
     ATripoElevator();
     virtual void OnConstruction(const FTransform& Transform) override;
     virtual void BeginPlay() override;

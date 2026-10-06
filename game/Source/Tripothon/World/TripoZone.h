@@ -16,6 +16,7 @@ class TRIPOTHON_API ATripoZone : public AActor
 public:
     ATripoZone();
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaSeconds) override;
     virtual void OnConstruction(const FTransform& Transform) override;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly) TObjectPtr<UBoxComponent> Volume;
     UPROPERTY(VisibleAnywhere) TObjectPtr<UTextRenderComponent> Label;
@@ -26,8 +27,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite) FName ChallengeId;
     UPROPERTY(EditAnywhere) FVector SafeOffset = FVector(0, 0, 100);
     UPROPERTY(EditAnywhere) TArray<int32> ProtectedLevels;
+    UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Checkpoint") bool bAutoCheckpoint=false;
     bool Contains(const FVector& Point) const;
     static bool Inside(UWorld* World, ETripoZoneKind ZoneKind, const FVector& Point);
 private:
+    TWeakObjectPtr<AActor> CheckpointOccupant;
     UFUNCTION() void Enter(UPrimitiveComponent* Component, AActor* Other, UPrimitiveComponent* OtherComponent, int32 BodyIndex, bool bSweep, const FHitResult& Hit);
 };

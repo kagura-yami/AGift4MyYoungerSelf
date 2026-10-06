@@ -10,6 +10,7 @@
 #include "World/TripoChaser.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/GameInstance.h"
+#include "Core/TripoTravelSubsystem.h"
 #include "EngineUtils.h"
 #include "Misc/PackageName.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -56,18 +57,24 @@ bool UTripoProgressSubsystem::ContinueGame(bool bLab)
     RunSeed = Best->RunSeed; SaveSequence = Best->Sequence; Phase = ETripoChallengePhase::Idle; Candidates.Empty(); Current = nullptr;
     GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>()->BeginRun(Best->RunId);
     GetGameInstance()->GetSubsystem<UTripoRuntimeSubsystem>()->SetPauseReason(ETripoPauseReason::Menu, false);
+    DepartingWorld=GetWorld();
     UGameplayStatics::OpenLevel(GetGameInstance(), FName(*Best->MapPackage)); return true;
 }
 bool UTripoProgressSubsystem::ApplyPendingLoad(ATripoCharacter* Player)
 {
+    if (IsValid(Player) && DepartingWorld.IsValid() && Player->GetWorld()==DepartingWorld.Get()) return false;
     if (IsValid(Player) && !PendingTravelLevels.IsEmpty())
     {
-        Player->Abilities->ImportLevels(PendingTravelLevels); PendingTravelLevels.Empty();
+        // OpenLevel is deferred: the departing pawn can tick again before travel completes.
+        if (UGameplayStatics::GetCurrentLevelName(Player,true)!=FPackageName::GetShortName(PendingTravelMap)) return false;
+        if (!Player->Abilities->ImportLevels(PendingTravelLevels)) return false;
+        PendingTravelLevels.Empty(); PendingTravelMap.Empty();
         UTripoWorldSubsystem::Get(Player)->SetCheckpoint(Player, Player->GetActorTransform());
         Message = TEXT("已进入下一章节"); return true;
     }
     if (!PendingLoad || !IsValid(Player)) return false;
-    Player->Abilities->ImportLevels(PendingLoad->Levels);
+    if (UGameplayStatics::GetCurrentLevelName(Player,true)!=FPackageName::GetShortName(PendingLoad->MapPackage)) return false;
+    if (!Player->Abilities->ImportLevels(PendingLoad->Levels)) return false;
     for (TActorIterator<ATripoMechanism> It(Player->GetWorld()); It; ++It)
         if (const auto* State = PendingLoad->Mechanisms.Find(It->Identity->GetStableId())) It->Restore(*State);
     for (TActorIterator<ATripoElevator> It(Player->GetWorld()); It; ++It) { const int32* Floor=PendingLoad->ElevatorFloors.Find(It->Identity->GetStableId()); It->RestoreFloor(Floor ? *Floor : It->InitialFloor); }
@@ -104,7 +111,9 @@ bool UTripoProgressSubsystem::Travel(ATripoCharacter* Player, FName Map)
 {
     if (!IsValid(Player) || !Map.ToString().StartsWith(TEXT("/Game/Maps/")) || !FPackageName::DoesPackageExist(Map.ToString()) || !SaveSafe(Player)) return false;
     PendingLoad = nullptr; PendingTravelLevels = Player->Abilities->ExportLevels();
-    Player->Abilities->CancelAll(); UGameplayStatics::OpenLevel(Player, Map); return true;
+    PendingTravelMap=Map.ToString();
+    DepartingWorld=Player->GetWorld();
+    Player->Abilities->CancelAll(); GetGameInstance()->GetSubsystem<UTripoTravelSubsystem>()->Travel(Map); return true;
 }
 bool UTripoProgressSubsystem::ApplyStory(ATripoCharacter* Player, FName Id, const TArray<int32>& Floors)
 {

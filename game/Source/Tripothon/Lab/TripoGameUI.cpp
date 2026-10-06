@@ -1,6 +1,8 @@
+#include "World/TripoOfficeCipher.h"
 #include "Player/TripoPlayerController.h"
 #include "Lab/TripoHUD.h"
 #include "Lab/TripoMenuStyle.h"
+#include "Lab/TripoGuideIcon.h"
 #include "Player/TripoCharacter.h"
 #include "Player/TripoMovementComponent.h"
 #include "Abilities/TripoAbilityComponent.h"
@@ -15,6 +17,7 @@
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Images/SImage.h"
 #include "Widgets/Layout/SBox.h"
+#include "Widgets/Layout/SScaleBox.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Input/SButton.h"
@@ -304,13 +307,14 @@ TSharedRef<SWidget> ATripoHUD::BuildSkillBar()
 }
 bool ATripoHUD::NavigateBack()
 {
+    if (OfficeCipher.IsValid()) { CloseOfficeCipher(); return true; }
     if (bGiftReceipt) { HandleAction(TEXT("gift.confirm")); return true; }
     if (bEntryMenu && bConfirmNewGame) { bConfirmNewGame=false; PanelKey.Empty(); return true; }
     if (!bEntryMenu && (!PlayerOwner || !PlayerOwner->IsPaused())) return false;
     if (bCollection) bCollection=false;
     else if (bAbilityConfig) bAbilityConfig=false;
     else if (MenuPage == EMenuPage::Handbook) MenuPage=EMenuPage::Tutorial;
-    else if (MenuPage == EMenuPage::Tutorial) MenuPage=EMenuPage::Settings;
+    else if (MenuPage == EMenuPage::Tutorial || MenuPage == EMenuPage::Preferences) MenuPage=EMenuPage::Settings;
     else if (MenuPage != EMenuPage::Pause) MenuPage=EMenuPage::Pause;
     else return false;
     PanelKey.Empty(); return true;
@@ -467,39 +471,35 @@ TSharedRef<SWidget> ATripoHUD::BuildMenuPage()
     { Content->AddSlot().AutoHeight().Padding(0,4)[Button(Label,Action,bPrimary)]; };
     if (MenuPage == EMenuPage::Settings)
     {
-        Content->AddSlot().AutoHeight()[TripoMenu::Heading(TEXT("设置与教程"),TEXT("翻开旅途指南，找到下一步的灵感。"))];
-        auto GuideEntry=[&](const TCHAR* Title,const TCHAR* Description,const TCHAR* Action,TSharedRef<SWidget> Illustration)
+        Content->AddSlot().AutoHeight()[TripoMenu::Heading(TEXT("设置与教程"),TEXT("调整游玩偏好，或翻阅旅途指南。"))];
+        auto GuideEntry=[&](int32 Index,const TCHAR* Title,const TCHAR* Description,const TCHAR* Action)
         {
             const FString Command(Action);
-            Content->AddSlot().AutoHeight().Padding(0,6)
-                [Animate(SNew(SButton).ButtonStyle(&MenuButtonStyle()).ButtonColorAndOpacity(FLinearColor(.25f,.28f,.17f,.09f))
-                    .ContentPadding(FMargin(18,10))
+            Content->AddSlot().AutoHeight().Padding(0,2)
+                [Animate(SNew(SButton).ButtonStyle(&MenuButtonStyle()).ButtonColorAndOpacity(FLinearColor(.25f,.28f,.17f,.025f))
+                    .ContentPadding(FMargin(12,0))
                     .OnClicked_Lambda([Weak,Command]{if(Weak.IsValid()) Weak->HandleAction(Command); return FReply::Handled();})
+                    [SNew(SBox).HeightOverride(86)
                     [SNew(SHorizontalBox).Visibility(EVisibility::HitTestInvisible)
                         +SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
-                            [SNew(SBox).WidthOverride(136).HeightOverride(84)[Illustration]]
-                        +SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center).Padding(22,0,8,0)
+                            [SNew(SBox).WidthOverride(72).HeightOverride(72)[SNew(STripoGuideIcon).Kind(Index)]]
+                        +SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center).Padding(24,0,8,0)
                             [SNew(SVerticalBox)
-                                +SVerticalBox::Slot().AutoHeight()[TripoMenu::Label(Title,24,Ink,true)]
-                                +SVerticalBox::Slot().AutoHeight().Padding(0,6,0,0)[TripoMenu::Label(Description,15,TripoMenu::Muted)]]
-                        +SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)[TripoMenu::Label(TEXT("›"),28,TripoMenu::Brass,true)]],Command)];
+                                +SVerticalBox::Slot().AutoHeight()[TripoMenu::Label(Title,23,Ink,true)]
+                                +SVerticalBox::Slot().AutoHeight().Padding(0,4,0,0)[TripoMenu::Label(Description,13,TripoMenu::Muted)]]
+                        +SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8,0,18,0)
+                            [TripoMenu::Label(FString::Printf(TEXT("0%d"),Index+1),12,TripoMenu::Brass,false,false)]
+                        +SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
+                            [TripoMenu::Label(TEXT("›"),26,TripoMenu::Brass,true)]]],Command)];
+            if(Index<2) Content->AddSlot().AutoHeight().Padding(108,3,12,3)[TripoMenu::Rule()];
         };
-        auto MovementKeys=SNew(SVerticalBox);
-        MovementKeys->AddSlot().AutoHeight().HAlign(HAlign_Center).Padding(0,8,0,4)[TripoMenu::Keycap(TEXT("W"))];
-        MovementKeys->AddSlot().AutoHeight()
-            [SNew(SHorizontalBox)
-                +SHorizontalBox::Slot().FillWidth(1).Padding(2,0)[TripoMenu::Keycap(TEXT("A"))]
-                +SHorizontalBox::Slot().FillWidth(1).Padding(2,0)[TripoMenu::Keycap(TEXT("S"))]
-                +SHorizontalBox::Slot().FillWidth(1).Padding(2,0)[TripoMenu::Keycap(TEXT("D"))]];
-        GuideEntry(TEXT("操作指南"),TEXT("移动、跳跃与交互，常用按键一览。"),TEXT("ui.tutorial"),MovementKeys);
-        auto Badges=SNew(SOverlay)
-            +SOverlay::Slot().HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(0,0,0,8)
-                [SNew(SBox).WidthOverride(62).HeightOverride(62)[SNew(SImage).Image(&SkillBrushes[0])]]
-            +SOverlay::Slot().HAlign(HAlign_Right).VAlign(VAlign_Bottom).Padding(0,0,0,8)
-                [SNew(SBox).WidthOverride(62).HeightOverride(62)[SNew(SImage).Image(&SkillBrushes[3])]]
-            +SOverlay::Slot().HAlign(HAlign_Center).VAlign(VAlign_Top)
-                [SNew(SBox).WidthOverride(74).HeightOverride(74)[SNew(SImage).Image(&SkillBrushes[6])]];
-        GuideEntry(TEXT("能力手册"),TEXT("翻阅能力效果、等级与使用条件。"),TEXT("ui.handbook"),Badges);
+        GuideEntry(0,TEXT("游戏设置"),TEXT("调整声音、视角与画面"),TEXT("ui.preferences"));
+        GuideEntry(1,TEXT("操作指南"),TEXT("熟悉移动、跳跃与交互"),TEXT("ui.tutorial"));
+        GuideEntry(2,TEXT("能力手册"),TEXT("查阅能力效果、等级与使用条件"),TEXT("ui.handbook"));
+    }
+    else if (MenuPage == EMenuPage::Preferences)
+    {
+        Content->AddSlot().AutoHeight()[BuildSettingsControls()];
     }
     else if (MenuPage == EMenuPage::Tutorial)
     {
@@ -539,5 +539,5 @@ TSharedRef<SWidget> ATripoHUD::BuildMenuPage()
     auto Page=SNew(SVerticalBox)
         +SVerticalBox::Slot().FillHeight(1)[SNew(SScrollBox).AnimateWheelScrolling(true).WheelScrollMultiplier(0.7f).ConsumeMouseWheel(EConsumeMouseWheel::Always)+SScrollBox::Slot()[Content]]
         +SVerticalBox::Slot().AutoHeight().Padding(0,12,0,0)[Footer];
-    return FramePanel(Page,&PaperBrush,FVector2D(960,720),FMargin(120,105,120,98));
+    return FramePanel(Page,&PaperBrush,FVector2D(960,720),(MenuPage==EMenuPage::Preferences ? FMargin(120,90,120,82) : FMargin(120,105,120,98)));
 }

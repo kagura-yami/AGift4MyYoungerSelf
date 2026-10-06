@@ -23,6 +23,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Patrol") bool bStartPatrolling = false;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Patrol") bool bPingPongPatrol = true;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Patrol", meta=(ClampMin="0")) float PatrolWaitSeconds = 1;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Patrol") bool bRestrictToPatrolArea = false;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Patrol") FVector PatrolAreaCenter = FVector::ZeroVector;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Patrol") FVector PatrolAreaExtent = FVector(200,1000,300);
+    UFUNCTION(BlueprintPure, Category="Chase|Patrol") bool IsInsidePatrolArea(const FVector& Point) const;
     UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Chase|Patrol") int32 PatrolIndex = 0;
     UFUNCTION(BlueprintCallable, Category="Chase") bool StartChase(ATripoCharacter* Player);
     UFUNCTION(BlueprintCallable, Category="Chase") void StopChase();
@@ -45,6 +49,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Movement", meta=(ClampMin="0")) float AirborneSpeedRatio = .85f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Movement", meta=(ClampMin="0")) float SearchSpeedRatio = .55f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Movement", meta=(ClampMin="0")) float SpeedChangePerSecond = 220;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Movement") bool bJumpObstacles = true;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Search", meta=(ClampMin="0")) float PursuitMemorySeconds = 8.f;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Search", meta=(ClampMin="100")) float WanderRadius = 650;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Search", meta=(ClampMin=".2")) float WanderInterval = 3;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Chase|Catch", meta=(ClampMin="0")) float CatchSurfaceDistance = 12;
@@ -66,6 +72,15 @@ private:
     int32 PatrolDirection = 1;
     float PatrolWaitRemaining = 0;
     bool bWaitingAtPoint = false;
+    float JumpCooldown = 0.f;
+    float PursuitMemoryRemaining = 0.f;
+    FVector LastSeenDirection = FVector::ZeroVector;
+    bool bCheckedEscapeDirection = false;
+    bool TryJumpObstacle(const FVector& Goal);
+    bool FindCartApproach(const FVector& Goal);
+    FVector CartApproach = FVector::ZeroVector;
+    FVector CartLanding = FVector::ZeroVector;
+    bool bApproachingCart = false;
     void TickPatrol(float Dt);
     void SelectNearestPatrolPoint();
     bool CanSee(ATripoCharacter* Player) const;

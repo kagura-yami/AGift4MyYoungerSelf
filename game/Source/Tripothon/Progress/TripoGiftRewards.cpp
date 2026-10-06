@@ -5,6 +5,36 @@
 #include "Abilities/TripoAbilityComponent.h"
 #include "World/TripoInteractorComponent.h"
 #include "Core/TripoRuntimeSubsystem.h"
+#include "Misc/Crc.h"
+#include "Kismet/GameplayStatics.h"
+
+TArray<int32> UTripoProgressSubsystem::GetChapterGiftChoices(FName Key) const
+{
+    TArray<int32> Pool, Result;
+    const auto* Player=Cast<ATripoCharacter>(UGameplayStatics::GetPlayerPawn(this,0));
+    for (int32 I=0;I<8;++I) if (!Player || Player->Abilities->GetLevel(ETripoAbility(I))<3) Pool.Add(I);
+    FRandomStream Random(HashCombine(GetTypeHash(RunSeed),FCrc::StrCrc32(*Key.ToString())));
+    while (Result.Num()<3 && !Pool.IsEmpty()) { const int32 Pick=Random.RandRange(0,Pool.Num()-1); Result.Add(Pool[Pick]); Pool.RemoveAt(Pick); }
+    return Result;
+}
+bool UTripoProgressSubsystem::ClaimChapterGift(ATripoCharacter* Player,FName Key,int32 Ability,FTripoGiftReceipt& OutReceipt)
+{
+    auto* R=UTripoRuntimeSubsystem::GetRuntime(Player);
+    if (!IsValid(Player) || !Player->HasAuthority() || !Player->IsPlayerControlled() || !R ||
+        !R->HasPauseReason(ETripoPauseReason::Reward) || R->GetRestorePhase()!=ETripoRestorePhase::Running ||
+        Key.IsNone() || Gifts.Contains(Key) || Gifts.Num()>=4096) return false;
+    const TArray<int32> Choices=GetChapterGiftChoices(Key);
+    if (Ability==INDEX_NONE && Choices.IsEmpty()) { OutReceipt=FTripoGiftReceipt(); Gifts.Add(Key,OutReceipt); return true; }
+    if (!Choices.Contains(Ability)) return false;
+    TArray<ATripoCharacter*> Bodies={Player};
+    if (auto* PC=Cast<ATripoPlayerController>(Player->GetController())) Bodies=PC->GetEchoBodies();
+    int32 Level=2;
+    for (auto* Body:Bodies) if (IsValid(Body)) Level=FMath::Max(Level,Body->Abilities->GetLevel(ETripoAbility(Ability)));
+    if (!Player->Abilities->GrantLevelFloor(ETripoAbility(Ability),Level)) return false;
+    for (auto* Body:Bodies) if (IsValid(Body) && Body!=Player) Body->Abilities->GrantLevelFloor(ETripoAbility(Ability),Level);
+    OutReceipt.AbilityIndex=Ability; OutReceipt.GrantedLevel=Level; Gifts.Add(Key,OutReceipt);
+    return true;
+}
 
 bool UTripoProgressSubsystem::ClaimGift(ATripoCharacter* Player,FName Key,const TArray<FTripoRewardOption>& Pool,FTripoGiftReceipt& OutReceipt)
 {
